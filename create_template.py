@@ -123,7 +123,7 @@ class Digestion:
             for i in range(1, COPY+1):
                 self.digestion_sheet.write(self.row, 0, f'{sample}_{i}', self.label_cell_format)
                 self.digestion_sheet.write(self.row, 1, '', self.empty_cell_format)
-                self.digestion_sheet.write(self.row, 2, '', self.empty_cell_format)
+                self.digestion_sheet.write(self.row, 2, f'', self.empty_cell_format)
                 self.__move_cursor()
 
 
