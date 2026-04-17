@@ -11,14 +11,16 @@ sample = Entry(root)
 sample.pack()
 
 
-def extract_sample_id(_):
+def extract_sample_id():
     global sample
-    print(type(sample))
-    samples = re.split(r'[,\s]+', sample.get())
-    for s in samples:
-        #print(sample)
-        pass
-    print(samples)
+    match = re.search(r'(\d+)\((\d+)\)', sample.get())
+    if match:
+        sample_id, sample_count = match.groups()
+        sample_id = int(sample_id)
+        sample_count = int(sample_count)
+        samples = [sample_id+i for i in range(sample_count)]
+    else:
+        samples = re.split(r'[,\s]+', sample.get())
     return samples
 
 
@@ -31,26 +33,20 @@ mb = Menubutton(root, text="Options", relief="ridge")
 menu = Menu(mb, tearoff=0)
 mb.config(menu=menu)
 
-var1 = IntVar(value=1)
-var2 = IntVar(value=1)
+#var1 = IntVar(value=1)
+#var2 = IntVar(value=1)
 
-#menu.add_checkbutton(label="Option 1", variable=var1)
-#menu.add_checkbutton(label="Option 2", variable=var2)
-
+variables = []
 def add_checkbutton(m):
     def func(_):
         m.delete(0, 'end')
-        variables = []
-        samples = extract_sample_id('')
-        #for i, sample in zip(range(len(samples)), samples):
-            #variables.append(IntVar())
-            #m.add_checkbutton(label=sample, variable=var1)
-
+        samples = extract_sample_id()
         for sample in samples:
             if sample == '':
                 continue
             variables.append(IntVar(value=1))
             m.add_checkbutton(label=sample, variable=variables[-1])
+            print(variables)
     return func
 
 sample.bind('<Key>', add_checkbutton(menu))
@@ -61,3 +57,5 @@ mb.pack()
 #menu.delete(0)
 
 root.mainloop()
+print('end')
+print(variables)
