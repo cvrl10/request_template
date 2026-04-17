@@ -138,7 +138,7 @@ class App:
         return func
     def __add_checkbutton(self):
         pass
-    def __spinbox_handler(self, element_frame, sample_frame):
+    def __spinbox_handler(self, spinbox, element_frame, sample_frame):
         pass
 
     def run(self):
