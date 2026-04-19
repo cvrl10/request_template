@@ -36,7 +36,7 @@ mb.config(menu=menu)
 #var1 = IntVar(value=1)
 #var2 = IntVar(value=1)
 
-variables = []
+variables = {}
 def add_checkbutton(m):
     def func(_):
         m.delete(0, 'end')
@@ -44,8 +44,8 @@ def add_checkbutton(m):
         for sample in samples:
             if sample == '':
                 continue
-            variables.append(IntVar(value=1))
-            m.add_checkbutton(label=sample, variable=variables[-1])
+            var = IntVar(value=1)
+            m.add_checkbutton(label=sample, variable=var)
             print(variables)
     return func
 

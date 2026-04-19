@@ -26,7 +26,6 @@ def spinbox_handler(spinbox, element_frame, sample_frame):
                 element_frame.nametowidget(f'entry_{i}').destroy()
                 sample_frame.nametowidget(f'button_{i}').destroy()
 
-
     return func
 
 spin_1 = Spinbox(root, from_=1, to=10, width=2)
