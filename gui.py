@@ -1,3 +1,5 @@
+from create_template import Template
+import xlsxwriter
 from tkinter import *
 from tkinter import ttk
 import re
@@ -32,11 +34,10 @@ class App:
         radio_frame.columnconfigure(0, weight=1)
         radio_frame.columnconfigure(1, weight=1)
 
-
-        request = Label(self.top_frame, text='Request ID:')
-        request.grid(row=0, column=0, sticky='e')
-        request_entry = Entry(self.top_frame)
-        request_entry.grid(row=0, column=1, sticky='w')
+        request_id_label = Label(self.top_frame, text='Request ID:')
+        request_id_label.grid(row=0, column=0, sticky='e')
+        self.request_id_entry = Entry(self.top_frame)
+        self.request_id_entry.grid(row=0, column=1, sticky='w')
         sample = Label(self.top_frame, text='Sample(s):')
         sample.grid(row=1, column=0, sticky='e')
         self.sample_entry = Entry(self.top_frame)
@@ -73,41 +74,21 @@ class App:
 
         self.microwave_label = Label(self.middle_frame, text='Microwave')
         self.microwave_label.grid(row=1, column=0, sticky='e')
-        self.microwave_element_frame = Frame(self.middle_frame, bg='')####
-        print(f'height={self.microwave_element_frame.winfo_height()}')
-        self.microwave_element_frame.grid(row=1, column=1, sticky='nsew')
-
-        self.microwave_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2)
-        self.microwave_spinbox.grid(row=1, column=2, sticky='w')
-
-        self.microwave_sample_frame = Frame(self.middle_frame, bg='green')
-        self.microwave_sample_frame.grid(row=1, column=3, sticky='nsew')
-
-        self.microwave_entry_0 = Entry(self.microwave_element_frame)
-        self.microwave_entry_0.pack(side='top')
-
-        print(f'height={self.microwave_entry_0.winfo_height()}')
-        self.microwave_menubutton_0 = Menubutton(self.microwave_sample_frame, width=9, text='select', name=f'button_{0}')
-        self.microwave_menubutton_0.pack(side='top')
-
-        self.microwave_menu_0 = Menu(self.microwave_menubutton_0, tearoff=0)
-        self.menu_list.append(self.microwave_menu_0)#added initial menu button here
-        self.microwave_menubutton_0.config(menu=self.microwave_menu_0)
-
-        self.microwave_spinbox.config(command=self.__spinbox_handler(self.microwave_spinbox, self.microwave_element_frame, self.microwave_sample_frame))
-
-        self.sample_entry.bind('<Return>', self.__add_checkbutton(self.menu_list))
+        self.microwave_element_frame, self.microwave_sample_frame = self.create_element_and_sample_frame(1)
 
         self.katanax_label = Label(self.middle_frame, text='Katanax')
         self.katanax_label.grid(row=2, column=0, sticky='e')
-        self.katanax_element_frame = Frame(self.middle_frame, bg='purple')
-        self.katanax_element_frame.grid(row=2, column=1, sticky='nsew')
+        self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='purple')
 
         self.hotplate_label = Label(self.middle_frame, text='Hotplate')
         self.hotplate_label.grid(row=3, column=0, sticky='e')
-        self.hotplate_element_frame = Frame(self.middle_frame, bg='orange')
-        self.hotplate_element_frame.grid(row=3, column=1, sticky='nsew')
-        #make those frames not grid
+        self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='orange')
+
+
+#start
+#enhere
+
+        self.sample_entry.bind('<Return>', self.__add_checkbutton(self.menu_list))
 
         self.bottom_frame = Frame(self.root, bg='red')
         self.bottom_frame.grid(row=2, column=0, columnspan=3, sticky='nsew')
@@ -115,10 +96,32 @@ class App:
         self.bottom_frame.columnconfigure(0, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
 
-        self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__grab_data(self.microwave_element_frame, self.microwave_sample_frame))
+        self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
         self.submit.grid(row=0, column=0)
 
-    #def __add_checkbutton(self, variables, menu_list):
+    def create_element_and_sample_frame(self, row: int, color=''):
+        element_frame = Frame(self.middle_frame, bg='')
+        element_frame.grid(row=row, column=1, sticky='nsew')
+
+        spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2)
+        spinbox.grid(row=row, column=2, sticky='w')
+
+        sample_frame = Frame(self.middle_frame, bg=color)
+        sample_frame.grid(row=row, column=3, sticky='nsew')
+
+        entry = Entry(element_frame)
+        entry.pack(side='top')
+
+        menubutton = Menubutton(sample_frame, width=9, text='select', name=f'button_{0}')
+        menubutton.pack(side='top')
+
+        menu = Menu(menubutton, tearoff=0)
+        self.menu_list.append(menu)  # added initial menu button here
+        menubutton.config(menu=menu)
+
+        spinbox.config(command=self.__spinbox_handler(spinbox, element_frame, sample_frame))
+
+        return element_frame, sample_frame
     def __add_checkbutton(self, menu_list):
         def func(_):
             self.check_vars = {}
@@ -139,6 +142,7 @@ class App:
 
                     print(self.check_vars)
         return func
+
     def __extract_sample_id(self):
         match = re.search(r'(\d+)\((\d+)\)', self.sample_entry.get())
         if match:
@@ -149,6 +153,7 @@ class App:
         else:
             samples = re.split(r'[,\s]+', self.sample_entry.get())
         return samples
+
     def __spinbox_handler(self, spinbox, element_frame, sample_frame):
         print(f'initial child cound: {len(element_frame.winfo_children())}')
         def func():
@@ -183,18 +188,45 @@ class App:
             print(f'count {count}')
 
         return func
+
     def __grab_data(self, element_frame, sample_frame):
         element_frame_children = element_frame.winfo_children()
         sample_frame_children = sample_frame.winfo_children()
         samples = self.__extract_sample_id()
-        #print(element_frame_children)
-        #print(sample_frame_children)
-        for entry, menubutton in zip(element_frame_children, sample_frame_children):#zip it
+        digestion = []
+        for entry, menubutton in zip(element_frame_children, sample_frame_children):
             if entry.get() == '':
                 continue
             selected_sample = [sample for sample, var in zip(samples, self.check_vars[str(menubutton)]) if var.get() == 1]
-            #print(self.check_vars[str(menubutton)])
-            print(f'contains: {entry.get()}: {selected_sample}')
+            elements = re.split(r'[,\s]+', entry.get())
+            print(f'elements: {elements}')
+            digestion.append((elements, selected_sample))
+        return digestion
+    def __submit(self):
+        microwave = self.__grab_data(self.microwave_element_frame, self.microwave_sample_frame)
+        katanax = self.__grab_data(self.katanax_element_frame, self.katanax_sample_frame)
+        hotplate = self.__grab_data(self.hotplate_element_frame, self.hotplate_sample_frame)
+        print(f'microwave: {microwave}')
+        print(katanax)
+        print(hotplate)
+        print()
+
+        COPY = self.replicates.get()
+        url = 'template.xlsx'
+        workbook = xlsxwriter.Workbook(url)
+        template = Template(workbook, self.request_id_entry.get(), COPY)
+
+        for elements, samples in microwave:
+            template.add_microwave(elements, samples)
+
+        for elements, samples in katanax:
+            template.add_katanax(elements, samples)
+
+        for elements, samples in hotplate:
+            template.add_hotplate(elements, samples)
+
+        workbook.close()
+
 
     def run(self):
         self.root.mainloop()
