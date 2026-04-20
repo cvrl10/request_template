@@ -25,6 +25,7 @@ class Template:
         self.empty_cell_format = wb.add_format({'border': 1})
 
         self.__create_header(request_id)
+        self.dictionary = {}
 
     def __create_analysis_table(self, worksheet, element, samples):
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
@@ -110,7 +111,7 @@ class Template:
         self.__move_cursor()
         for _ in range(STEP):
             step(self.row)
-        microwave = self.Digestion(name='microwave')
+        microwave = self.Digestion(name='microwave', elements=elements)
         self.__create_sample_row(samples, for_=microwave, volume='')
         self.__move_cursor(SPACING)
         return microwave
@@ -164,12 +165,16 @@ class Template:
         self.digestion_sheet.write(self.row, 2, 'volume (mL)', self.label_cell_format)
         self.digestion_sheet.set_column(2, 2, len('volume (mL)'))
         self.__move_cursor()
-
+#We are here to solve this
         for sample in samples:
             for i in range(1, self.COPY+1):
                 self.digestion_sheet.write(self.row, 0, f'{sample}_{i}', self.label_cell_format)
                 self.digestion_sheet.write(self.row, 1, '', self.empty_cell_format)
                 self.digestion_sheet.write(self.row, 2, volume, self.empty_cell_format)
+                if sample not in self.dictionary:
+                    self.dictionary[sample] = for_.elements #this is fine because I've taken the consideration that there won't be any empty list
+                else:
+                    self.dictionary[sample].extend(for_.elements)
                 for_.store_data(self.row)
                 self.__move_cursor()
 
@@ -182,7 +187,8 @@ class Template:
         def increment(cls):
             cls.instance += 1
 
-        def __init__(self, name):
+        def __init__(self, name, elements):
+            self.elements = elements
             self.name = f'{name}_{self.instance}'
             self.increment()
             self.row = []
