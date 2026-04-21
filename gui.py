@@ -227,6 +227,7 @@ class App:
         for elements, samples in hotplate:
             template.add_hotplate(elements, samples)
 
+        template.create_analysis_table()
         workbook.close()
 
 

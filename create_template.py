@@ -62,12 +62,17 @@ class Template:
     def create_analysis_table(self):
         for sample in self.sample_to_elements:
             #self.row = 0
-            worksheet = self.workbook.add_worksheet(sample)
+            #worksheet = self.workbook.add_worksheet(sample)
+            worksheet = self.workbook.add_worksheet(str(sample))
             self.__create_header(worksheet)
-            for element in self.element_to_digestion:
+            for element in self.sample_to_elements[sample]:
+            #for element in self.element_to_digestion:
+                print(f'inside for_loop')
+                print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 move_to = self.row+1
                 self.__create_analysis_table(worksheet, element, sample)
                 #remeber keys/elements should be unique if not throw exception
+                print(f'this is sample: {sample}')
                 digestion_object = self.element_to_digestion[element]
                 print(digestion_object.name)
                 for sample_id in [f'{sample}_{i}'for i in range(1, self.COPY + 1)]:
