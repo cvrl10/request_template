@@ -217,6 +217,8 @@ class App:
         template = Template(workbook, self.request_id_entry.get(), COPY)
 
         for elements, samples in microwave:
+            print(f'elements: {elements}')
+            print(f'samples: {samples}')
             template.add_microwave(elements, samples)
 
         for elements, samples in katanax:
