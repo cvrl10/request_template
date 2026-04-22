@@ -11,7 +11,8 @@ workbook = xlsxwriter.Workbook(url)
 
 
 class Template:
-    def __init__(self, wb, request_id, sample_copy):
+    def __init__(self, wb, request_id, sample_copy, loi=True):
+        self.loi = loi
         self.workbook = wb
         self.request_id = request_id
         self.COPY = sample_copy
@@ -21,15 +22,17 @@ class Template:
         self.info_format = wb.add_format({'bold': True, 'align': 'right'})
         self.date_format = wb.add_format({'num_format': 'yyyy-mm-dd'})
         self.bold_italic_format = wb.add_format({'border': 1, 'italic': True, 'bold': True})
+        self.italic_format = wb.add_format({'italic': True, 'align': 'right'})
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
         self.label_cell_format = wb.add_format({'border': 1, 'bold': True})
         self.empty_cell_format = wb.add_format({'border': 1})
-        self.result_cell_format = wb.add_format({'num_format': '0.00'})
+        self.result_cell_format = wb.add_format({'border': 1, 'num_format': '0.00'})
 
         self.__create_header(self.digestion_sheet)
         self.sample_to_elements = {}
         self.element_to_digestion = {}
 
+        self.append = ' [dried]' if loi else ''
     def __analysis_header(self, worksheet, element):
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
         worksheet.write(self.row, 1, 'Dilution', self.label_cell_format)
@@ -44,8 +47,8 @@ class Template:
         worksheet.write(self.row, 1, 'Dilution', self.label_cell_format)
         worksheet.write(self.row, 2, 'conc. [mg/L]', self.label_cell_format)
         worksheet.set_column(2, 2, len('conc. [mg/L]'))
-        worksheet.write(self.row, 3, f'{element}_ppm', self.bold_italic_format)
-        worksheet.write(self.row, 4, f'%{element}', self.bold_italic_format)
+        worksheet.write(self.row, 3, f'{element}_ppm{self.append}', self.bold_italic_format)
+        worksheet.write(self.row, 4, f'%{element}{self.append}', self.bold_italic_format)
         self.__move_cursor()
 
         print(f'inside private method: {sample}')
@@ -66,12 +69,14 @@ class Template:
             #worksheet = self.workbook.add_worksheet(sample)
             worksheet = self.workbook.add_worksheet(str(sample))
             self.__create_header(worksheet)
+            if self.loi:
+                self.__create_loi_table(sample, worksheet)
             for element in self.sample_to_elements[sample]:
             #for element in self.element_to_digestion:
                 print(f'inside for_loop')
                 print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 move_to = self.row+1
-                self.__create_analysis_table(worksheet, element, sample)
+                self.__create_analysis_table(worksheet, element, sample)##########
                 #remeber keys/elements should be unique if not throw exception
                 print(f'this is sample: {sample}')
                 digestion_object = self.element_to_digestion[element]
@@ -95,6 +100,37 @@ class Template:
         self.__move_cursor()
         worksheet.write(self.row, 0, 'Request ID:', self.info_format)
         worksheet.write(self.row, 1, self.request_id)
+
+        self.__move_cursor()
+        self.__move_cursor(SPACING)
+
+    def __create_loi_table(self, sample_id, worksheet):
+        worksheet.write(self.row, 0, 'LOI temp:', self.italic_format)
+        worksheet.write(self.row, 1, '')
+        temp_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 1)
+        self.__move_cursor()
+        worksheet.write(self.row, 0, 'sample', self.label_cell_format)
+        worksheet.write(self.row, 1, 'crucible (g)', self.label_cell_format)
+        worksheet.write(self.row, 2, 'crucible + sample (g)', self.label_cell_format)
+        worksheet.write(self.row, 3, f'''="after "&{temp_cell}&" {chr(176)}C"''', self.label_cell_format)
+        worksheet.write(self.row, 4, 'LOI (%)', self.label_cell_format)
+        worksheet.write(self.row, 5, 'correction', self.label_cell_format)
+        self.__move_cursor()
+
+        worksheet.write(self.row, 0, f'{sample_id}', self.label_cell_format)
+        worksheet.write(self.row, 1, '', self.empty_cell_format)
+        worksheet.write(self.row, 2, '', self.empty_cell_format)
+        worksheet.write(self.row, 3, '', self.empty_cell_format)
+
+        A = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 1)
+        B = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
+        C = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 3)
+        loi_formula = f'=((({B}-{A})-({C}-{A}))/({B}-{A}))*100'
+        #worksheet.write(self.row, 5, 'correction', self.label_cell_format)
+        worksheet.write_formula(self.row, 4, loi_formula, self.result_cell_format)
+
+        loi_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 4)
+        worksheet.write_formula(self.row, 5, f'1-({loi_cell}/100)', self.workbook.add_format({'border': 1, 'num_format': '0.0000'}))
 
         self.__move_cursor()
         self.__move_cursor(SPACING)
@@ -279,6 +315,11 @@ class Template:
             destination_worksheet.write_formula(to_row, 4, percent_calculation, self.result_cell_format)
 
         def __read_source_data(self, sample_id):
+            '''
+
+            :param sample_id: takes a sample tied to a digestion
+            :return: the cells from the Digestion worksheet that references the weight and volume for calculations
+            '''
             #for sample_id in [for i]
             print(f'type of key: {type(sample_id)}')
             print(f'key: {sample_id}')
@@ -306,7 +347,10 @@ class Template:
 copy = 1
 start = 0
 
-template = Template(workbook, 100482511, 3)
+LOI = True
+LOI = False
+
+template = Template(workbook, 100482511, 3, loi=LOI)
 s = ['200127586', '200127587']
 
 
