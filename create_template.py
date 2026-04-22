@@ -24,6 +24,7 @@ class Template:
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
         self.label_cell_format = wb.add_format({'border': 1, 'bold': True})
         self.empty_cell_format = wb.add_format({'border': 1})
+        self.result_cell_format = wb.add_format({'num_format': '0.00'})
 
         self.__create_header(self.digestion_sheet)
         self.sample_to_elements = {}
@@ -144,7 +145,7 @@ class Template:
         self.__move_cursor()
         for _ in range(STEP):
             step(self.row)
-        microwave = self.Digestion(name='microwave', elements=elements)
+        microwave = self.Digestion(name='microwave', elements=elements, format=self.result_cell_format)
         self.__create_sample_row(samples, microwave, volume='')
         self.__move_cursor(SPACING)
         return microwave
@@ -166,7 +167,7 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        hotplate = self.Digestion(name='hotplate', elements=elements)
+        hotplate = self.Digestion(name='hotplate', elements=elements, format=self.result_cell_format)
         self.__create_sample_row(samples, hotplate, volume='')
         self.__move_cursor(SPACING)
 
@@ -187,7 +188,7 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        katanax = self.Digestion(name='katanax', elements=elements)
+        katanax = self.Digestion(name='katanax', elements=elements, format=self.result_cell_format)
         self.__create_sample_row(samples, katanax, volume=250)
         self.__move_cursor(SPACING)
 
@@ -241,12 +242,14 @@ class Template:
         instance = 0
         WEIGHT_COLUMN = 6
         VOLUME_COLUMN = 7
+        DIGESTION_COLUMN = VOLUME_COLUMN+1
 
         @classmethod
         def increment(cls):
             cls.instance += 1
 
-        def __init__(self, name, elements):
+        def __init__(self, name, elements, format):
+            self.result_cell_format = format
             self.elements = elements
             self.name = f'{name}_{self.instance}'
             self.increment()
@@ -257,6 +260,23 @@ class Template:
 
             destination_worksheet.write_formula(to_row, self.WEIGHT_COLUMN, weight_ref)
             destination_worksheet.write_formula(to_row, self.VOLUME_COLUMN, volume_ref)
+
+            source_dilution_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 1)
+            dilution_formula = '''(LEFT({0},FIND("/",{0})-1)/RIGHT({0},LEN({0})-FIND("/", {0})))'''.format(source_dilution_cell)
+            destination_worksheet.write_formula(to_row, self.DIGESTION_COLUMN, dilution_formula)
+
+            conc_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 2)
+            volume_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, self.VOLUME_COLUMN)
+            dilution_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, self.DIGESTION_COLUMN)
+            weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, self.WEIGHT_COLUMN)
+            ppm_calculation = f'=(({conc_cell})*({volume_cell})*({dilution_cell}))/({weight_cell})'
+
+            destination_worksheet.write_formula(to_row, 3, ppm_calculation, self.result_cell_format)
+
+            ppm_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 3)
+            #percent_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 4)
+            percent_calculation = f'={ppm_cell}/{10_000}'
+            destination_worksheet.write_formula(to_row, 4, percent_calculation, self.result_cell_format)
 
         def __read_source_data(self, sample_id):
             #for sample_id in [for i]
@@ -288,6 +308,7 @@ start = 0
 
 template = Template(workbook, 100482511, 3)
 s = ['200127586', '200127587']
+
 
 for i in range(copy):
     microwave_digestion = template.add_microwave(['Ca', 'Cu'], s)
