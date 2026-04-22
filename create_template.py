@@ -219,6 +219,8 @@ class Template:
                 # self.sample_to_elements[sample].extend(digestion.elements)
                 print(f'here: {digestion.elements}')
                 self.sample_to_elements[sample].extend(digestion.elements.copy())
+                for element in digestion.elements:
+                    self.element_to_digestion[element] = digestion
             for i in range(1, self.COPY+1):
                 sample_id = f'{sample}_{i}'
                 self.digestion_sheet.write(self.row, 0, sample_id, self.label_cell_format)
