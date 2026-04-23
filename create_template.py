@@ -17,7 +17,7 @@ class Template:
         self.request_id = request_id
         self.COPY = sample_copy
         self.row = 0
-        self.digestion_sheet = wb.add_worksheet('Digestion')
+        self.digestion_sheet = wb.add_worksheet('digestion_page')
 
         self.info_format = wb.add_format({'bold': True, 'align': 'right'})
         self.date_format = wb.add_format({'num_format': 'yyyy-mm-dd'})
@@ -28,6 +28,10 @@ class Template:
         self.empty_cell_format = wb.add_format({'border': 1})
         self.result_cell_format = wb.add_format({'border': 1, 'num_format': '0.00'})
         self.result_string_format = wb.add_format({'align': 'right'})
+        self.text_format = wb.add_format({'align': 'left',
+                                          'valign': 'top',
+                                          'text_wrap': True,
+                                          'italic': True})
         self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': '0.00" ppm"'})
         self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': '0.00" %"'})
 
@@ -50,8 +54,8 @@ class Template:
         worksheet.write(self.row, 1, 'Dilution', self.label_cell_format)
         worksheet.write(self.row, 2, 'conc. [mg/L]', self.label_cell_format)
         worksheet.set_column(2, 2, len('conc. [mg/L]'))
-        worksheet.write(self.row, 3, f'{element}_ppm{self.append}', self.bold_italic_format)
-        worksheet.write(self.row, 4, f'%{element}{self.append}', self.bold_italic_format)
+        worksheet.write(self.row, 3, f'{element}_ppm{self.append}', self.label_cell_format)
+        worksheet.write(self.row, 4, f'%{element}{self.append}', self.label_cell_format)
         self.__move_cursor()
 
         print(f'inside private method: {sample}')
@@ -91,12 +95,11 @@ class Template:
 
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, 'lot:', self.result_string_format)
-        worksheet.merge_range(self.row, 2, self.row, 4, '', self.workbook.add_format({'align': 'left'}))
+        worksheet.merge_range(self.row, 2, self.row, 4, '', self.workbook.add_format({'italic': True}))
         self.__move_cursor(SPACING)
 
     def create_analysis_table(self):
         for sample in self.sample_to_elements:
-            #self.row = 0
             #worksheet = self.workbook.add_worksheet(sample)
             worksheet = self.workbook.add_worksheet(str(sample))
             self.__create_header(worksheet)
@@ -115,9 +118,15 @@ class Template:
                 print(digestion_object.name)
                 for sample_id in [f'{sample}_{i}'for i in range(1, self.COPY + 1)]:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
+                    #worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
                     move_to += 1
+
+            #self.__move_cursor()
+            #worksheet.merge_range(self.row, 2, self.row, 4, '', self.result_string_format)
+            worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
+            worksheet.merge_range(self.row, 2, self.row+2, 4, '', self.text_format)
                 #print('here')
-                print(element, ' ', end='')
+                #print(element, ' ', end='')
                 #print(type(element))
             print()
 
@@ -133,7 +142,7 @@ class Template:
         self.__move_cursor(SPACING)
 
     def __create_loi_table(self, sample_id, worksheet):
-        worksheet.write(self.row, 0, 'LOI temp:', self.italic_format)
+        worksheet.write(self.row, 0, 'LOI temp:', self.result_string_format)
         worksheet.write(self.row, 1, '')
         temp_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 1)
         self.__move_cursor()
@@ -359,8 +368,8 @@ class Template:
 
             weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(source_row, 1)
             volume_cell = xlsxwriter.utility.xl_rowcol_to_cell(source_row, 2)
-            weight_ref = f'Digestion!{weight_cell}'
-            volume_ref = f'Digestion!{volume_cell}'
+            weight_ref = f'digestion_page!{weight_cell}'
+            volume_ref = f'digestion_page!{volume_cell}'
 
             return weight_ref, volume_ref
 
@@ -368,18 +377,12 @@ class Template:
             print(f'storing: {sample_id} @{source_row_index}')
             self.sampleid_to_sourcerow[sample_id] = source_row_index
 
-            #print(f'Im storing this data: {row}')
-            #print(f'size of list: {len(self.row)}')
-
-
-
-
 
 copy = 1
 start = 0
 
 LOI = True
-LOI = False
+#LOI = False
 
 template = Template(workbook, 100482511, 3, loi=LOI)
 s = ['200127586', '200127587']
