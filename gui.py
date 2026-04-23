@@ -50,8 +50,8 @@ class App:
 
         loi = Label(self.top_frame, text='L.O.I')
         loi.grid(row=2, column=0, sticky='e')
-        check = IntVar()
-        loi_checkbox = Checkbutton(self.top_frame, variable=check)
+        self.loi = IntVar()
+        loi_checkbox = Checkbutton(self.top_frame, variable=self.loi)
         loi_checkbox.grid(row=2, column=1, sticky='w')
 
         self.middle_frame = Frame(self.root, bg='pink')
@@ -83,10 +83,6 @@ class App:
         self.hotplate_label = Label(self.middle_frame, text='Hotplate')
         self.hotplate_label.grid(row=3, column=0, sticky='e')
         self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='orange')
-
-
-#start
-#enhere
 
         self.sample_entry.bind('<Return>', self.__add_checkbutton(self.menu_list))
 
@@ -212,10 +208,11 @@ class App:
         print()
 
         COPY = self.replicates.get()
+        loi = self.loi.get()
         url = 'template.xlsx'
         workbook = xlsxwriter.Workbook(url)
-        template = Template(workbook, self.request_id_entry.get(), COPY)
-
+        template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
+        print(f'{self.loi.get()} value')
         for elements, samples in microwave:
             print(f'elements: {elements}')
             print(f'samples: {samples}')
