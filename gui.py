@@ -8,8 +8,9 @@ class App:
     def __init__(self):
         self.root = Tk()
 
+        self.root.title('template_creator')
         self.root.geometry('325x250')
-        #self.root.geometry('550x400')
+        #self.root.geometry('325x500')
 
         self.root.columnconfigure(0, weight=1)#
         self.root.columnconfigure(1, weight=1)#
@@ -118,6 +119,7 @@ class App:
         spinbox.config(command=self.__spinbox_handler(spinbox, element_frame, sample_frame))
 
         return element_frame, sample_frame
+
     def __add_checkbutton(self, menu_list):
         def func(_):
             self.check_vars = {}
@@ -198,6 +200,7 @@ class App:
             print(f'elements: {elements}')
             digestion.append((elements, selected_sample))
         return digestion
+
     def __submit(self):
         microwave = self.__grab_data(self.microwave_element_frame, self.microwave_sample_frame)
         katanax = self.__grab_data(self.katanax_element_frame, self.katanax_sample_frame)
@@ -209,7 +212,7 @@ class App:
 
         COPY = self.replicates.get()
         loi = self.loi.get()
-        url = 'template.xlsx'
+        url = 'master_template.xlsx'
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
         print(f'{self.loi.get()} value')

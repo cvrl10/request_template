@@ -5,7 +5,7 @@ STEP = 3 #config_file
 SPACING = 2 #spacing between digestion tables
 #COPY = 2    #duplicates or triplicates
 
-url = 'template.xlsx'
+url = 'master_template.xlsx'
 
 workbook = xlsxwriter.Workbook(url)
 
