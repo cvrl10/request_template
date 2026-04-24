@@ -34,10 +34,14 @@ class Template:
                                           'italic': True})
         self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': '0.00" ppm"'})
         self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': '0.00" %"'})
-
+        color = '#000000'
+        color = '#FFFFFF'
+        self.white_font_format = wb.add_format({'font_color': color})
         self.__create_header(self.digestion_sheet)
         self.sample_to_elements = {}
         self.element_to_digestion = {}
+
+        self.format = {'white_font': self.white_font_format, 'result': self.result_cell_format}
 
         self.append = ' [dried]' if loi else ''
     def __analysis_header(self, worksheet, element):
@@ -70,7 +74,7 @@ class Template:
             self.__move_cursor()
         end_row = self.row-1
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, 'result:', self.result_string_format)
         ppm_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 3)
         ppm_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 3)
         #ppm_average = f'=AVERAGE({ppm_start}:{ppm_end})'
@@ -78,7 +82,7 @@ class Template:
         worksheet.write_formula(self.row, 2, ppm_average, self.reported_ppm_format)
 
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, 'result:', self.result_string_format)
         percent_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 4)
         percent_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 4)
         percent_average = f'=AVERAGE({percent_start}:{percent_end})'
@@ -90,7 +94,7 @@ class Template:
         oxide_factor = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         oxide_average = f'=AVERAGE({percent_start}:{percent_end})*({oxide_factor})'
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, 'oxide result:', self.result_string_format)
         worksheet.write_formula(self.row, 2, oxide_average, self.reported_percent_format)
 
         self.__move_cursor()
@@ -106,10 +110,12 @@ class Template:
             correction_factor = 1
             if self.loi:
                 correction_factor = self.__create_loi_table(sample, worksheet)
+
             for element in self.sample_to_elements[sample]:
             #for element in self.element_to_digestion:
                 print(f'inside for_loop')
                 print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
+                #self.__create_titration_table(worksheet, element, sample, correction_factor)
                 move_to = self.row+1
                 self.__create_analysis_table(worksheet, element, sample)##########
                 #remeber keys/elements should be unique if not throw exception
@@ -118,16 +124,10 @@ class Template:
                 print(digestion_object.name)
                 for sample_id in [f'{sample}_{i}'for i in range(1, self.COPY + 1)]:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
-                    #worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
                     move_to += 1
 
-            #self.__move_cursor()
-            #worksheet.merge_range(self.row, 2, self.row, 4, '', self.result_string_format)
             worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
             worksheet.merge_range(self.row, 2, self.row+2, 4, '', self.text_format)
-                #print('here')
-                #print(element, ' ', end='')
-                #print(type(element))
             print()
 
     def __create_header(self, worksheet):
@@ -139,6 +139,36 @@ class Template:
         worksheet.write(self.row, 1, self.request_id)
 
         self.__move_cursor()
+        self.__move_cursor(SPACING)
+
+    def __create_titration_table(self, worksheet, element, sample, correction_factor):
+        worksheet.write(self.row, 0, 'sample', self.label_cell_format)
+        worksheet.write(self.row, 1, 'weight (g)', self.label_cell_format)
+        worksheet.write(self.row, 2, 'volume (mL)', self.label_cell_format)
+        worksheet.write(self.row, 3, f'{element}{self.append}', self.label_cell_format)
+        self.__move_cursor()
+        start_row = self.row
+        for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+            worksheet.write(self.row, 0, f'{sample_id}', self.label_cell_format)
+            worksheet.write(self.row, 1, '', self.empty_cell_format)
+            worksheet.write(self.row, 2, '', self.empty_cell_format)
+            worksheet.write(self.row, 3, '', self.empty_cell_format)
+            self.__move_cursor()
+
+        end_row = self.row-1
+        self.__move_cursor()
+        worksheet.merge_range(self.row, 0, self.row, 1, 'FAS:', self.result_string_format)
+        worksheet.write(self.row, 2, '', self.workbook.add_format({'align': 'left'}))
+        self.__move_cursor()
+        worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
+        ppm_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 3)
+        ppm_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 3)
+        ppm_average = f'=AVERAGE({ppm_start}:{ppm_end})*({10_000})*(1/{correction_factor})'
+        worksheet.write_formula(self.row, 2, ppm_average, self.reported_ppm_format)
+        self.__move_cursor()
+        worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
+        percent_average = f'=AVERAGE({ppm_start}:{ppm_end})*(1/{correction_factor})'
+        worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
         self.__move_cursor(SPACING)
 
     def __create_loi_table(self, sample_id, worksheet):
@@ -169,7 +199,7 @@ class Template:
         worksheet.write_formula(self.row, 5, f'1-({loi_cell}/100)', self.workbook.add_format({'border': 1, 'num_format': '0.0000'}))
 
         correction_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5, True, True)
-        self.__move_cursor()
+        #self.__move_cursor()
         self.__move_cursor(SPACING)
 
         return correction_cell
@@ -221,7 +251,7 @@ class Template:
         self.__move_cursor()
         for _ in range(STEP):
             step(self.row)
-        microwave = self.Digestion(name='microwave', elements=elements, format=self.result_cell_format)
+        microwave = self.Digestion(name='microwave', elements=elements, format=self.format)
         self.__create_sample_row(samples, microwave, volume='')
         self.__move_cursor(SPACING)
 
@@ -242,7 +272,7 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        hotplate = self.Digestion(name='hotplate', elements=elements, format=self.result_cell_format)
+        hotplate = self.Digestion(name='hotplate', elements=elements, format=self.format)
         self.__create_sample_row(samples, hotplate, volume='')
         self.__move_cursor(SPACING)
 
@@ -263,7 +293,7 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        katanax = self.Digestion(name='katanax', elements=elements, format=self.result_cell_format)
+        katanax = self.Digestion(name='katanax', elements=elements, format=self.format)
         self.__create_sample_row(samples, katanax, volume=250)
         self.__move_cursor(SPACING)
 
@@ -324,7 +354,7 @@ class Template:
             cls.instance += 1
 
         def __init__(self, name, elements, format):
-            self.result_cell_format = format
+            self.format = format
             self.elements = elements
             self.name = f'{name}_{self.instance}'
             self.increment()
@@ -333,12 +363,12 @@ class Template:
         def write(self, to_row, sample_id, destination_worksheet, correction_factor):
             weight_ref, volume_ref = self.__read_source_data(sample_id)
 
-            destination_worksheet.write_formula(to_row, self.WEIGHT_COLUMN, weight_ref)
-            destination_worksheet.write_formula(to_row, self.VOLUME_COLUMN, volume_ref)
+            destination_worksheet.write_formula(to_row, self.WEIGHT_COLUMN, weight_ref, self.format['white_font'])
+            destination_worksheet.write_formula(to_row, self.VOLUME_COLUMN, volume_ref, self.format['white_font'])
 
             source_dilution_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 1)
             dilution_formula = '''(LEFT({0},FIND("/",{0})-1)/RIGHT({0},LEN({0})-FIND("/", {0})))'''.format(source_dilution_cell)
-            destination_worksheet.write_formula(to_row, self.DIGESTION_COLUMN, dilution_formula)
+            destination_worksheet.write_formula(to_row, self.DIGESTION_COLUMN, dilution_formula, self.format['white_font'])
 
             conc_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 2)
             volume_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, self.VOLUME_COLUMN)
@@ -347,12 +377,12 @@ class Template:
             print(f'corection={correction_factor}')
             ppm_calculation = f'=(({conc_cell})*({volume_cell})*({dilution_cell}))/({weight_cell}*{correction_factor})'
 
-            destination_worksheet.write_formula(to_row, 3, ppm_calculation, self.result_cell_format)
+            destination_worksheet.write_formula(to_row, 3, ppm_calculation, self.format['result'])
 
             ppm_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 3)
             #percent_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 4)
             percent_calculation = f'={ppm_cell}/{10_000}'
-            destination_worksheet.write_formula(to_row, 4, percent_calculation, self.result_cell_format)
+            destination_worksheet.write_formula(to_row, 4, percent_calculation, self.format['result'])
 
         def __read_source_data(self, sample_id):
             '''
@@ -384,7 +414,7 @@ start = 0
 LOI = True
 #LOI = False
 
-template = Template(workbook, 100482511, 3, loi=LOI)
+template = Template(workbook, 100482511, 2, loi=LOI)
 s = ['200127586', '200127587']
 
 

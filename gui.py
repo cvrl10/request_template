@@ -9,7 +9,7 @@ class App:
         self.root = Tk()
 
         self.root.geometry('325x250')
-        #self.root.geometry('325x350')
+        #self.root.geometry('550x400')
 
         self.root.columnconfigure(0, weight=1)#
         self.root.columnconfigure(1, weight=1)#
