@@ -140,7 +140,8 @@ class Template:
                 print(f'inside for_loop')
                 print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 digestion_object = self.element_to_digestion[element]
-                if element.lower() in titration_analysis_list and 'other' in digestion_object.name:
+                #if element.lower() in titration_analysis_list and 'other' in digestion_object.name:
+                if element.lower() in titration_analysis_list:
                     move_to = self.row + 2
                     self.__create_titration_table(worksheet, element, sample, correction_factor)
                     for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:

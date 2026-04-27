@@ -75,7 +75,7 @@ class App:
         self.middle_frame.rowconfigure(1, weight=1)
         self.middle_frame.rowconfigure(2, weight=1)
         self.middle_frame.rowconfigure(3, weight=1)
-        self.middle_frame.rowconfigure(4, weight=1)
+        #self.middle_frame.rowconfigure(4, weight=1)
 
         self.menu_list = []
         self.check_vars = {}
@@ -95,9 +95,9 @@ class App:
         self.hotplate_label.grid(row=3, column=0, sticky='e')
         self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='')
 
-        self.other_label = Label(self.middle_frame, text='other')
-        self.other_label.grid(row=4, column=0, sticky='e')
-        self.other_element_frame, self.other_sample_frame = self.create_element_and_sample_frame(4, color='')
+        #self.other_label = Label(self.middle_frame, text='other')
+        #self.other_label.grid(row=4, column=0, sticky='e')
+        #self.other_element_frame, self.other_sample_frame = self.create_element_and_sample_frame(4, color='')
 
         self.sample_entry.bind('<Return>', self.__add_checkbutton(self.menu_list))
 
@@ -230,7 +230,7 @@ class App:
         microwave = self.__grab_data(self.microwave_element_frame, self.microwave_sample_frame)
         katanax = self.__grab_data(self.katanax_element_frame, self.katanax_sample_frame)
         hotplate = self.__grab_data(self.hotplate_element_frame, self.hotplate_sample_frame)
-        other = self.__grab_data(self.other_element_frame, self.other_sample_frame)
+        #other = self.__grab_data(self.other_element_frame, self.other_sample_frame)
         print(f'microwave: {microwave}')
         print(katanax)
         print(hotplate)
@@ -242,8 +242,8 @@ class App:
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
 
-        for elements, samples in other:
-            template.add_other(elements, samples)
+        #for elements, samples in other:
+            #template.add_other(elements, samples)
 
         for elements, samples in microwave:
             template.add_microwave(elements, samples)
