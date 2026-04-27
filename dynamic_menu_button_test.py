@@ -26,9 +26,9 @@ def extract_sample_id():
 
 
 mb = Menubutton(root, text="Options", relief="raised")
-mb = Menubutton(root, text="Options", relief="sunken")
-mb = Menubutton(root, text="Options", relief="groove")
-mb = Menubutton(root, text="Options", relief="ridge")
+#mb = Menubutton(root, text="Options", relief="sunken")
+#mb = Menubutton(root, text="Options", relief="groove")
+#mb = Menubutton(root, text="Options", relief="ridge")
 #mb = Menubutton(root, text="Options", relief="solid")
 menu = Menu(mb, tearoff=0)
 mb.config(menu=menu)

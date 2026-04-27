@@ -21,13 +21,8 @@ titration_analysis = map(lambda s: s.lower(), re.split(r'[,\s]+', titration_anal
 titration_analysis_list = list(titration_analysis)
 print(titration_analysis_list)
 
-
-print(ANALYSIS)
-
-
-STEP = 3 #config_file
+STEP = parser.getint('Microwave Program', 'step')
 SPACING = 2 #spacing between digestion tables
-#COPY = 2    #duplicates or triplicates
 
 url = 'master_template.xlsx'
 
@@ -42,15 +37,16 @@ class Template:
         self.COPY = sample_copy
         self.row = 0
         self.digestion_sheet = wb.add_worksheet('digestion_page')
-        self.digestion_sheet.autofit()
 
         self.info_format = wb.add_format({'bold': True, 'align': 'right'})
         self.date_format = wb.add_format({'num_format': 'yyyy-mm-dd'})
         self.bold_italic_format = wb.add_format({'border': 1, 'italic': True, 'bold': True})
+        self.italic_bold_format = wb.add_format({'italic': True, 'bold': True})
         self.italic_format = wb.add_format({'italic': True, 'align': 'right'})
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
         self.label_cell_format = wb.add_format({'border': 1, 'bold': True})
         self.empty_cell_format = wb.add_format({'border': 1})
+        self.empty_cell_format_left = wb.add_format({'border': 1, 'align': 'left'})
         self.result_cell_format = wb.add_format({'border': 1, 'num_format': '0.00'})
         self.result_string_format = wb.add_format({'align': 'right'})
         self.text_format = wb.add_format({'align': 'left',
@@ -60,7 +56,7 @@ class Template:
         self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': '0.00" ppm"'})
         self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': '0.00" %"'})
         color = '#000000'
-        #color = '#FFFFFF'
+        color = '#FFFFFF'
         self.white_font_format = wb.add_format({'font_color': color})
         self.__create_header(self.digestion_sheet)
         self.sample_to_elements = {}
@@ -81,7 +77,7 @@ class Template:
 
     def __create_analysis_table(self, worksheet, element, sample):
         analysis = ANALYSIS.get(element.lower(), f'{element} ICP analysis')
-        worksheet.write(self.row, 0, analysis, self.workbook.add_format({'align': 'left'}))
+        worksheet.merge_range(self.row, 0, self.row, 1, analysis, self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
         worksheet.write(self.row, 1, 'Dilution', self.label_cell_format)
@@ -133,7 +129,6 @@ class Template:
 
     def create_analysis_table(self):
         for sample in self.sample_to_elements:
-            #worksheet = self.workbook.add_worksheet(sample)
             worksheet = self.workbook.add_worksheet(str(sample))
             self.__create_header(worksheet)
             correction_factor = 1
@@ -167,6 +162,9 @@ class Template:
             worksheet.merge_range(self.row, 2, self.row+2, 5, '', self.text_format)
             worksheet.autofit()
             print()
+        #formula_page = self.workbook.add_worksheet('formula_page')
+        #formula_page = formula_page.write_formula('A1', "='[formulas.xlsx]Sheet1'!A1")
+        self.__create_formula_sheet()
 
     def __create_header(self, worksheet):
         self.row = 0
@@ -180,12 +178,12 @@ class Template:
         self.__move_cursor(SPACING)
 
     def __create_titration_table(self, worksheet, element, sample, correction_factor):
-        worksheet.write(self.row, 0, f'{element} titration analysis', self.workbook.add_format({'align': 'left'}))
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} titration analysis', self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
         worksheet.write(self.row, 1, 'weight (g)', self.label_cell_format)
-        worksheet.write(self.row, 2, 'volume (mL)', self.label_cell_format)
-        worksheet.write(self.row, 3, f'{element}{self.append}', self.label_cell_format)
+        worksheet.write(self.row, 2, 'titrant_volume (mL)', self.label_cell_format)
+        worksheet.write(self.row, 3, f'%{element}{self.append}', self.label_cell_format)
         self.__move_cursor()
         start_row = self.row
         for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
@@ -211,6 +209,7 @@ class Template:
         percent_average = f'=AVERAGE({ppm_start}:{ppm_end})*(1/{correction_factor})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
         self.__move_cursor(SPACING)
+        worksheet.autofit()
 
     def __create_loi_table(self, sample_id, worksheet):
         worksheet.write(self.row, 0, 'LOI temp:', self.result_string_format)
@@ -245,15 +244,48 @@ class Template:
 
         return correction_cell
 
+    def __create_formula_sheet(self):
+        self.row = 0
+        formula_page = self.workbook.add_worksheet('formula_page')
+        formula_page.write(self.row, 0, 'A = crucible', self.italic_bold_format)
+        self.__move_cursor()
+        formula_page.write(self.row, 0, 'B = crucible + sample', self.italic_bold_format)
+        self.__move_cursor()
+        formula_page.write(self.row, 0, 'C = crucible + sample after drying', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%LOI = ([B-A]-[C-A])/(B-A)*100%', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, 'ppm M+ = [conc.][volume][dilution]/[weight]', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%M+ = [conc.][volume][dilution]/([weight]*10,000)', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%MO = [oxide factor]*%M+', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, 'ppm M+  [dried] = ppm M+/([1-(%LOI)/100])', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%M+  [dried] = %M+/([1-(%LOI)/100])', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%MO [dried] = %MO/([1-(%LOI)/100])', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%Cr(VI) = (1.733[mL FAS][N FAS])/([weight])', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%Cr2O3 = 1.462*[%Cr(VI)]', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%Cr(III) = total_Cr - Cr(VI)', self.italic_bold_format)
+        formula_page.autofit()
+
+
 
     def add_microwave(self, elements: list, samples: list):
-        def step(i):
-            self.digestion_sheet.write(i, 0, '', self.empty_cell_format)
-            self.digestion_sheet.write(i, 1, '', self.empty_cell_format)
-            self.digestion_sheet.write(i, 2, '', self.empty_cell_format)
-            self.digestion_sheet.write(i, 3, '', self.empty_cell_format)
-            self.digestion_sheet.write(i, 4, '', self.empty_cell_format)
-            self.__move_cursor()
+        def create_microwave_program():
+            def write(data):
+                for i in range(5):
+                    self.digestion_sheet.write(self.row, i, data[i], self.empty_cell_format)
+                self.__move_cursor()
+            write(data=[15, 1200, 180, 65, 110])
+            write(data=[15, 1500, 240, 65, 110])
+            for _ in range(STEP-2):
+                write(data=['', '', '', '', ''])
 
         self.digestion_sheet.merge_range(self.row, 0, self.row, 4, 'Microwave', self.header_format)
         self.__move_cursor()
@@ -271,7 +303,7 @@ class Template:
         self.__move_cursor()
 
         self.digestion_sheet.write(self.row, 0, 'Rack', self.label_cell_format)
-        self.digestion_sheet.merge_range(self.row, 1, self.row, 4, '', self.empty_cell_format)
+        self.digestion_sheet.merge_range(self.row, 1, self.row, 4, '', self.empty_cell_format_left)
         self.__move_cursor()
 
         self.digestion_sheet.write(self.row, 0, 'Vessel', self.label_cell_format)
@@ -279,22 +311,23 @@ class Template:
         self.__move_cursor()
 
         self.digestion_sheet.write(self.row, 0, 'Stir', self.label_cell_format)
-        self.digestion_sheet.merge_range(self.row, 1, self.row, 4, '', self.empty_cell_format)
+        self.digestion_sheet.merge_range(self.row, 1, self.row, 4, '', self.empty_cell_format_left)
         self.__move_cursor()
 
         self.digestion_sheet.write(self.row, 0, 'Time (min)', self.label_cell_format)
         self.digestion_sheet.set_column(0, 0, len('Time (min)'))
         self.digestion_sheet.write(self.row, 1, 'Power (W)', self.label_cell_format)
         self.digestion_sheet.set_column(1, 1, len('Power (W)')+1)
-        self.digestion_sheet.write(self.row, 2, 'T1 (C)', self.label_cell_format)
-        self.digestion_sheet.write(self.row, 3, 'T2 (C)', self.label_cell_format)
+        self.digestion_sheet.write(self.row, 2, f'T1 ({chr(176)}C)', self.label_cell_format)
+        self.digestion_sheet.write(self.row, 3, f'T2 ({chr(176)}C)', self.label_cell_format)
         self.digestion_sheet.write(self.row, 4, 'P (bar)', self.label_cell_format)
         self.__move_cursor()
-        for _ in range(STEP):
-            step(self.row)
+        #for _ in range(STEP):
+        create_microwave_program()
         microwave = self.Digestion(name='microwave', elements=elements, format=self.format)
         self.__create_sample_row(samples, microwave, volume='')
         self.__move_cursor(SPACING)
+        self.digestion_sheet.autofit()
 
     def add_hotplate(self, elements: list, samples: list):
         self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'Hotplate', self.header_format)
@@ -308,14 +341,14 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        self.digestion_sheet.write(self.row, 0, 'Acid Cocktail', self.label_cell_format)
-        self.digestion_sheet.set_column(0, 0, len('Acid Cocktail'))
+        self.digestion_sheet.write(self.row, 0, 'Cocktail', self.label_cell_format)
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
         hotplate = self.Digestion(name='hotplate', elements=elements, format=self.format)
         self.__create_sample_row(samples, hotplate, volume='')
         self.__move_cursor(SPACING)
+        self.digestion_sheet.autofit()
 
     def add_katanax(self, elements: list, samples: list):
         self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'Katanax', self.header_format)
@@ -337,6 +370,7 @@ class Template:
         katanax = self.Digestion(name='katanax', elements=elements, format=self.format)
         self.__create_sample_row(samples, katanax, volume=250)
         self.__move_cursor(SPACING)
+        self.digestion_sheet.autofit()
 
     def add_other(self, elements: list, samples: list):
         self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'other', self.header_format)
@@ -350,14 +384,14 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        self.digestion_sheet.write(self.row, 0, 'Acid Cocktail', self.label_cell_format)
-        self.digestion_sheet.set_column(0, 0, 12)
+        self.digestion_sheet.write(self.row, 0, 'Cocktail', self.label_cell_format)
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
         other = self.Digestion(name='other', elements=elements, format=self.format)
         self.__create_sample_row(samples, other, volume='')
         self.__move_cursor(SPACING)
+        self.digestion_sheet.autofit()
 
     def __move_cursor(self, spacing=1):
         self.row += spacing
@@ -439,6 +473,7 @@ class Template:
             #percent_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 4)
             percent_calculation = f'={ppm_cell}/{10_000}'
             destination_worksheet.write_formula(to_row, 4, percent_calculation, self.format['result'])
+            destination_worksheet.autofit()
 
         def write_titration(self, to_row, sample_id, destination_worksheet):
             weight_cell, _ = self.__read_source_data(sample_id)

@@ -1,5 +1,4 @@
-s = ','
+from gui import App
 
-l = s.split(',')
-
-print(len(l))
+app = App()
+app.run()

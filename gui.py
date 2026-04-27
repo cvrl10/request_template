@@ -7,21 +7,28 @@ import re
 class App:
     def __init__(self):
         self.root = Tk()
+        self.root.iconbitmap('img/Clariant.ico')
 
         self.root.title('template_creator')
+        self.root.resizable(False, False)
         self.root.geometry('325x250')
-        #self.root.geometry('325x500')
+        self.root.geometry('325x500')
 
         self.root.columnconfigure(0, weight=1)#
         self.root.columnconfigure(1, weight=1)#
         self.root.columnconfigure(2, weight=1)#
 
-        self.root.rowconfigure(0, weight=3)
+        #self.root.rowconfigure(0, weight=3)
+        #self.root.rowconfigure(1, weight=4)
+        #self.root.rowconfigure(2, weight=3)
+
+        self.root.rowconfigure(0, weight=2)
         self.root.rowconfigure(1, weight=4)
-        self.root.rowconfigure(2, weight=3)
+        self.root.rowconfigure(2, weight=2)
 
         self.top_frame = Frame(self.root)
-        self.top_frame.grid(row=0, column=0, columnspan=3, sticky='nsew')
+        #self.top_frame.grid(row=0, column=0, columnspan=3, sticky='nsew')
+        self.top_frame.grid(row=0, column=0, columnspan=3, sticky='ew')
         self.top_frame.rowconfigure(0, weight=1)
         self.top_frame.rowconfigure(1, weight=1)
         self.top_frame.rowconfigure(2, weight=1)
@@ -55,8 +62,10 @@ class App:
         loi_checkbox = Checkbutton(self.top_frame, variable=self.loi)
         loi_checkbox.grid(row=2, column=1, sticky='w')
 
-        self.middle_frame = Frame(self.root, bg='pink')
+        self.middle_frame = Frame(self.root, name='dynamic')
         self.middle_frame.grid(row=1, column=0, columnspan=3, sticky='nsew')
+        self.middle_frame.configure(height=120)
+        self.middle_frame.grid_propagate(False)
         self.middle_frame.columnconfigure(0, weight=2)
         self.middle_frame.columnconfigure(1, weight=2)
         self.middle_frame.columnconfigure(2, weight=1)
@@ -66,6 +75,7 @@ class App:
         self.middle_frame.rowconfigure(1, weight=1)
         self.middle_frame.rowconfigure(2, weight=1)
         self.middle_frame.rowconfigure(3, weight=1)
+        self.middle_frame.rowconfigure(4, weight=1)
 
         self.menu_list = []
         self.check_vars = {}
@@ -79,16 +89,22 @@ class App:
 
         self.katanax_label = Label(self.middle_frame, text='Katanax')
         self.katanax_label.grid(row=2, column=0, sticky='e')
-        self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='purple')
+        self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='')
 
         self.hotplate_label = Label(self.middle_frame, text='Hotplate')
         self.hotplate_label.grid(row=3, column=0, sticky='e')
-        self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='orange')
+        self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='')
+
+        self.other_label = Label(self.middle_frame, text='other')
+        self.other_label.grid(row=4, column=0, sticky='e')
+        self.other_element_frame, self.other_sample_frame = self.create_element_and_sample_frame(4, color='')
 
         self.sample_entry.bind('<Return>', self.__add_checkbutton(self.menu_list))
 
-        self.bottom_frame = Frame(self.root, bg='red')
-        self.bottom_frame.grid(row=2, column=0, columnspan=3, sticky='nsew')
+        bg = 'red'
+        self.bottom_frame = Frame(self.root)
+        #self.bottom_frame.grid(row=2, column=0, columnspan=3, sticky='nsew')
+        self.bottom_frame.grid(row=2, column=0, columnspan=3, sticky='ew')
 
         self.bottom_frame.columnconfigure(0, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
@@ -109,7 +125,7 @@ class App:
         entry = Entry(element_frame)
         entry.pack(side='top')
 
-        menubutton = Menubutton(sample_frame, width=9, text='select', name=f'button_{0}')
+        menubutton = Menubutton(sample_frame, width=9, text='select', name=f'button_{0}', relief='raised')
         menubutton.pack(side='top')
 
         menu = Menu(menubutton, tearoff=0)
@@ -163,12 +179,15 @@ class App:
                 for i in range(count - child_count):
                     entry = Entry(element_frame, name=f'entry_{child_count}')
                     entry.pack(side='top')
-                    button = Menubutton(sample_frame, width=9, text='select', name=f'button_{child_count}')
+                    button = Menubutton(sample_frame, width=9, text='select', name=f'button_{child_count}', relief='raised')
                     button.pack(side='top')
                     print(f'inside __spinbox_handler, button name={str(button)}')
                     menu = Menu(button, tearoff=0)#
                     self.menu_list.append(menu)#
                     button.config(menu=menu)#
+                    element_frame.update_idletasks()#
+                    sample_frame.update_idletasks()#
+                    element_frame.master.update_idletasks()#
                     #evoke entry enter event to force sample updates on new menubuttons
 
             elif child_count > count:
@@ -178,7 +197,13 @@ class App:
                     button = sample_frame.nametowidget(f'button_{i}')
                     menu = button.winfo_children()[0]
                     self.menu_list.remove(menu)
+                    menu.destroy()####
                     button.destroy()
+                    element_frame.update_idletasks()#
+                    sample_frame.update_idletasks()#
+                    element_frame.master.update_idletasks()#
+                    #print(f'refresing: {element_frame.master.winfo_name()}')
+                    #print(f'refresing: {sample_frame.master.winfo_name()}')
             # evoke entry enter event to force sample updates on new menubuttons
             self.sample_entry.focus_set()
             self.sample_entry.event_generate('<Return>')
@@ -205,6 +230,7 @@ class App:
         microwave = self.__grab_data(self.microwave_element_frame, self.microwave_sample_frame)
         katanax = self.__grab_data(self.katanax_element_frame, self.katanax_sample_frame)
         hotplate = self.__grab_data(self.hotplate_element_frame, self.hotplate_sample_frame)
+        other = self.__grab_data(self.other_element_frame, self.other_sample_frame)
         print(f'microwave: {microwave}')
         print(katanax)
         print(hotplate)
@@ -215,10 +241,11 @@ class App:
         url = 'master_template.xlsx'
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
-        print(f'{self.loi.get()} value')
+
+        for elements, samples in other:
+            template.add_other(elements, samples)
+
         for elements, samples in microwave:
-            print(f'elements: {elements}')
-            print(f'samples: {samples}')
             template.add_microwave(elements, samples)
 
         for elements, samples in katanax:
@@ -230,14 +257,8 @@ class App:
         template.create_analysis_table()
         workbook.close()
 
-
     def run(self):
         self.root.mainloop()
         print('is it empty')
         print(self.check_vars)
 
-
-
-
-app = App()
-app.run()
