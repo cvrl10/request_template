@@ -2,14 +2,20 @@ import xlsxwriter
 from configparser import ConfigParser
 import re
 from datetime import date
+from pathlib import Path
+import sys
 
 WEIGHT_COLUMN = 6
 VOLUME_COLUMN = 7
 DIGESTION_COLUMN = VOLUME_COLUMN + 1
 
+base = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
+config_path = base/'config.ini'
+print(config_path)
 ANALYSIS = {}
 parser = ConfigParser()
-parser.read('config.ini')
+parser.read(config_path)
+
 
 ic_analysis = parser.get('Analysis', 'ic')
 for element in re.split(r'[,\s]+', ic_analysis):
