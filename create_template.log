@@ -1,0 +1,63 @@
+INFO:create_template.log:microwave_0 with sample(s)=['200127586', '200127587'] digesting element(s)=['Ca', 'Cu']
+INFO:create_template.log:adding Ca to 200127586
+INFO:create_template.log:adding Cu to 200127586
+INFO:create_template.log:storing: 200127586_1 @digestion_page!16
+INFO:create_template.log:storing: 200127586_2 @digestion_page!17
+INFO:create_template.log:adding Ca to 200127587
+INFO:create_template.log:adding Cu to 200127587
+INFO:create_template.log:storing: 200127587_1 @digestion_page!18
+INFO:create_template.log:storing: 200127587_2 @digestion_page!19
+INFO:create_template.log:katanax_0 with sample(s)=['200127587', '200127588'] digesting element(s)=['Ti', 'Si']
+INFO:create_template.log:adding Ti to 200127587
+INFO:create_template.log:adding Si to 200127587
+INFO:create_template.log:storing: 200127587_1 @digestion_page!27
+INFO:create_template.log:storing: 200127587_2 @digestion_page!28
+INFO:create_template.log:adding Ti to 200127588
+INFO:create_template.log:adding Si to 200127588
+INFO:create_template.log:storing: 200127588_1 @digestion_page!29
+INFO:create_template.log:storing: 200127588_2 @digestion_page!30
+INFO:create_template.log:hotplate_0 with sample(s)=['200127586'] digesting element(s)=['Ag', 'Pd']
+INFO:create_template.log:adding Ag to 200127586
+INFO:create_template.log:adding Pd to 200127586
+INFO:create_template.log:storing: 200127586_1 @digestion_page!38
+INFO:create_template.log:storing: 200127586_2 @digestion_page!39
+INFO:create_template.log:referencing 200127586_1 weight from digestion_page!B17
+INFO:create_template.log:referencing 200127586_1 volume from digestion_page!C17
+INFO:create_template.log:referencing 200127586_2 weight from digestion_page!B18
+INFO:create_template.log:referencing 200127586_2 volume from digestion_page!C18
+INFO:create_template.log:referencing 200127586_1 weight from digestion_page!B17
+INFO:create_template.log:referencing 200127586_1 volume from digestion_page!C17
+INFO:create_template.log:referencing 200127586_2 weight from digestion_page!B18
+INFO:create_template.log:referencing 200127586_2 volume from digestion_page!C18
+INFO:create_template.log:referencing 200127586_1 weight from digestion_page!B39
+INFO:create_template.log:referencing 200127586_1 volume from digestion_page!C39
+INFO:create_template.log:referencing 200127586_2 weight from digestion_page!B40
+INFO:create_template.log:referencing 200127586_2 volume from digestion_page!C40
+INFO:create_template.log:referencing 200127586_1 weight from digestion_page!B39
+INFO:create_template.log:referencing 200127586_1 volume from digestion_page!C39
+INFO:create_template.log:referencing 200127586_2 weight from digestion_page!B40
+INFO:create_template.log:referencing 200127586_2 volume from digestion_page!C40
+INFO:create_template.log:referencing 200127587_1 weight from digestion_page!B19
+INFO:create_template.log:referencing 200127587_1 volume from digestion_page!C19
+INFO:create_template.log:referencing 200127587_2 weight from digestion_page!B20
+INFO:create_template.log:referencing 200127587_2 volume from digestion_page!C20
+INFO:create_template.log:referencing 200127587_1 weight from digestion_page!B19
+INFO:create_template.log:referencing 200127587_1 volume from digestion_page!C19
+INFO:create_template.log:referencing 200127587_2 weight from digestion_page!B20
+INFO:create_template.log:referencing 200127587_2 volume from digestion_page!C20
+INFO:create_template.log:referencing 200127587_1 weight from digestion_page!B28
+INFO:create_template.log:referencing 200127587_1 volume from digestion_page!C28
+INFO:create_template.log:referencing 200127587_2 weight from digestion_page!B29
+INFO:create_template.log:referencing 200127587_2 volume from digestion_page!C29
+INFO:create_template.log:referencing 200127587_1 weight from digestion_page!B28
+INFO:create_template.log:referencing 200127587_1 volume from digestion_page!C28
+INFO:create_template.log:referencing 200127587_2 weight from digestion_page!B29
+INFO:create_template.log:referencing 200127587_2 volume from digestion_page!C29
+INFO:create_template.log:referencing 200127588_1 weight from digestion_page!B30
+INFO:create_template.log:referencing 200127588_1 volume from digestion_page!C30
+INFO:create_template.log:referencing 200127588_2 weight from digestion_page!B31
+INFO:create_template.log:referencing 200127588_2 volume from digestion_page!C31
+INFO:create_template.log:referencing 200127588_1 weight from digestion_page!B30
+INFO:create_template.log:referencing 200127588_1 volume from digestion_page!C30
+INFO:create_template.log:referencing 200127588_2 weight from digestion_page!B31
+INFO:create_template.log:referencing 200127588_2 volume from digestion_page!C31

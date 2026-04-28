@@ -4,10 +4,16 @@ import re
 from datetime import date
 from pathlib import Path
 import sys
+import logging
 
 WEIGHT_COLUMN = 6
 VOLUME_COLUMN = 7
 DIGESTION_COLUMN = VOLUME_COLUMN + 1
+log_file = 'create_template.log'
+logging.basicConfig(filename=log_file, level=logging.INFO, filemode='w')
+logger = logging.getLogger(log_file)
+
+
 
 base = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
 config_path = base/'config.ini'
@@ -108,7 +114,6 @@ class Template:
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         ppm_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 3)
         ppm_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 3)
-        #ppm_average = f'=AVERAGE({ppm_start}:{ppm_end})'
         ppm_average = f'=AVERAGE({ppm_start}:{ppm_end})'
         worksheet.write_formula(self.row, 2, ppm_average, self.reported_ppm_format)
 
@@ -172,6 +177,7 @@ class Template:
         #formula_page = self.workbook.add_worksheet('formula_page')
         #formula_page = formula_page.write_formula('A1', "='[formulas.xlsx]Sheet1'!A1")
         self.__create_formula_sheet()
+        self.Digestion.instance = {}
 
     def __create_header(self, worksheet):
         self.row = 0
@@ -329,9 +335,10 @@ class Template:
         self.digestion_sheet.write(self.row, 3, f'T2 ({chr(176)}C)', self.label_cell_format)
         self.digestion_sheet.write(self.row, 4, 'P (bar)', self.label_cell_format)
         self.__move_cursor()
-        #for _ in range(STEP):
+
         create_microwave_program()
         microwave = self.Digestion(name='microwave', elements=elements, format=self.format)
+        logger.info(f'{microwave.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, microwave, volume='')
         self.__move_cursor(SPACING)
         self.digestion_sheet.autofit()
@@ -353,6 +360,7 @@ class Template:
         self.__move_cursor()
 
         hotplate = self.Digestion(name='hotplate', elements=elements, format=self.format)
+        logger.info(f'{hotplate.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, hotplate, volume='')
         self.__move_cursor(SPACING)
         self.digestion_sheet.autofit()
@@ -375,6 +383,7 @@ class Template:
         self.__move_cursor()
 
         katanax = self.Digestion(name='katanax', elements=elements, format=self.format)
+        logger.info(f'{katanax.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, katanax, volume=250)
         self.__move_cursor(SPACING)
         self.digestion_sheet.autofit()
@@ -407,24 +416,20 @@ class Template:
         self.digestion_sheet.write(self.row, 0, 'sample(s)', self.label_cell_format)
         self.digestion_sheet.write(self.row, 1, 'weight (g)', self.label_cell_format)
         self.digestion_sheet.write(self.row, 2, 'volume (mL)', self.label_cell_format)
-        self.digestion_sheet.set_column(2, 2, len('volume (mL)'))
         self.__move_cursor()
         print(f'{digestion.name}')
-        for sample in samples:#fix here
-            print(f'staring with: {sample}')
+        for sample in samples:
             if sample not in self.sample_to_elements:
                 self.sample_to_elements[sample] = digestion.elements.copy()  # this is fine because I've taken the consideration that there won't be any empty list
                 print(self.sample_to_elements)
                 for element in digestion.elements:
-                    print(f'from for loop: {element}')
-                    print(f'from for loop: {type(element)}')
-                    '''mapping each element to its Digestion object'''
+                    logger.info(f'adding {element} to {sample}')
+                    '''mapping each element to its Digestion object, haven't tested what happen if same element from different digestion will map'''
                     self.element_to_digestion[element] = digestion
             else:
-                # self.sample_to_elements[sample].extend(digestion.elements)
-                print(f'here: {digestion.elements}')
                 self.sample_to_elements[sample].extend(digestion.elements.copy())
                 for element in digestion.elements:
+                    logger.info(f'adding {element} to {sample}')
                     self.element_to_digestion[element] = digestion
 
             for i in range(1, self.COPY+1):
@@ -445,16 +450,22 @@ class Template:
 
         '''
         instance = 0
+        instance = {}
 
         @classmethod
-        def increment(cls):
-            cls.instance += 1
+        def increment(cls, name):
+            if name not in cls.instance:
+                cls.instance[name] = 0
+                return f'{name}_{0}'
+            else:
+                cls.instance[name] += 1
+                return f'{name}_{cls.instance[name]}'
 
         def __init__(self, name, elements, format):
             self.format = format
             self.elements = elements
-            self.name = f'{name}_{self.instance}'
-            self.increment()
+            self.name = self.increment(name)
+            #self.increment(name)
             self.sampleid_to_sourcerow = {}
 
         def write(self, to_row, sample_id, destination_worksheet, correction_factor):
@@ -491,12 +502,9 @@ class Template:
             '''
 
             :param sample_id: takes a sample tied to a digestion
-            :return: the cells from the Digestion worksheet that references the weight and volume for calculations
+            :return: the cells from digestion_page that references the weight and volume for calculations
             '''
-            #for sample_id in [for i]
-            print(f'type of key: {type(sample_id)}')
-            print(f'key: {sample_id}')
-            print(self.sampleid_to_sourcerow)
+
             source_row = self.sampleid_to_sourcerow[sample_id]
 
             weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(source_row, 1)
@@ -504,11 +512,19 @@ class Template:
             weight_ref = f'digestion_page!{weight_cell}'
             volume_ref = f'digestion_page!{volume_cell}'
 
+            logger.info(f'referencing {sample_id} weight from {weight_ref }')
+            logger.info(f'referencing {sample_id} volume from {volume_ref}')
+
             return weight_ref, volume_ref
 
         def store_data(self, sample_id, source_row_index):
-            print(f'storing: {sample_id} @{source_row_index}')
+            logger.info(f'storing: {sample_id} @digestion_page!{source_row_index}')
             self.sampleid_to_sourcerow[sample_id] = source_row_index
+
+        def __str__(self):
+            return self.name
+        def __repr__(self):
+            return str(self)
 
 
 copy = 1
@@ -520,12 +536,11 @@ LOI = True
 template = Template(workbook, 100482511, 2, loi=LOI)
 s = ['200127586', '200127587']
 
-for i in range(copy):
-    template.add_other(['Cr6'], ['200127586'])
+#for i in range(copy):
+    #template.add_other(['Cr6'], ['200127586'])
 
 for i in range(copy):
-    microwave_digestion = template.add_microwave(['Ca', 'Cu'], s)
-    #print(microwave_digestion)
+    template.add_microwave(['Ca', 'Cu'], s)
 
 for i in range(copy):
     template.add_katanax(['Ti', 'Si'], ['200127587', '200127588'])
@@ -534,14 +549,5 @@ for i in range(copy):
     template.add_hotplate(['Ag', 'Pd'], ['200127586'])
 
 template.create_analysis_table()
-
-#worksheet = template.workbook.add_worksheet('200126512')
-
-#d = template.Digestion(name='microwave')
-#d.store_data(0)
-#d.write(1, worksheet)
-
-
-
 workbook.close()
 
