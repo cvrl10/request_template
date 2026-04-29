@@ -1,8 +1,8 @@
 from create_template import Template
 import xlsxwriter
 from tkinter import *
-from tkinter import ttk
 import re
+import subprocess
 
 class App:
     def __init__(self):
@@ -111,6 +111,8 @@ class App:
 
         self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
         self.submit.grid(row=0, column=0)
+
+        self.proc = None
 
     def create_element_and_sample_frame(self, row: int, color=''):
         element_frame = Frame(self.middle_frame, bg='')
@@ -256,6 +258,13 @@ class App:
 
         template.create_analysis_table()
         workbook.close()
+        try:
+            self.proc = subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
+        except PermissionError as e:
+            #self.proc.kill()
+            #print('Kill this process here')
+            #self.proc = subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
+            pass
 
     def run(self):
         self.root.mainloop()

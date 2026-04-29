@@ -569,6 +569,6 @@ for i in range(copy):
 template.create_analysis_table()
 workbook.close()
 
-subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
+#subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
 
 
