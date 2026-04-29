@@ -5,7 +5,9 @@ from datetime import date
 from pathlib import Path
 import sys
 import logging
+import subprocess
 
+EMPTY_CELL = '#FFFFCC'
 WEIGHT_COLUMN = 6
 VOLUME_COLUMN = 7
 DIGESTION_COLUMN = VOLUME_COLUMN + 1
@@ -34,6 +36,8 @@ titration_analysis_list = list(titration_analysis)
 print(titration_analysis_list)
 
 STEP = parser.getint('Microwave Program', 'step')
+WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
+CONC_DECIMAL = parser.getint('Decimal', 'conc.')
 SPACING = 2 #spacing between digestion tables
 
 url = 'master_template.xlsx'
@@ -58,6 +62,12 @@ class Template:
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
         self.label_cell_format = wb.add_format({'border': 1, 'bold': True})
         self.empty_cell_format = wb.add_format({'border': 1})
+        num_format = '0'*WEIGHT_DECIMAL
+        num_format = f'0.{num_format}'
+        self.weight_cell = wb.add_format({'border': 1, 'num_format': num_format})
+        num_format = '0'*CONC_DECIMAL
+        num_format = f'0.{num_format}'
+        self.conc_cell = wb.add_format({'border': 1, 'num_format': num_format})
         self.empty_cell_format_left = wb.add_format({'border': 1, 'align': 'left'})
         self.result_cell_format = wb.add_format({'border': 1, 'num_format': '0.00'})
         self.result_string_format = wb.add_format({'align': 'right'})
@@ -103,9 +113,9 @@ class Template:
         start_row = self.row
         for i in range(1, self.COPY+1):
             worksheet.write(self.row, 0, f'{sample}_{i}', self.label_cell_format)
-            worksheet.set_column(0, 0, len(f'{sample}_{i}'))
+            #worksheet.set_column(0, 0, len(f'{sample}_{i}'))
             worksheet.write(self.row, 1, '''="1/1"''', self.empty_cell_format)
-            worksheet.write(self.row, 2, '', self.empty_cell_format)
+            worksheet.write(self.row, 2, '', self.conc_cell)
             worksheet.write(self.row, 3, '', self.empty_cell_format)
             worksheet.write(self.row, 4, '', self.empty_cell_format)
             self.__move_cursor()
@@ -136,6 +146,12 @@ class Template:
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} lot:', self.result_string_format)
         worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
+        merge_start = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
+        merge_finish = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5)
+        worksheet.conditional_format(f'{merge_start}:{merge_finish}',
+                                     {'type': 'blanks',
+                                      'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
+                                      })
         self.__move_cursor(SPACING)
 
     def create_analysis_table(self):
@@ -174,8 +190,6 @@ class Template:
             worksheet.merge_range(self.row, 2, self.row+2, 5, '', self.text_format)
             worksheet.autofit()
             print()
-        #formula_page = self.workbook.add_worksheet('formula_page')
-        #formula_page = formula_page.write_formula('A1', "='[formulas.xlsx]Sheet1'!A1")
         self.__create_formula_sheet()
         self.Digestion.instance = {}
 
@@ -226,8 +240,13 @@ class Template:
 
     def __create_loi_table(self, sample_id, worksheet):
         worksheet.write(self.row, 0, 'LOI temp:', self.result_string_format)
-        worksheet.write(self.row, 1, '')
+        format = self.workbook.add_format({'num_format': f'######" {chr(176)}C"'})
+        worksheet.write(self.row, 1, '', format)
         temp_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 1)
+        worksheet.conditional_format(temp_cell,
+                                     {'type': 'blanks',
+                                      'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
+                                      })
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
         worksheet.write(self.row, 1, 'crucible (g)', self.label_cell_format)
@@ -252,7 +271,6 @@ class Template:
         worksheet.write_formula(self.row, 5, f'1-({loi_cell}/100)', self.workbook.add_format({'border': 1, 'num_format': '0.0000'}))
 
         correction_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5, True, True)
-        #self.__move_cursor()
         self.__move_cursor(SPACING)
 
         return correction_cell
@@ -435,7 +453,7 @@ class Template:
             for i in range(1, self.COPY+1):
                 sample_id = f'{sample}_{i}'
                 self.digestion_sheet.write(self.row, 0, sample_id, self.label_cell_format)
-                self.digestion_sheet.write(self.row, 1, '', self.empty_cell_format)
+                self.digestion_sheet.write(self.row, 1, '', self.weight_cell)
                 self.digestion_sheet.write(self.row, 2, volume, self.empty_cell_format)
 
                 print(f'storing: {sample_id}')
@@ -550,4 +568,7 @@ for i in range(copy):
 
 template.create_analysis_table()
 workbook.close()
+
+subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
+
 
