@@ -216,7 +216,7 @@ class Template:
         for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
             weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, WEIGHT_COLUMN)
             worksheet.write(self.row, 0, f'{sample_id}', self.label_cell_format)
-            worksheet.write_formula(self.row, 1, weight_cell, self.empty_cell_format)
+            worksheet.write_formula(self.row, 1, weight_cell, self.weight_cell)
             worksheet.write(self.row, 2, '', self.empty_cell_format)
             worksheet.write(self.row, 3, '', self.empty_cell_format)
             self.__move_cursor()
@@ -225,6 +225,11 @@ class Template:
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, 'FAS:', self.result_string_format)
         worksheet.write(self.row, 2, '', self.workbook.add_format({'align': 'left'}))
+        fas_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
+        worksheet.conditional_format(f'{fas_cell}',
+                                     {'type': 'blanks',
+                                      'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
+                                      })
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
         ppm_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 3)
@@ -467,7 +472,6 @@ class Template:
             collect source rows for weight and volume.
 
         '''
-        instance = 0
         instance = {}
 
         @classmethod
@@ -483,7 +487,6 @@ class Template:
             self.format = format
             self.elements = elements
             self.name = self.increment(name)
-            #self.increment(name)
             self.sampleid_to_sourcerow = {}
 
         def write(self, to_row, sample_id, destination_worksheet, correction_factor):
@@ -541,6 +544,7 @@ class Template:
 
         def __str__(self):
             return self.name
+
         def __repr__(self):
             return str(self)
 
