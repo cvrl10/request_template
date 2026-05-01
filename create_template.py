@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import logging
 import subprocess
+import os
 
 EMPTY_CELL = '#FFFFCC'
 WEIGHT_COLUMN = 6
@@ -154,8 +155,8 @@ class Template:
                                       })
         self.__move_cursor(SPACING)
 
-    def create_analysis_table(self):
-        for sample in self.sample_to_elements:
+    def create_analysis_worksheet(self):
+        for sample in sorted(self.sample_to_elements):
             worksheet = self.workbook.add_worksheet(str(sample))
             self.__create_header(worksheet)
             correction_factor = 1
@@ -570,9 +571,9 @@ for i in range(copy):
 for i in range(copy):
     template.add_hotplate(['Ag', 'Pd'], ['200127586'])
 
-template.create_analysis_table()
+template.create_analysis_worksheet()
 workbook.close()
 
-#subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
+#os.startfile('master_template.xlsx')
 
 

@@ -2,7 +2,7 @@ from create_template import Template
 import xlsxwriter
 from tkinter import *
 import re
-import subprocess
+import os
 
 class App:
     def __init__(self):
@@ -256,15 +256,11 @@ class App:
         for elements, samples in hotplate:
             template.add_hotplate(elements, samples)
 
-        template.create_analysis_table()
+        template.create_analysis_worksheet()
         workbook.close()
-        try:
-            self.proc = subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
-        except PermissionError as e:
-            #self.proc.kill()
-            #print('Kill this process here')
-            #self.proc = subprocess.Popen(['start', 'master_template.xlsx'], shell=True)
-            pass
+
+        os.startfile('master_template.xlsx')
+
 
     def run(self):
         self.root.mainloop()
