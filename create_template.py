@@ -5,7 +5,6 @@ from datetime import date
 from pathlib import Path
 import sys
 import logging
-import subprocess
 import os
 
 EMPTY_CELL = '#FFFFCC'
@@ -89,14 +88,6 @@ class Template:
 
         self.append = ' [dried]' if loi else ''
 
-    def __analysis_header(self, worksheet, element):
-        worksheet.write(self.row, 0, 'sample', self.label_cell_format)
-        worksheet.write(self.row, 1, 'Dilution', self.label_cell_format)
-        worksheet.write(self.row, 2, 'conc. [mg/L]', self.label_cell_format)
-        worksheet.set_column(2, 2, len('conc. [mg/L]'))
-        worksheet.write(self.row, 3, f'{element}_ppm', self.bold_italic_format)
-        worksheet.write(self.row, 4, f'%{element}', self.bold_italic_format)
-        self.__move_cursor()
 
     def __create_analysis_table(self, worksheet, element, sample):
         analysis = ANALYSIS.get(element.lower(), f'{element} ICP analysis')
@@ -162,13 +153,29 @@ class Template:
             correction_factor = 1
             if self.loi:
                 correction_factor = self.__create_loi_table(sample, worksheet)
-
+            if self.__contains_chrome_3(self.sample_to_elements[sample]):
+                cr2O3, cr6 = self.__edit_list(self.sample_to_elements[sample])
             for element in self.sample_to_elements[sample]:
             #for element in self.element_to_digestion:
                 print(f'inside for_loop')
                 print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 digestion_object = self.element_to_digestion[element]
-                #if element.lower() in titration_analysis_list and 'other' in digestion_object.name:
+                if self.__is_chrome_3(element.lower()):
+                    digestion_object = self.element_to_digestion[cr2O3]
+                    move_to = self.row + 2
+                    total_cell = self.__create_titration_table(worksheet, cr2O3, sample, correction_factor)
+                    for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+                        digestion_object.write_titration(move_to, sample_id, worksheet)
+                        move_to += 1
+
+                    digestion_object = self.element_to_digestion[cr6]
+                    move_to = self.row + 2
+                    cr6_cell = self.__create_titration_table(worksheet, cr6, sample, correction_factor)
+                    for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+                        digestion_object.write_titration(move_to, sample_id, worksheet)
+                        move_to += 1
+                    self.__create_criii_titration_table(worksheet, element, sample, cr2O3, cr6, total_cell, cr6_cell)
+                    continue
                 if element.lower() in titration_analysis_list:
                     move_to = self.row + 2
                     self.__create_titration_table(worksheet, element, sample, correction_factor)
@@ -178,10 +185,8 @@ class Template:
                     continue
                 move_to = self.row + 2
                 self.__create_analysis_table(worksheet, element, sample)##########
-                #move_to = self.row+2
                 #remeber keys/elements should be unique if not throw exception
                 print(f'this is sample: {sample}')
-                #digestion_object = self.element_to_digestion[element]
                 print(digestion_object.name)
                 for sample_id in [f'{sample}_{i}'for i in range(1, self.COPY + 1)]:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
@@ -203,6 +208,49 @@ class Template:
         worksheet.write(self.row, 1, self.request_id)
 
         self.__move_cursor()
+        self.__move_cursor(SPACING)
+
+    def __contains_chrome_3(self, element_list):
+            print('inside contains_chrome_3')
+            bool = list(filter(self.__is_chrome_3, element_list))
+            print(f'what is return: {bool}')
+            return list(filter(self.__is_chrome_3, element_list))
+
+    def __is_chrome_3(self, element):
+        return element.lower() in ['criii', 'cr3', 'cr_3', 'cr3+', 'cr_3+', 'cr_three', 'crthree']
+
+    def __edit_list(self, list):
+        skip_list = []
+        print(f'printing parameter: {list}')
+        for e in list:
+            check_list = map(lambda e: e.lower(), titration_analysis_list)
+            if e.lower() in check_list:
+                print(e in list)
+                skip_list.append(e)
+        print(f'inside edit_list:{skip_list}')
+        for e in skip_list:
+            list.remove(e)
+        print(f'list after editing: {list}')
+        '''ensuring that sort order always put cr2o3 first in the list'''
+        skip_list.sort(key=lambda e: 'o3' not in e.lower())
+        return skip_list
+
+    def __create_criii_titration_table(self, worksheet, element, sample, cr2O3, cr6, total_cell, cr6_cell):
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} titration analysis', self.workbook.add_format({'align': 'left'}))
+        self.__move_cursor()
+        worksheet.write(self.row, 0, 'sample', self.label_cell_format)
+        worksheet.write(self.row, 1, f'%{cr2O3}{self.append}', self.label_cell_format)
+        worksheet.write(self.row, 2, f'%{cr6}{self.append}', self.label_cell_format)
+        self.__move_cursor()
+        worksheet.write(self.row, 0, f'{sample}', self.label_cell_format)
+        worksheet.write_formula(self.row, 1, total_cell, self.empty_cell_format)#formula here
+        worksheet.write_formula(self.row, 2, cr6_cell, self.empty_cell_format)#formula here
+        self.__move_cursor(SPACING)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
+        worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})*({10_000})', self.reported_ppm_format)
+        self.__move_cursor()
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
+        worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})', self.reported_percent_format)
         self.__move_cursor(SPACING)
 
     def __create_titration_table(self, worksheet, element, sample, correction_factor):
@@ -232,17 +280,21 @@ class Template:
                                       'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
                                       })
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
         ppm_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 3)
         ppm_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 3)
         ppm_average = f'=AVERAGE({ppm_start}:{ppm_end})*({10_000})*(1/{correction_factor})'
         worksheet.write_formula(self.row, 2, ppm_average, self.reported_ppm_format)
+        #ppm_row = self.row
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, 'reported result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
         percent_average = f'=AVERAGE({ppm_start}:{ppm_end})*(1/{correction_factor})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
+        percent_row = self.row
         self.__move_cursor(SPACING)
         worksheet.autofit()
+
+        return xlsxwriter.utility.xl_rowcol_to_cell(percent_row, 2)
 
     def __create_loi_table(self, sample_id, worksheet):
         worksheet.write(self.row, 0, 'LOI temp:', self.result_string_format)
@@ -510,15 +562,14 @@ class Template:
             destination_worksheet.write_formula(to_row, 3, ppm_calculation, self.format['result'])
 
             ppm_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 3)
-            #percent_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 4)
             percent_calculation = f'={ppm_cell}/{10_000}'
             destination_worksheet.write_formula(to_row, 4, percent_calculation, self.format['result'])
             destination_worksheet.autofit()
 
         def write_titration(self, to_row, sample_id, destination_worksheet):
             weight_cell, _ = self.__read_source_data(sample_id)
-            #weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, WEIGHT_COLUMN)
             destination_worksheet.write_formula(to_row, WEIGHT_COLUMN, weight_cell, self.format['white_font'])
+
 
         def __read_source_data(self, sample_id):
             '''
@@ -562,17 +613,17 @@ s = ['200127586', '200127587']
 #for i in range(copy):
     #template.add_other(['Cr6'], ['200127586'])
 
-for i in range(copy):
-    template.add_microwave(['Ca', 'Cu'], s)
+#for i in range(copy):
+    #template.add_microwave(['Cr', 'Cu'], s)
+
+#for i in range(copy):
+    #template.add_katanax(['Ti', 'Si'], ['200127587', '200127588'])
 
 for i in range(copy):
-    template.add_katanax(['Ti', 'Si'], ['200127587', '200127588'])
+    template.add_hotplate(['Cr3', 'Cr6', 'Cr2O3'], ['200127586'])
 
-for i in range(copy):
-    template.add_hotplate(['Ag', 'Pd'], ['200127586'])
-
-template.create_analysis_worksheet()
-workbook.close()
+#template.create_analysis_worksheet()
+#workbook.close()
 
 #os.startfile('master_template.xlsx')
 
