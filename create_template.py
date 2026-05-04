@@ -161,20 +161,7 @@ class Template:
                 print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 digestion_object = self.element_to_digestion[element]
                 if self.__is_chrome_3(element.lower()):
-                    digestion_object = self.element_to_digestion[cr2O3]
-                    move_to = self.row + 2
-                    total_cell = self.__create_titration_table(worksheet, cr2O3, sample, correction_factor)
-                    for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
-                        digestion_object.write_titration(move_to, sample_id, worksheet)
-                        move_to += 1
-
-                    digestion_object = self.element_to_digestion[cr6]
-                    move_to = self.row + 2
-                    cr6_cell = self.__create_titration_table(worksheet, cr6, sample, correction_factor)
-                    for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
-                        digestion_object.write_titration(move_to, sample_id, worksheet)
-                        move_to += 1
-                    self.__create_criii_titration_table(worksheet, element, sample, cr2O3, cr6, total_cell, cr6_cell)
+                    self.__create_criii_titration_table(worksheet, element, sample, cr2O3, cr6, correction_factor)
                     continue
                 if element.lower() in titration_analysis_list:
                     move_to = self.row + 2
@@ -235,7 +222,21 @@ class Template:
         skip_list.sort(key=lambda e: 'o3' not in e.lower())
         return skip_list
 
-    def __create_criii_titration_table(self, worksheet, element, sample, cr2O3, cr6, total_cell, cr6_cell):
+    def __create_criii_titration_table(self, worksheet, element, sample, cr2O3, cr6, correction_factor):
+        digestion_object = self.element_to_digestion[cr2O3]
+        move_to = self.row + 2
+        total_cell = self.__create_titration_table(worksheet, cr2O3, sample, correction_factor)
+        for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+            digestion_object.write_titration(move_to, sample_id, worksheet)
+            move_to += 1
+
+        digestion_object = self.element_to_digestion[cr6]
+        move_to = self.row + 2
+        cr6_cell = self.__create_titration_table(worksheet, cr6, sample, correction_factor)
+        for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+            digestion_object.write_titration(move_to, sample_id, worksheet)
+            move_to += 1
+
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element} titration analysis', self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
@@ -246,10 +247,10 @@ class Template:
         worksheet.write_formula(self.row, 1, total_cell, self.empty_cell_format)#formula here
         worksheet.write_formula(self.row, 2, cr6_cell, self.empty_cell_format)#formula here
         self.__move_cursor(SPACING)
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})*({10_000})', self.reported_ppm_format)
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})', self.reported_percent_format)
         self.__move_cursor(SPACING)
 
@@ -280,14 +281,14 @@ class Template:
                                       'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
                                       })
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         ppm_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 3)
         ppm_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 3)
         ppm_average = f'=AVERAGE({ppm_start}:{ppm_end})*({10_000})*(1/{correction_factor})'
         worksheet.write_formula(self.row, 2, ppm_average, self.reported_ppm_format)
-        #ppm_row = self.row
+
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element} result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         percent_average = f'=AVERAGE({ppm_start}:{ppm_end})*(1/{correction_factor})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
         percent_row = self.row
