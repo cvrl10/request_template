@@ -156,12 +156,10 @@ class Template:
             if self.__contains_chrome_3(self.sample_to_elements[sample]):
                 cr2O3, cr6 = self.__edit_list(self.sample_to_elements[sample])
             for element in self.sample_to_elements[sample]:
-            #for element in self.element_to_digestion:
-                print(f'inside for_loop')
                 print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 digestion_object = self.element_to_digestion[element]
                 if self.__is_chrome_3(element.lower()):
-                    self.__create_criii_titration_table(worksheet, element, sample, cr2O3, cr6, correction_factor)
+                    self.__create_titration_table_cr3(worksheet, element, sample, cr2O3, cr6, correction_factor)
                     continue
                 if element.lower() in titration_analysis_list:
                     move_to = self.row + 2
@@ -206,23 +204,23 @@ class Template:
     def __is_chrome_3(self, element):
         return element.lower() in ['criii', 'cr3', 'cr_3', 'cr3+', 'cr_3+', 'cr_three', 'crthree']
 
-    def __edit_list(self, list):
+    def __edit_list(self, sample_to_elements_list):
         skip_list = []
-        print(f'printing parameter: {list}')
-        for e in list:
-            check_list = map(lambda e: e.lower(), titration_analysis_list)
+        print(f'printing parameter: {sample_to_elements_list}')
+        check_list = list(map(lambda e: e.lower(), titration_analysis_list))
+        for e in sample_to_elements_list:
             if e.lower() in check_list:
-                print(e in list)
+                print(e in sample_to_elements_list)
                 skip_list.append(e)
         print(f'inside edit_list:{skip_list}')
         for e in skip_list:
-            list.remove(e)
-        print(f'list after editing: {list}')
+            sample_to_elements_list.remove(e)
+        print(f'list after editing: {sample_to_elements_list}')
         '''ensuring that sort order always put cr2o3 first in the list'''
         skip_list.sort(key=lambda e: 'o3' not in e.lower())
         return skip_list
 
-    def __create_criii_titration_table(self, worksheet, element, sample, cr2O3, cr6, correction_factor):
+    def __create_titration_table_cr3(self, worksheet, element, sample, cr2O3, cr6, correction_factor):
         digestion_object = self.element_to_digestion[cr2O3]
         move_to = self.row + 2
         total_cell = self.__create_titration_table(worksheet, cr2O3, sample, correction_factor)

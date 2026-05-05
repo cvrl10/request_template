@@ -85,15 +85,15 @@ class App:
 
         self.microwave_label = Label(self.middle_frame, text='Microwave')
         self.microwave_label.grid(row=1, column=0, sticky='e')
-        self.microwave_element_frame, self.microwave_sample_frame = self.create_element_and_sample_frame(1)
+        self.microwave_element_frame, self.microwave_sample_frame = self.create_element_and_sample_frame(1, name='microwave')
 
         self.katanax_label = Label(self.middle_frame, text='Katanax')
         self.katanax_label.grid(row=2, column=0, sticky='e')
-        self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='')
+        self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='', name='katanax')
 
         self.hotplate_label = Label(self.middle_frame, text='Hotplate')
         self.hotplate_label.grid(row=3, column=0, sticky='e')
-        self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='')
+        self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='', name='hotplate')
 
         #self.other_label = Label(self.middle_frame, text='other')
         #self.other_label.grid(row=4, column=0, sticky='e')
@@ -114,7 +114,7 @@ class App:
 
         self.proc = None
 
-    def create_element_and_sample_frame(self, row: int, color=''):
+    def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='')
         element_frame.grid(row=row, column=1, sticky='nsew')
 
@@ -124,17 +124,17 @@ class App:
         sample_frame = Frame(self.middle_frame, bg=color)
         sample_frame.grid(row=row, column=3, sticky='nsew')
 
-        entry = Entry(element_frame)
+        entry = Entry(element_frame, name=f'{name}entry_{0}')
         entry.pack(side='top')
 
-        menubutton = Menubutton(sample_frame, width=9, text='select', name=f'button_{0}', relief='raised')
+        menubutton = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{0}', relief='raised')
         menubutton.pack(side='top')
 
         menu = Menu(menubutton, tearoff=0)
         self.menu_list.append(menu)  # added initial menu button here
         menubutton.config(menu=menu)
 
-        spinbox.config(command=self.__spinbox_handler(spinbox, element_frame, sample_frame))
+        spinbox.config(command=self.__spinbox_handler(spinbox, element_frame, sample_frame, name=name))
 
         return element_frame, sample_frame
 
@@ -170,7 +170,7 @@ class App:
             samples = re.split(r'[,\s]+', self.sample_entry.get())
         return samples
 
-    def __spinbox_handler(self, spinbox, element_frame, sample_frame):
+    def __spinbox_handler(self, spinbox, element_frame, sample_frame, name):
         print(f'initial child cound: {len(element_frame.winfo_children())}')
         def func():
             count = int(spinbox.get())
@@ -179,9 +179,9 @@ class App:
             print(f'child_count {child_count}')
             if count > child_count:
                 for i in range(count - child_count):
-                    entry = Entry(element_frame, name=f'entry_{child_count}')
+                    entry = Entry(element_frame, name=f'{name}entry_{child_count}')
                     entry.pack(side='top')
-                    button = Menubutton(sample_frame, width=9, text='select', name=f'button_{child_count}', relief='raised')
+                    button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{child_count}', relief='raised')
                     button.pack(side='top')
                     print(f'inside __spinbox_handler, button name={str(button)}')
                     menu = Menu(button, tearoff=0)#
@@ -190,20 +190,28 @@ class App:
                     element_frame.update_idletasks()#
                     sample_frame.update_idletasks()#
                     element_frame.master.update_idletasks()#
+                    self.middle_frame.update_idletasks()
                     #evoke entry enter event to force sample updates on new menubuttons
 
             elif child_count > count:
                 print('True')
                 for i in reversed(range(count, child_count)):
-                    element_frame.nametowidget(f'entry_{i}').destroy()
-                    button = sample_frame.nametowidget(f'button_{i}')
+                    entry = element_frame.nametowidget(f'{name}entry_{i}')
+                    entry.pack_forget()
+                    entry.destroy()
+                    button = sample_frame.nametowidget(f'{name}button_{i}')
                     menu = button.winfo_children()[0]
                     self.menu_list.remove(menu)
+                    menu.pack_forget()
                     menu.destroy()####
+                    button.pack_forget()
                     button.destroy()
+                    del menu
+                    del button
                     element_frame.update_idletasks()#
                     sample_frame.update_idletasks()#
                     element_frame.master.update_idletasks()#
+                    self.middle_frame.update_idletasks()
                     #print(f'refresing: {element_frame.master.winfo_name()}')
                     #print(f'refresing: {sample_frame.master.winfo_name()}')
             # evoke entry enter event to force sample updates on new menubuttons
