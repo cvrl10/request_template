@@ -15,10 +15,12 @@ def spinbox_handler(spinbox, element_frame, sample_frame):
         print(f'count {count}')
         print(f'child_count {child_count}')
         if count>child_count:
-            for i in range(count-child_count):
-                entry = Entry(element_frame, name=f'entry_{child_count}')
+            for i in range(child_count, count):
+                print(f'i in increase loop is+ {i}')
+                print(f'child count = {child_count}')
+                entry = Entry(element_frame, name=f'entry_{i}')
                 entry.pack(side='top')
-                button = Button(sample_frame, text='select', name=f'button_{child_count}')
+                button = Button(sample_frame, text='select', name=f'button_{i}')
                 button.pack(side='top')
         elif child_count>count:
             print('True')

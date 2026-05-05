@@ -87,6 +87,10 @@ class App:
         self.microwave_label.grid(row=1, column=0, sticky='e')
         self.microwave_element_frame, self.microwave_sample_frame = self.create_element_and_sample_frame(1, name='microwave')
 
+        self.microwave_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name='microwave')
+        self.microwave_spinbox.grid(row=1, column=2, sticky='w')
+        self.microwave_spinbox.config(command=self.__spinbox_handler(self.microwave_spinbox, self.microwave_element_frame, self.microwave_sample_frame, name='microwave'))
+        '''
         self.katanax_label = Label(self.middle_frame, text='Katanax')
         self.katanax_label.grid(row=2, column=0, sticky='e')
         self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='', name='katanax')
@@ -98,7 +102,7 @@ class App:
         #self.other_label = Label(self.middle_frame, text='other')
         #self.other_label.grid(row=4, column=0, sticky='e')
         #self.other_element_frame, self.other_sample_frame = self.create_element_and_sample_frame(4, color='')
-
+        '''
         self.sample_entry.bind('<Return>', self.__add_checkbutton(self.menu_list))
 
         bg = 'red'
@@ -112,16 +116,23 @@ class App:
         self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
         self.submit.grid(row=0, column=0)
 
-        self.proc = None
+        self.mapping = {}
+
+        def debug_click(event):
+            widget = self.root.winfo_containing(event.x_root, event.y_root)
+            print("clicked widget:", widget)
+
+        self.root.bind("<Button-1>", debug_click)
+
 
     def create_element_and_sample_frame(self, row: int, name, color=''):
-        element_frame = Frame(self.middle_frame, bg='')
+        element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
         element_frame.grid(row=row, column=1, sticky='nsew')
 
-        spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2)
-        spinbox.grid(row=row, column=2, sticky='w')
+        #spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name=name)
+        #spinbox.grid(row=row, column=2, sticky='w')
 
-        sample_frame = Frame(self.middle_frame, bg=color)
+        sample_frame = Frame(self.middle_frame, bg=color, name=f'{name}_sample')
         sample_frame.grid(row=row, column=3, sticky='nsew')
 
         entry = Entry(element_frame, name=f'{name}entry_{0}')
@@ -134,7 +145,7 @@ class App:
         self.menu_list.append(menu)  # added initial menu button here
         menubutton.config(menu=menu)
 
-        spinbox.config(command=self.__spinbox_handler(spinbox, element_frame, sample_frame, name=name))
+        #spinbox.config(command=self.__spinbox_handler(spinbox, element_frame, sample_frame, name=name))
 
         return element_frame, sample_frame
 
@@ -171,6 +182,7 @@ class App:
         return samples
 
     def __spinbox_handler(self, spinbox, element_frame, sample_frame, name):
+        print(f'firing from: {name}')
         print(f'initial child cound: {len(element_frame.winfo_children())}')
         def func():
             count = int(spinbox.get())
@@ -178,12 +190,18 @@ class App:
             #print(f'count {count}')
             print(f'child_count {child_count}')
             if count > child_count:
-                for i in range(count - child_count):
-                    entry = Entry(element_frame, name=f'{name}entry_{child_count}')
+                #for i in range(count - child_count):
+                for i in range(child_count, count):
+                    #entry = Entry(element_frame, name=f'{name}entry_{child_count}')
+                    entry = Entry(element_frame, name=f'{name}entry_{i}')
+                    print(f'creating {entry.winfo_name()}')
                     entry.pack(side='top')
-                    button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{child_count}', relief='raised')
+                    #button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{child_count}', relief='raised')
+                    button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{i}', relief='raised')
+                    print(f'creating {button.winfo_name()}')
                     button.pack(side='top')
                     print(f'inside __spinbox_handler, button name={str(button)}')
+                    print(f'name of spinbox {spinbox.winfo_name()}')
                     menu = Menu(button, tearoff=0)#
                     self.menu_list.append(menu)#
                     button.config(menu=menu)#
@@ -192,33 +210,86 @@ class App:
                     element_frame.master.update_idletasks()#
                     self.middle_frame.update_idletasks()
                     #evoke entry enter event to force sample updates on new menubuttons
+                    #self.mapping[f'{name}entry_{i}'] = entry
+                    #self.mapping[f'{name}button_{i}'] = button
 
             elif child_count > count:
                 print('True')
                 for i in reversed(range(count, child_count)):
+                    print(f'element_frame doing destroying is: {element_frame.winfo_name()}')
+                    print(f'sample_frame doing destroying is: {sample_frame.winfo_name()}')
                     entry = element_frame.nametowidget(f'{name}entry_{i}')
+                    print(f'destroying {entry.winfo_name()}')
                     entry.pack_forget()
                     entry.destroy()
+                    #print(f'destroying {entry.winfo_name()}')
                     button = sample_frame.nametowidget(f'{name}button_{i}')
-                    menu = button.winfo_children()[0]
-                    self.menu_list.remove(menu)
-                    menu.pack_forget()
-                    menu.destroy()####
+                    print(f'destroying {button.winfo_name()}')
+
+                    #menu = button.winfo_children()[0]
+                    menu = button.cget('menu')
+                    if menu:
+                        menu = self.root.nametowidget(menu)
+                        self.menu_list.remove(menu)
+                        print(f'menu is: {menu}')
+                        #menu.destroy()
+
+                    #menu.pack_forget()
+                    #menu.destroy()####
                     button.pack_forget()
                     button.destroy()
-                    del menu
-                    del button
+                    #e = self.mapping[f'{name}entry_{i}']
+                    #print(f'e.name = {e.winfo_name()}')
+                    #e.pack_forget()
+                    #e.destroy()
+                    #b = self.mapping[f'{name}button_{i}']
+                    #b.pack_forget()
+                    #b.destroy()
+                    #del menu
+                    #del button
+
+                    element_frame.pack_propagate(True)
+                    sample_frame.pack_propagate(True)
+                    element_frame.grid_propagate(True)
+                    sample_frame.grid_propagate(True)
+
+                    element_frame.configure(width=1, height=1)
+                    sample_frame.configure(width=1, height=1)
+
+                    element_frame.update()
+                    sample_frame.update()
+
                     element_frame.update_idletasks()#
                     sample_frame.update_idletasks()#
-                    element_frame.master.update_idletasks()#
-                    self.middle_frame.update_idletasks()
+
+                    bg = element_frame.cget("bg")
+                    element_frame.config(bg=bg)
+                    element_frame.update_idletasks()
+
+
+                    #element_frame.master.update_idletasks()#
+                    #self.middle_frame.update_idletasks()
+                    #self.middle_frame.event_generate('<Configure>')
+                    #self.middle_frame.update()
+                    #self.middle_frame.master.update_idletasks()
+                    self.root.geometry(self.root.geometry())
+                    self.root.update()
                     #print(f'refresing: {element_frame.master.winfo_name()}')
                     #print(f'refresing: {sample_frame.master.winfo_name()}')
             # evoke entry enter event to force sample updates on new menubuttons
-            self.sample_entry.focus_set()
-            self.sample_entry.event_generate('<Return>')
-            spinbox.focus_set()
+            #self.sample_entry.focus_set()
+            #self.sample_entry.event_generate('<Return>')
+            #spinbox.focus_set()
             print(f'count {count}')
+
+            print("after entry children:", element_frame.winfo_children())
+            print("after button children:", sample_frame.winfo_children())
+
+            self.root.after(100, lambda: print(
+                "100ms later:",
+                element_frame.winfo_children(),
+                sample_frame.winfo_children()
+            ))
 
         return func
 
