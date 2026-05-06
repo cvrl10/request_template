@@ -40,6 +40,7 @@ WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
 CONC_DECIMAL = parser.getint('Decimal', 'conc.')
 TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
 TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
+LIMS = parser.getint('Decimal', 'LIMS')
 SPACING = 2 #spacing between digestion tables
 
 url = 'master_template.xlsx'
@@ -64,18 +65,11 @@ class Template:
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
         self.label_cell_format = wb.add_format({'border': 1, 'bold': True})
         self.empty_cell_format = wb.add_format({'border': 1})
-        num_format = '0'*WEIGHT_DECIMAL
-        num_format = f'0.{num_format}'
-        self.weight_cell = wb.add_format({'border': 1, 'num_format': num_format})
-        num_format = '0'*CONC_DECIMAL
-        num_format = f'0.{num_format}'
-        self.conc_cell = wb.add_format({'border': 1, 'num_format': num_format})
-        num_format = '0'*TITRANT_VOL
-        num_format = f'0.{num_format}'
-        self.titrant_cell = wb.add_format({'border': 1, 'num_format': num_format})
-        num_format = '0'*TITRANT_RESULT
-        num_format = f'0.{num_format}'
-        self.titrant_result_cell = wb.add_format({'border': 1, 'num_format': num_format})
+        self.weight_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(WEIGHT_DECIMAL)})
+        self.conc_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(CONC_DECIMAL)})
+        self.titrant_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(TITRANT_VOL)})
+        self.titrant_result_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(TITRANT_RESULT)})
+        self.lims_format = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(LIMS)})
         self.empty_cell_format_left = wb.add_format({'border': 1, 'align': 'left'})
         self.result_cell_format = wb.add_format({'border': 1, 'num_format': '0.00'})
         self.result_string_format = wb.add_format({'align': 'right'})
@@ -83,8 +77,8 @@ class Template:
                                           'valign': 'top',
                                           'text_wrap': True,
                                           'italic': True})
-        self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': '0.00" ppm"'})
-        self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': '0.00" %"'})
+        self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(LIMS)}" ppm"'})
+        self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(LIMS)}" %"'})
         color = '#000000'
         color = '#FFFFFF'
         self.white_font_format = wb.add_format({'font_color': color})
@@ -92,10 +86,13 @@ class Template:
         self.sample_to_elements = {}
         self.element_to_digestion = {}
 
-        self.format = {'white_font': self.white_font_format, 'result': self.result_cell_format}
+        self.format = {'white_font': self.white_font_format, 'result': self.lims_format}
 
         self.append = ' [dried]' if loi else ''
 
+    @staticmethod
+    def __rounding_places(rounding_places):
+        return f'0.{'0'*rounding_places}'
 
     def __create_analysis_table(self, worksheet, element, sample):
         analysis = ANALYSIS.get(element.lower(), f'{element} ICP analysis')
@@ -614,8 +611,8 @@ start = 0
 LOI = True
 #LOI = False
 
-template = Template(workbook, 100482511, 2, loi=LOI)
-s = ['200127586', '200127587']
+#template = Template(workbook, 100482511, 2, loi=LOI)
+#s = ['200127586', '200127587']
 
 #for i in range(copy):
     #template.add_other(['Cr6'], ['200127586'])
@@ -626,8 +623,8 @@ s = ['200127586', '200127587']
 #for i in range(copy):
     #template.add_katanax(['Ti', 'Si'], ['200127587', '200127588'])
 
-for i in range(copy):
-    template.add_hotplate(['Cr3', 'Cr6', 'Cr2O3'], ['200127586'])
+#for i in range(copy):
+    #template.add_hotplate(['Cr3', 'Cr6', 'Cr2O3'], ['200127586'])
 
 #template.create_analysis_worksheet()
 #workbook.close()

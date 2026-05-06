@@ -204,6 +204,7 @@ class App:
                     menu = Menu(button, tearoff=0)
                     self.menu_list.append(menu)
                     button.config(menu=menu)
+                #evoke entry <Return> to force sample updates on new menu_buttons
                 self.sample_entry.focus_set()
                 self.sample_entry.event_generate('<Return>')
 
@@ -225,10 +226,6 @@ class App:
                 element_frame.update_idletasks()
                 sample_frame.update_idletasks()
 
-            # evoke entry enter event to force sample updates on new menubuttons
-            #self.sample_entry.focus_set()
-            #self.sample_entry.event_generate('<Return>')
-            #spinbox.focus_set()
 
         return func
 
@@ -250,11 +247,6 @@ class App:
         microwave = self.__grab_data(self.microwave_element_frame, self.microwave_sample_frame)
         katanax = self.__grab_data(self.katanax_element_frame, self.katanax_sample_frame)
         hotplate = self.__grab_data(self.hotplate_element_frame, self.hotplate_sample_frame)
-        #other = self.__grab_data(self.other_element_frame, self.other_sample_frame)
-        print(f'microwave: {microwave}')
-        print(katanax)
-        print(hotplate)
-        print()
 
         COPY = self.replicates.get()
         loi = self.loi.get()
@@ -262,8 +254,6 @@ class App:
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
 
-        #for elements, samples in other:
-            #template.add_other(elements, samples)
 
         for elements, samples in microwave:
             template.add_microwave(elements, samples)
@@ -282,6 +272,4 @@ class App:
 
     def run(self):
         self.root.mainloop()
-        print('is it empty')
-        print(self.check_vars)
 
