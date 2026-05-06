@@ -38,6 +38,8 @@ print(titration_analysis_list)
 STEP = parser.getint('Microwave Program', 'step')
 WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
 CONC_DECIMAL = parser.getint('Decimal', 'conc.')
+TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
+TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
 SPACING = 2 #spacing between digestion tables
 
 url = 'master_template.xlsx'
@@ -68,6 +70,12 @@ class Template:
         num_format = '0'*CONC_DECIMAL
         num_format = f'0.{num_format}'
         self.conc_cell = wb.add_format({'border': 1, 'num_format': num_format})
+        num_format = '0'*TITRANT_VOL
+        num_format = f'0.{num_format}'
+        self.titrant_cell = wb.add_format({'border': 1, 'num_format': num_format})
+        num_format = '0'*TITRANT_RESULT
+        num_format = f'0.{num_format}'
+        self.titrant_result_cell = wb.add_format({'border': 1, 'num_format': num_format})
         self.empty_cell_format_left = wb.add_format({'border': 1, 'align': 'left'})
         self.result_cell_format = wb.add_format({'border': 1, 'num_format': '0.00'})
         self.result_string_format = wb.add_format({'align': 'right'})
@@ -242,8 +250,8 @@ class Template:
         worksheet.write(self.row, 2, f'%{cr6}{self.append}', self.label_cell_format)
         self.__move_cursor()
         worksheet.write(self.row, 0, f'{sample}', self.label_cell_format)
-        worksheet.write_formula(self.row, 1, total_cell, self.empty_cell_format)#formula here
-        worksheet.write_formula(self.row, 2, cr6_cell, self.empty_cell_format)#formula here
+        worksheet.write_formula(self.row, 1, total_cell, self.empty_cell_format)
+        worksheet.write_formula(self.row, 2, cr6_cell, self.empty_cell_format)
         self.__move_cursor(SPACING)
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})*({10_000})', self.reported_ppm_format)
@@ -265,8 +273,8 @@ class Template:
             weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, WEIGHT_COLUMN)
             worksheet.write(self.row, 0, f'{sample_id}', self.label_cell_format)
             worksheet.write_formula(self.row, 1, weight_cell, self.weight_cell)
-            worksheet.write(self.row, 2, '', self.empty_cell_format)
-            worksheet.write(self.row, 3, '', self.empty_cell_format)
+            worksheet.write(self.row, 2, '', self.titrant_cell)
+            worksheet.write(self.row, 3, '', self.titrant_result_cell)
             self.__move_cursor()
 
         end_row = self.row-1

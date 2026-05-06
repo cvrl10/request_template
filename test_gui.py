@@ -67,9 +67,9 @@ class App:
         self.middle_frame.configure(height=120)
         self.middle_frame.grid_propagate(False)
         self.middle_frame.columnconfigure(0, weight=2)
-        self.middle_frame.columnconfigure(1, weight=2)
-        self.middle_frame.columnconfigure(2, weight=1)
-        self.middle_frame.columnconfigure(3, weight=4)
+        self.middle_frame.columnconfigure(1, weight=2, minsize=140)
+        self.middle_frame.columnconfigure(2, weight=1, minsize=40)
+        self.middle_frame.columnconfigure(3, weight=4, minsize=90)
 
         self.middle_frame.rowconfigure(0, weight=1)
         self.middle_frame.rowconfigure(1, weight=1)
@@ -136,10 +136,10 @@ class App:
         sample_frame.grid(row=row, column=3, sticky='nsew')
 
         entry = Entry(element_frame, name=f'{name}entry_{0}')
-        entry.pack(side='top')
+        entry.pack(side='top', fill='x')
 
         menubutton = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{0}', relief='raised')
-        menubutton.pack(side='top')
+        menubutton.pack(side='top', fill='x')
 
         menu = Menu(menubutton, tearoff=0)
         self.menu_list.append(menu)  # added initial menu button here
@@ -192,23 +192,33 @@ class App:
             if count > child_count:
                 #for i in range(count - child_count):
                 for i in range(child_count, count):
+                    e_frame = Frame(element_frame, name=f'{name}_e_frame_{i}')
+                    e_frame.pack(side='top', fill='x', expand=False)
+                    e_frame.columnconfigure(0, weight=1)
+                    e_frame.rowconfigure(0, weight=1)
                     #entry = Entry(element_frame, name=f'{name}entry_{child_count}')
-                    entry = Entry(element_frame, name=f'{name}entry_{i}')
+                    entry = Entry(e_frame, name=f'{name}entry_{i}')
+                    entry.grid(row=0, column=0, sticky='nsew')
                     print(f'creating {entry.winfo_name()}')
-                    entry.pack(side='top')
+                    #entry.pack(side='top')
+
+                    b_frame = Frame(sample_frame, name=f'{name}_b_frame_{i}')
+                    b_frame.pack(side='top', fill='x', expand=False)
+                    b_frame.columnconfigure(0, weight=1)
+                    b_frame.rowconfigure(0, weight=1)
                     #button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{child_count}', relief='raised')
-                    button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{i}', relief='raised')
-                    print(f'creating {button.winfo_name()}')
-                    button.pack(side='top')
+                    button = Menubutton(b_frame, width=9, text='select', name=f'{name}button_{i}', relief='raised')
+                    #print(f'creating {button.winfo_name()}')
+                    button.grid(row=0, column=0, sticky='nsew')
                     print(f'inside __spinbox_handler, button name={str(button)}')
                     print(f'name of spinbox {spinbox.winfo_name()}')
                     menu = Menu(button, tearoff=0)#
                     self.menu_list.append(menu)#
                     button.config(menu=menu)#
-                    element_frame.update_idletasks()#
-                    sample_frame.update_idletasks()#
-                    element_frame.master.update_idletasks()#
-                    self.middle_frame.update_idletasks()
+                    #element_frame.update_idletasks()#
+                    #sample_frame.update_idletasks()#
+                    #element_frame.master.update_idletasks()#
+                    #self.middle_frame.update_idletasks()
                     #evoke entry enter event to force sample updates on new menubuttons
                     #self.mapping[f'{name}entry_{i}'] = entry
                     #self.mapping[f'{name}button_{i}'] = button
@@ -218,16 +228,19 @@ class App:
                 for i in reversed(range(count, child_count)):
                     print(f'element_frame doing destroying is: {element_frame.winfo_name()}')
                     print(f'sample_frame doing destroying is: {sample_frame.winfo_name()}')
-                    entry = element_frame.nametowidget(f'{name}entry_{i}')
+                    entry = element_frame.nametowidget(f'{name}_e_frame_{i}')
                     print(f'destroying {entry.winfo_name()}')
-                    entry.pack_forget()
+                    #entry.pack_forget()
                     entry.destroy()
                     #print(f'destroying {entry.winfo_name()}')
-                    button = sample_frame.nametowidget(f'{name}button_{i}')
-                    print(f'destroying {button.winfo_name()}')
+                    button_frame = sample_frame.nametowidget(f'{name}_b_frame_{i}')
+                    print(f'destroying {button_frame.winfo_name()}')
 
-                    #menu = button.winfo_children()[0]
+                    button = button_frame.winfo_children()[0]
+                    print(f'menu: {button}')
+                    print(f'type menu: {type(button)}')
                     menu = button.cget('menu')
+                    print(f'type menu: {type(menu)}')
                     if menu:
                         menu = self.root.nametowidget(menu)
                         self.menu_list.remove(menu)
@@ -236,8 +249,8 @@ class App:
 
                     #menu.pack_forget()
                     #menu.destroy()####
-                    button.pack_forget()
-                    button.destroy()
+                    #button.pack_forget()
+                    button_frame.destroy()
                     #e = self.mapping[f'{name}entry_{i}']
                     #print(f'e.name = {e.winfo_name()}')
                     #e.pack_forget()
@@ -248,23 +261,30 @@ class App:
                     #del menu
                     #del button
 
-                    element_frame.pack_propagate(True)
-                    sample_frame.pack_propagate(True)
-                    element_frame.grid_propagate(True)
-                    sample_frame.grid_propagate(True)
+                    #element_frame.pack_propagate(True)
+                    #sample_frame.pack_propagate(True)
+                    #element_frame.grid_propagate(True)
+                    #sample_frame.grid_propagate(True)
 
-                    element_frame.configure(width=1, height=1)
-                    sample_frame.configure(width=1, height=1)
+                    #element_frame.configure(width=1, height=1)
+                    #sample_frame.configure(width=1, height=1)
 
-                    element_frame.update()
-                    sample_frame.update()
+                    #element_frame.update()
+                    #sample_frame.update()
 
-                    element_frame.update_idletasks()#
-                    sample_frame.update_idletasks()#
+                    #element_frame.update_idletasks()#
+                    #sample_frame.update_idletasks()#
 
-                    bg = element_frame.cget("bg")
-                    element_frame.config(bg=bg)
-                    element_frame.update_idletasks()
+                    #element_frame.configure(bg=element_frame.cget("bg"))
+                    #sample_frame.configure(bg=sample_frame.cget("bg"))
+
+                    #element_frame.update()
+                    #sample_frame.update()
+                    #self.middle_frame.update_idletasks()
+
+                    #bg = element_frame.cget("bg")
+                    #element_frame.config(bg=bg)
+                    #element_frame.update_idletasks()
 
 
                     #element_frame.master.update_idletasks()#
@@ -272,14 +292,17 @@ class App:
                     #self.middle_frame.event_generate('<Configure>')
                     #self.middle_frame.update()
                     #self.middle_frame.master.update_idletasks()
-                    self.root.geometry(self.root.geometry())
-                    self.root.update()
+                    #self.root.geometry(self.root.geometry())
+                    self.root.update_idletasks()
+                    self.force_repaint(sample_frame)
+                    self.force_repaint(element_frame)
                     #print(f'refresing: {element_frame.master.winfo_name()}')
                     #print(f'refresing: {sample_frame.master.winfo_name()}')
             # evoke entry enter event to force sample updates on new menubuttons
-            #self.sample_entry.focus_set()
-            #self.sample_entry.event_generate('<Return>')
-            #spinbox.focus_set()
+            self.sample_entry.focus_set()
+            self.sample_entry.event_generate('<Return>')
+            spinbox.focus_set()
+
             print(f'count {count}')
 
             print("after entry children:", element_frame.winfo_children())
@@ -292,6 +315,15 @@ class App:
             ))
 
         return func
+
+
+    def force_repaint(self, frame):
+        cover = Frame(frame, bg=frame.cget("bg"))
+        cover.place(x=0, y=0, relwidth=1, relheight=1)
+        cover.lift()
+        frame.update_idletasks()
+        cover.destroy()
+        frame.update_idletasks()
 
     def __grab_data(self, element_frame, sample_frame):
         element_frame_children = element_frame.winfo_children()
