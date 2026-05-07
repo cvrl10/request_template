@@ -1,8 +1,0 @@
-INFO:create_template.log:microwave_0 with sample(s)=['200126511'] digesting element(s)=['Cr']
-INFO:create_template.log:adding Cr to 200126511
-INFO:create_template.log:storing: 200126511_1 @digestion_page!16
-INFO:create_template.log:storing: 200126511_2 @digestion_page!17
-INFO:create_template.log:referencing 200126511_1 weight from digestion_page!B17
-INFO:create_template.log:referencing 200126511_1 volume from digestion_page!C17
-INFO:create_template.log:referencing 200126511_2 weight from digestion_page!B18
-INFO:create_template.log:referencing 200126511_2 volume from digestion_page!C18

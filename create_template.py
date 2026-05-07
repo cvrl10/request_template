@@ -59,7 +59,6 @@ class Template:
 
         self.info_format = wb.add_format({'bold': True, 'align': 'right'})
         self.date_format = wb.add_format({'num_format': 'yyyy-mm-dd'})
-        self.bold_italic_format = wb.add_format({'border': 1, 'italic': True, 'bold': True})
         self.italic_bold_format = wb.add_format({'italic': True, 'bold': True})
         self.italic_format = wb.add_format({'italic': True, 'align': 'right'})
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
@@ -92,7 +91,7 @@ class Template:
 
     @staticmethod
     def __rounding_places(rounding_places):
-        return f'0.{'0'*rounding_places}'
+        return f'0.{"0"*rounding_places}'
 
     def __create_analysis_table(self, worksheet, element, sample):
         analysis = ANALYSIS.get(element.lower(), f'{element} ICP analysis')
