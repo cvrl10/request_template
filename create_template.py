@@ -20,7 +20,7 @@ logger = logging.getLogger(log_file)
 base = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
 config_path = base/'config.ini'
 print(config_path)
-ANALYSIS = {}
+ANALYSIS = {'cr+6_epa': 'UV-Vis analysis', 'cr6+_epa': 'UV-Vis analysis', 'cr6_epa': 'UV-Vis analysis'}
 parser = ConfigParser()
 parser.read(config_path)
 
@@ -94,7 +94,8 @@ class Template:
         return f'0.{"0"*rounding_places}'
 
     def __create_analysis_table(self, worksheet, element, sample):
-        analysis = ANALYSIS.get(element.lower(), f'{element} ICP analysis')
+        analysis = ANALYSIS.get(element.lower(), f'ICP analysis')
+        analysis = f'{element} {analysis}'
         worksheet.merge_range(self.row, 0, self.row, 1, analysis, self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
@@ -467,26 +468,6 @@ class Template:
         self.__move_cursor(SPACING)
         self.digestion_sheet.autofit()
 
-    def add_other(self, elements: list, samples: list):
-        self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'other', self.header_format)
-        self.__move_cursor()
-
-        self.digestion_sheet.write(self.row, 0, 'Element(s)', self.label_cell_format)
-        self.digestion_sheet.merge_range(self.row, 1, self.row, 2, ', '.join(elements), self.empty_cell_format)
-        self.__move_cursor()
-
-        self.digestion_sheet.write(self.row, 0, 'SOP#', self.label_cell_format)
-        self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
-        self.__move_cursor()
-
-        self.digestion_sheet.write(self.row, 0, 'Cocktail', self.label_cell_format)
-        self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
-        self.__move_cursor()
-
-        other = self.Digestion(name='other', elements=elements, format=self.format)
-        self.__create_sample_row(samples, other, volume='')
-        self.__move_cursor(SPACING)
-        self.digestion_sheet.autofit()
 
     def __move_cursor(self, spacing=1):
         self.row += spacing

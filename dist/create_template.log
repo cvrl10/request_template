@@ -1,54 +1,8 @@
-INFO:create_template.log:hotplate_0 with sample(s)=[200126511, 200126512, 200126513] digesting element(s)=['Cr6']
-INFO:create_template.log:adding Cr6 to 200126511
+INFO:create_template.log:hotplate_0 with sample(s)=['200126511'] digesting element(s)=['Ag']
+INFO:create_template.log:adding Ag to 200126511
 INFO:create_template.log:storing: 200126511_1 @digestion_page!9
 INFO:create_template.log:storing: 200126511_2 @digestion_page!10
-INFO:create_template.log:adding Cr6 to 200126512
-INFO:create_template.log:storing: 200126512_1 @digestion_page!11
-INFO:create_template.log:storing: 200126512_2 @digestion_page!12
-INFO:create_template.log:adding Cr6 to 200126513
-INFO:create_template.log:storing: 200126513_1 @digestion_page!13
-INFO:create_template.log:storing: 200126513_2 @digestion_page!14
-INFO:create_template.log:hotplate_1 with sample(s)=[200126511, 200126512, 200126513] digesting element(s)=['Cr3']
-INFO:create_template.log:adding Cr3 to 200126511
-INFO:create_template.log:storing: 200126511_1 @digestion_page!22
-INFO:create_template.log:storing: 200126511_2 @digestion_page!23
-INFO:create_template.log:adding Cr3 to 200126512
-INFO:create_template.log:storing: 200126512_1 @digestion_page!24
-INFO:create_template.log:storing: 200126512_2 @digestion_page!25
-INFO:create_template.log:adding Cr3 to 200126513
-INFO:create_template.log:storing: 200126513_1 @digestion_page!26
-INFO:create_template.log:storing: 200126513_2 @digestion_page!27
-INFO:create_template.log:hotplate_2 with sample(s)=[200126511, 200126512, 200126513] digesting element(s)=['Cr2O3']
-INFO:create_template.log:adding Cr2O3 to 200126511
-INFO:create_template.log:storing: 200126511_1 @digestion_page!35
-INFO:create_template.log:storing: 200126511_2 @digestion_page!36
-INFO:create_template.log:adding Cr2O3 to 200126512
-INFO:create_template.log:storing: 200126512_1 @digestion_page!37
-INFO:create_template.log:storing: 200126512_2 @digestion_page!38
-INFO:create_template.log:adding Cr2O3 to 200126513
-INFO:create_template.log:storing: 200126513_1 @digestion_page!39
-INFO:create_template.log:storing: 200126513_2 @digestion_page!40
-INFO:create_template.log:referencing 200126511_1 weight from digestion_page!B36
-INFO:create_template.log:referencing 200126511_1 volume from digestion_page!C36
-INFO:create_template.log:referencing 200126511_2 weight from digestion_page!B37
-INFO:create_template.log:referencing 200126511_2 volume from digestion_page!C37
 INFO:create_template.log:referencing 200126511_1 weight from digestion_page!B10
 INFO:create_template.log:referencing 200126511_1 volume from digestion_page!C10
 INFO:create_template.log:referencing 200126511_2 weight from digestion_page!B11
 INFO:create_template.log:referencing 200126511_2 volume from digestion_page!C11
-INFO:create_template.log:referencing 200126512_1 weight from digestion_page!B38
-INFO:create_template.log:referencing 200126512_1 volume from digestion_page!C38
-INFO:create_template.log:referencing 200126512_2 weight from digestion_page!B39
-INFO:create_template.log:referencing 200126512_2 volume from digestion_page!C39
-INFO:create_template.log:referencing 200126512_1 weight from digestion_page!B12
-INFO:create_template.log:referencing 200126512_1 volume from digestion_page!C12
-INFO:create_template.log:referencing 200126512_2 weight from digestion_page!B13
-INFO:create_template.log:referencing 200126512_2 volume from digestion_page!C13
-INFO:create_template.log:referencing 200126513_1 weight from digestion_page!B40
-INFO:create_template.log:referencing 200126513_1 volume from digestion_page!C40
-INFO:create_template.log:referencing 200126513_2 weight from digestion_page!B41
-INFO:create_template.log:referencing 200126513_2 volume from digestion_page!C41
-INFO:create_template.log:referencing 200126513_1 weight from digestion_page!B14
-INFO:create_template.log:referencing 200126513_1 volume from digestion_page!C14
-INFO:create_template.log:referencing 200126513_2 weight from digestion_page!B15
-INFO:create_template.log:referencing 200126513_2 volume from digestion_page!C15
