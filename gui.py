@@ -120,13 +120,6 @@ class App:
         self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
         self.submit.grid(row=0, column=0)
 
-        self.mapping = {}
-
-        def debug_click(event):
-            widget = self.root.winfo_containing(event.x_root, event.y_root)
-            print("clicked widget:", widget)
-
-        self.root.bind("<Button-1>", debug_click)
 
 
     def create_element_and_sample_frame(self, row: int, name, color=''):
@@ -191,7 +184,6 @@ class App:
         def func():
             count = int(spinbox.get())
             child_count = len(element_frame.winfo_children())
-            #print(f'count {count}')
             print(f'child_count {child_count}')
             if count > child_count:
                 for i in range(child_count, count):
