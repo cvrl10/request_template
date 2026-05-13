@@ -58,7 +58,7 @@ class Template:
         self.digestion_sheet = wb.add_worksheet('digestion_page')
 
         self.info_format = wb.add_format({'bold': True, 'align': 'right'})
-        self.date_format = wb.add_format({'num_format': 'yyyy-mm-dd'})
+        self.date_format = wb.add_format({'align': 'left', 'num_format': 'yyyy-mm-dd'})
         self.italic_bold_format = wb.add_format({'italic': True, 'bold': True})
         self.italic_format = wb.add_format({'italic': True, 'align': 'right'})
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
@@ -366,6 +366,14 @@ class Template:
         self.__move_cursor(2)
         formula_page.write(self.row, 0, '%Cr(III) = total_Cr - Cr(VI)', self.italic_bold_format)
         formula_page.autofit()
+
+        self.workbook.set_properties(
+            {
+                'author': 'Carl Archemetre',
+                'company': 'Clariant',
+                'comments': 'Created with Python, XlsxWriter'
+            }
+        )
 
 
 
