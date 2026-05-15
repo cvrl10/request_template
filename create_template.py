@@ -43,11 +43,6 @@ TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
 LIMS = parser.getint('Decimal', 'LIMS')
 SPACING = 2 #spacing between digestion tables
 
-url = 'master_template.xlsx'
-
-workbook = xlsxwriter.Workbook(url)
-
-
 class Template:
     def __init__(self, wb, request_id, sample_copy, loi=True):
         self.loi = loi
@@ -110,7 +105,6 @@ class Template:
         start_row = self.row
         for i in range(1, self.COPY+1):
             worksheet.write(self.row, 0, f'{sample}_{i}', self.label_cell_format)
-            #worksheet.set_column(0, 0, len(f'{sample}_{i}'))
             worksheet.write(self.row, 1, '''="1/1"''', self.empty_cell_format)
             worksheet.write(self.row, 2, '', self.conc_cell)
             worksheet.write(self.row, 3, '', self.empty_cell_format)
@@ -195,15 +189,13 @@ class Template:
         worksheet.write(self.row, 1, date.today(), self.date_format)
         self.__move_cursor()
         worksheet.write(self.row, 0, 'Request ID:', self.info_format)
-        worksheet.write(self.row, 1, self.request_id)
+        worksheet.write(self.row, 1, self.request_id, self.workbook.add_format({'align': 'left'}))
 
         self.__move_cursor()
         self.__move_cursor(SPACING)
 
     def __contains_chrome_3(self, element_list):
-            print('inside contains_chrome_3')
             bool = list(filter(self.__is_chrome_3, element_list))
-            print(f'what is return: {bool}')
             return list(filter(self.__is_chrome_3, element_list))
 
     def __is_chrome_3(self, element):
@@ -594,16 +586,14 @@ class Template:
 
 
 copy = 1
-start = 0
 
-LOI = True
-#LOI = False
+#LOI = True
+
+#url = 'master_template.xlsx'
+#workbook = xlsxwriter.Workbook(url)
 
 #template = Template(workbook, 100482511, 2, loi=LOI)
 #s = ['200127586', '200127587']
-
-#for i in range(copy):
-    #template.add_other(['Cr6'], ['200127586'])
 
 #for i in range(copy):
     #template.add_microwave(['Cr', 'Cu'], s)
