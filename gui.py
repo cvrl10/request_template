@@ -78,31 +78,31 @@ class App:
         self.element_label.grid(row=0, column=1, sticky='w')
 
         self.microwave_label = Label(self.middle_frame, text='Microwave')
-        self.microwave_label.grid(row=1, column=0, sticky='e')
+        self.microwave_label.grid(row=1, column=0, sticky='ne')
         self.microwave_element_frame, self.microwave_sample_frame = self.create_element_and_sample_frame(1, name='microwave')
 
         self.microwave_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name='microwave')
-        self.microwave_spinbox.grid(row=1, column=2, sticky='w')
+        self.microwave_spinbox.grid(row=1, column=2, sticky='nw')
         self.microwave_spinbox.config(command=self.__spinbox_handler(self.microwave_spinbox,
                                                                      self.microwave_element_frame,
                                                                      self.microwave_sample_frame, name='microwave'))
 
         self.katanax_label = Label(self.middle_frame, text='Katanax')
-        self.katanax_label.grid(row=2, column=0, sticky='e')
+        self.katanax_label.grid(row=2, column=0, sticky='ne')
         self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='', name='katanax')
 
         self.katanax_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name='katanax')
-        self.katanax_spinbox.grid(row=2, column=2, sticky='w')
+        self.katanax_spinbox.grid(row=2, column=2, sticky='nw')
         self.katanax_spinbox.config(command=self.__spinbox_handler(self.katanax_spinbox,
                                                                      self.katanax_element_frame,
                                                                      self.katanax_sample_frame, name='katanax'))
 
         self.hotplate_label = Label(self.middle_frame, text='Hotplate')
-        self.hotplate_label.grid(row=3, column=0, sticky='e')
+        self.hotplate_label.grid(row=3, column=0, sticky='ne')
         self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='', name='hotplate')
 
         self.hotplate_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name='hotplate')
-        self.hotplate_spinbox.grid(row=3, column=2, sticky='w')
+        self.hotplate_spinbox.grid(row=3, column=2, sticky='nw')
         self.hotplate_spinbox.config(command=self.__spinbox_handler(self.hotplate_spinbox,
                                                                      self.hotplate_element_frame,
                                                                      self.hotplate_sample_frame, name='hotplate'))
