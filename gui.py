@@ -1,6 +1,7 @@
 from create_template import Template
 import xlsxwriter
 from tkinter import *
+from tkinter import ttk
 import re
 import os
 
@@ -56,6 +57,7 @@ class App:
         loi_checkbox = Checkbutton(self.top_frame, variable=self.loi)
         loi_checkbox.grid(row=2, column=1, sticky='w')
 
+
         self.middle_frame = Frame(self.root, name='dynamic')
         self.middle_frame.grid(row=1, column=0, columnspan=3, sticky='nsew')
         self.middle_frame.configure(height=120)
@@ -70,6 +72,8 @@ class App:
         self.middle_frame.rowconfigure(2, weight=1)
         self.middle_frame.rowconfigure(3, weight=1)
         #self.middle_frame.rowconfigure(4, weight=1)
+
+        ttk.Separator(self.middle_frame, orient=HORIZONTAL).grid(row=0, columnspan=4, sticky='new')
 
         self.menu_list = []
         self.check_vars = {}
@@ -119,6 +123,9 @@ class App:
 
         self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
         self.submit.grid(row=0, column=0)
+
+        self.submit.bind('<Enter>', lambda _: self.submit.config(bg='green'))
+        self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace'))
 
 
 
