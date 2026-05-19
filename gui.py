@@ -10,7 +10,7 @@ class App:
         self.root = Tk()
         self.root.iconbitmap('img/Clariant.ico')
 
-        self.root.title('template_creator')
+        self.root.title('workbook_creator')
         self.root.resizable(False, False)
         self.root.geometry('325x500')
 
@@ -249,7 +249,7 @@ class App:
 
         COPY = self.replicates.get()
         loi = self.loi.get()
-        url = 'master_template.xlsx'
+        url = 'master_workbook.xlsx'
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
 
