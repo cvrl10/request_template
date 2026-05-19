@@ -266,7 +266,7 @@ class App:
         template.create_analysis_worksheet()
         workbook.close()
 
-        os.startfile('master_template.xlsx')
+        os.startfile('master_workbook.xlsx')
 
 
     def run(self):
