@@ -197,7 +197,7 @@ class Template:
             for lot in lots:
                 data = self.lot.get(lot.element, '')
                 cell = lot.destination_address
-                worksheet.write(cell, data)
+                worksheet.write(cell, data, self.workbook.add_format({'italic': True}))
 
             worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
             worksheet.merge_range(self.row, 2, self.row+2, 5, '', self.text_format)
