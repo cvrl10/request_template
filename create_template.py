@@ -5,7 +5,8 @@ from datetime import date
 from pathlib import Path
 import sys
 import logging
-import os
+from database import query_database
+from collections import namedtuple
 
 EMPTY_CELL = '#FFFFCC'
 WEIGHT_COLUMN = 6
@@ -15,7 +16,7 @@ log_file = 'create_template.log'
 logging.basicConfig(filename=log_file, level=logging.INFO, filemode='w')
 logger = logging.getLogger(log_file)
 
-
+Lot = namedtuple('Lot', ['element', 'destination_address'])
 
 base = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
 config_path = base/'config.ini'
@@ -84,6 +85,8 @@ class Template:
 
         self.append = ' [dried]' if loi else ''
 
+        self.element_set = set()
+
     @staticmethod
     def __rounding_places(rounding_places):
         return f'0.{"0"*rounding_places}'
@@ -135,18 +138,28 @@ class Template:
         worksheet.write_formula(self.row, 2, oxide_average, self.reported_percent_format)
 
         self.__move_cursor()
+        #lot = self.lot.get(element.lower(), '')
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} lot:', self.result_string_format)
+        #worksheet.autofit(max_width=130)
+        #worksheet.autofit(max_width=110)
+        #worksheet.merge_range(self.row, 2, self.row, 5, lot, self.workbook.add_format({'italic': True}))
         worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
         merge_start = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         merge_finish = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5)
+        print(f'where Im writing to:{xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)}')
         worksheet.conditional_format(f'{merge_start}:{merge_finish}',
                                      {'type': 'blanks',
                                       'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
                                       })
+        lot_address = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         self.__move_cursor(SPACING)
 
+        return Lot(element.lower(), lot_address)
+
     def create_analysis_worksheet(self):
+        self.lot = query_database(list(self.element_set))
         for sample in sorted(self.sample_to_elements):
+            lots = []
             worksheet = self.workbook.add_worksheet(str(sample))
             self.__create_header(worksheet)
             correction_factor = 1
@@ -159,6 +172,7 @@ class Template:
                 digestion_object = self.element_to_digestion[element]
                 if self.__is_chrome_3(element.lower()):
                     self.__create_titration_table_cr3(worksheet, element, sample, cr2O3, cr6, correction_factor)
+                    worksheet.autofit()
                     continue
                 if element.lower() in titration_analysis_list:
                     move_to = self.row + 2
@@ -166,9 +180,13 @@ class Template:
                     for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
                         digestion_object.write_titration(move_to, sample_id, worksheet)
                         move_to += 1
+                    worksheet.autofit()
                     continue
                 move_to = self.row + 2
-                self.__create_analysis_table(worksheet, element, sample)##########
+                lot = self.__create_analysis_table(worksheet, element, sample)##########
+                worksheet.autofit()
+                lots.append(lot)
+
                 #remeber keys/elements should be unique if not throw exception
                 print(f'this is sample: {sample}')
                 print(digestion_object.name)
@@ -176,9 +194,14 @@ class Template:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
                     move_to += 1
 
+            for lot in lots:
+                data = self.lot.get(lot.element, '')
+                cell = lot.destination_address
+                worksheet.write(cell, data)
+
             worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
             worksheet.merge_range(self.row, 2, self.row+2, 5, '', self.text_format)
-            worksheet.autofit()
+            #worksheet.autofit()
             print()
         self.__create_formula_sheet()
         self.Digestion.instance = {}
@@ -288,7 +311,7 @@ class Template:
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
         percent_row = self.row
         self.__move_cursor(SPACING)
-        worksheet.autofit()
+        #worksheet.autofit()
 
         return xlsxwriter.utility.xl_rowcol_to_cell(percent_row, 2)
 
@@ -370,6 +393,7 @@ class Template:
 
 
     def add_microwave(self, elements: list, samples: list):
+        self.element_set.update(elements)
         def create_microwave_program():
             def write(data):
                 for i in range(5):
@@ -424,6 +448,7 @@ class Template:
         self.digestion_sheet.autofit()
 
     def add_hotplate(self, elements: list, samples: list):
+        self.element_set.update(elements)
         self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'Hotplate', self.header_format)
         self.__move_cursor()
 
@@ -446,6 +471,7 @@ class Template:
         self.digestion_sheet.autofit()
 
     def add_katanax(self, elements: list, samples: list):
+        self.element_set.update(elements)
         self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'Katanax', self.header_format)
         self.__move_cursor()
 
@@ -548,7 +574,7 @@ class Template:
             ppm_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 3)
             percent_calculation = f'={ppm_cell}/{10_000}'
             destination_worksheet.write_formula(to_row, 4, percent_calculation, self.format['result'])
-            destination_worksheet.autofit()
+            #destination_worksheet.autofit()
 
         def write_titration(self, to_row, sample_id, destination_worksheet):
             weight_cell, _ = self.__read_source_data(sample_id)

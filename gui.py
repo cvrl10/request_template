@@ -265,7 +265,7 @@ class App:
 
         template.create_analysis_worksheet()
         workbook.close()
-
+        print(template.element_set)
         os.startfile('master_workbook.xlsx')
 
 
