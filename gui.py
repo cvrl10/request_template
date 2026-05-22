@@ -4,11 +4,21 @@ from tkinter import *
 from tkinter import ttk
 import re
 import os
+import sys
 
+try:
+    base = sys._MEIPASS
+except Exception:
+    base = os.path.abspath('.')
+
+
+sys.stdout = open('stdout.log', mode='w')
+#sys.stdout = open('stderr_stdout.log', mode='a')
 class App:
     def __init__(self):
         self.root = Tk()
-        self.root.iconbitmap('img/Clariant.ico')
+        self.root.iconbitmap('img/logo.ico')
+        #self.root.iconbitmap(os.path.join(base, 'img/logo.ico'))
 
         self.root.title('workbook_creator')
         self.root.resizable(False, False)

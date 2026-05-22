@@ -1,7 +1,9 @@
 import csv
 import sqlite3
 from datetime import datetime
+import sys
 
+sys.stdout = open('stdout.log', mode='w')
 
 def query_database(elements):
     lot = {}
@@ -29,11 +31,10 @@ def query_database(elements):
                     VALUES (?, ?, ?, ?);''', (record['manufacturer'], record['element'], record['lot'],
                                                         datetime.strptime(record['expiration'], date_format).strftime('%Y-%m-%d')))
                 except (ValueError, sqlite3.IntegrityError) as e:
-                    #print(e)
+                    print(e)
                     pass
 
         conn.commit()
-
         placeholders = ', '.join('?' for _ in elements)
         cursor.execute(f'''SELECT element, manufacturer, lot, expiration 
                                FROM lots 
@@ -49,9 +50,6 @@ def query_database(elements):
         print(e)
     finally:
         conn.close()
+
     return lot
-
-
-lot = query_database(['fe', 'rh', 'Cu'])
-print(lot)
 

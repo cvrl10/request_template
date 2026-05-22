@@ -3,27 +3,28 @@ from configparser import ConfigParser
 import re
 from datetime import date
 from pathlib import Path
-import sys
 import logging
 from database import query_database
-from collections import namedtuple
+import sys
+
+sys.stdout = open('stdout.log', mode='w')
+#sys.stdout = open('stderr_stdout.log', mode='a')
 
 EMPTY_CELL = '#FFFFCC'
 WEIGHT_COLUMN = 6
-VOLUME_COLUMN = 7
-DIGESTION_COLUMN = VOLUME_COLUMN + 1
+VOLUME_COLUMN = WEIGHT_COLUMN + 1
+DILUTION_COLUMN = VOLUME_COLUMN + 1
 log_file = 'create_template.log'
 logging.basicConfig(filename=log_file, level=logging.INFO, filemode='w')
 logger = logging.getLogger(log_file)
 
-Lot = namedtuple('Lot', ['element', 'destination_address'])
 
-base = Path(sys.executable).parent if getattr(sys, "frozen", False) else Path(__file__).parent
+base = Path(__file__).parent
 config_path = base/'config.ini'
 print(config_path)
 ANALYSIS = {'cr+6_epa': 'UV-Vis analysis', 'cr6+_epa': 'UV-Vis analysis', 'cr6_epa': 'UV-Vis analysis'}
 parser = ConfigParser()
-parser.read(config_path)
+parser.read('config.ini')
 
 
 ic_analysis = parser.get('Analysis', 'ic')
@@ -34,15 +35,14 @@ titration_analysis = parser.get('Analysis', 'titration')
 titration_analysis = map(lambda s: s.lower(), re.split(r'[,\s]+', titration_analysis))
 
 titration_analysis_list = list(titration_analysis)
-print(titration_analysis_list)
 
 STEP = parser.getint('Microwave Program', 'step')
 WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
-CONC_DECIMAL = parser.getint('Decimal', 'conc.')
+CONC_DECIMAL = parser.getint('Decimal', 'concentration')
 TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
 TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
 LIMS = parser.getint('Decimal', 'LIMS')
-SPACING = 2 #spacing between digestion tables
+SPACING = 2
 
 class Template:
     def __init__(self, wb, request_id, sample_copy, loi=True):
@@ -104,7 +104,6 @@ class Template:
         worksheet.write(self.row, 4, f'%{element}{self.append}', self.label_cell_format)
         self.__move_cursor()
 
-        print(f'inside private method: {sample}')
         start_row = self.row
         for i in range(1, self.COPY+1):
             worksheet.write(self.row, 0, f'{sample}_{i}', self.label_cell_format)
@@ -138,15 +137,10 @@ class Template:
         worksheet.write_formula(self.row, 2, oxide_average, self.reported_percent_format)
 
         self.__move_cursor()
-        #lot = self.lot.get(element.lower(), '')
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} lot:', self.result_string_format)
-        #worksheet.autofit(max_width=130)
-        #worksheet.autofit(max_width=110)
-        #worksheet.merge_range(self.row, 2, self.row, 5, lot, self.workbook.add_format({'italic': True}))
         worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
         merge_start = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         merge_finish = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5)
-        print(f'where Im writing to:{xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)}')
         worksheet.conditional_format(f'{merge_start}:{merge_finish}',
                                      {'type': 'blanks',
                                       'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
@@ -154,10 +148,11 @@ class Template:
         lot_address = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         self.__move_cursor(SPACING)
 
-        return Lot(element.lower(), lot_address)
+        return {'element': element.lower(), 'destination_address': lot_address}
+        #return Lot(element.lower(), lot_address)
 
     def create_analysis_worksheet(self):
-        self.lot = query_database(list(self.element_set))
+        lot_info = query_database(list(self.element_set))
         for sample in sorted(self.sample_to_elements):
             lots = []
             worksheet = self.workbook.add_worksheet(str(sample))
@@ -195,8 +190,8 @@ class Template:
                     move_to += 1
 
             for lot in lots:
-                data = self.lot.get(lot.element, '')
-                cell = lot.destination_address
+                data = lot_info.get(lot['element'], '')
+                cell = lot['destination_address']
                 worksheet.write(cell, data, self.workbook.add_format({'italic': True}))
 
             worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
@@ -560,11 +555,11 @@ class Template:
 
             source_dilution_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 1)
             dilution_formula = '''(LEFT({0},FIND("/",{0})-1)/RIGHT({0},LEN({0})-FIND("/", {0})))'''.format(source_dilution_cell)
-            destination_worksheet.write_formula(to_row, DIGESTION_COLUMN, dilution_formula, self.format['white_font'])
+            destination_worksheet.write_formula(to_row, DILUTION_COLUMN, dilution_formula, self.format['white_font'])
 
             conc_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, 2)
             volume_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, VOLUME_COLUMN)
-            dilution_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, DIGESTION_COLUMN)
+            dilution_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, DILUTION_COLUMN)
             weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, WEIGHT_COLUMN)
             print(f'corection={correction_factor}')
             ppm_calculation = f'=(({conc_cell})*({volume_cell})*({dilution_cell}))/({weight_cell}*{correction_factor})'

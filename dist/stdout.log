@@ -1,0 +1,121 @@
+firing from: microwave
+initial child cound: 1
+firing from: katanax
+initial child cound: 1
+firing from: hotplate
+initial child cound: 1
+size of menu_list: 3
+{'.dynamic.microwave_sample.microwavebutton_0': [<tkinter.IntVar object at 0x000001ED63377D00>]}
+{'.dynamic.microwave_sample.microwavebutton_0': [<tkinter.IntVar object at 0x000001ED63377D00>, <tkinter.IntVar object at 0x000001ED63377D90>]}
+{'.dynamic.microwave_sample.microwavebutton_0': [<tkinter.IntVar object at 0x000001ED63377D00>, <tkinter.IntVar object at 0x000001ED63377D90>], '.dynamic.katanax_sample.katanaxbutton_0': [<tkinter.IntVar object at 0x000001ED63377DF0>]}
+{'.dynamic.microwave_sample.microwavebutton_0': [<tkinter.IntVar object at 0x000001ED63377D00>, <tkinter.IntVar object at 0x000001ED63377D90>], '.dynamic.katanax_sample.katanaxbutton_0': [<tkinter.IntVar object at 0x000001ED63377DF0>, <tkinter.IntVar object at 0x000001ED63377F70>]}
+{'.dynamic.microwave_sample.microwavebutton_0': [<tkinter.IntVar object at 0x000001ED63377D00>, <tkinter.IntVar object at 0x000001ED63377D90>], '.dynamic.katanax_sample.katanaxbutton_0': [<tkinter.IntVar object at 0x000001ED63377DF0>, <tkinter.IntVar object at 0x000001ED63377F70>], '.dynamic.hotplate_sample.hotplatebutton_0': [<tkinter.IntVar object at 0x000001ED63377EB0>]}
+{'.dynamic.microwave_sample.microwavebutton_0': [<tkinter.IntVar object at 0x000001ED63377D00>, <tkinter.IntVar object at 0x000001ED63377D90>], '.dynamic.katanax_sample.katanaxbutton_0': [<tkinter.IntVar object at 0x000001ED63377DF0>, <tkinter.IntVar object at 0x000001ED63377F70>], '.dynamic.hotplate_sample.hotplatebutton_0': [<tkinter.IntVar object at 0x000001ED63377EB0>, <tkinter.IntVar object at 0x000001ED63377C40>]}
+elements: ['Ca']
+microwave_0
+{200126511: ['Ca']}
+storing: 200126511_1
+storing: 200126511_2
+{200126511: ['Ca'], 200126512: ['Ca']}
+storing: 200126512_1
+storing: 200126512_2
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+and iterating through element: in self.element_to_digestion {'Ca': microwave_0}
+this is sample: 200126511
+microwave_0
+corection=1
+corection=1
+
+and iterating through element: in self.element_to_digestion {'Ca': microwave_0}
+this is sample: 200126512
+microwave_0
+corection=1
+corection=1
+
+{'Ca'}
+elements: ['Ca', 'Y']
+microwave_0
+{200126511: ['Ca', 'Y']}
+storing: 200126511_1
+storing: 200126511_2
+{200126511: ['Ca', 'Y'], 200126512: ['Ca', 'Y']}
+storing: 200126512_1
+storing: 200126512_2
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+and iterating through element: in self.element_to_digestion {'Ca': microwave_0, 'Y': microwave_0}
+this is sample: 200126511
+microwave_0
+corection=1
+corection=1
+and iterating through element: in self.element_to_digestion {'Ca': microwave_0, 'Y': microwave_0}
+this is sample: 200126511
+microwave_0
+corection=1
+corection=1
+
+and iterating through element: in self.element_to_digestion {'Ca': microwave_0, 'Y': microwave_0}
+this is sample: 200126512
+microwave_0
+corection=1
+corection=1
+and iterating through element: in self.element_to_digestion {'Ca': microwave_0, 'Y': microwave_0}
+this is sample: 200126512
+microwave_0
+corection=1
+corection=1
+
+{'Y', 'Ca'}

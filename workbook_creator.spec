@@ -5,7 +5,7 @@ a = Analysis(
     ['workbook_creator.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('img/logo.ico', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
