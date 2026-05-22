@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['workbook_creator.py'],
+    ['WORKBOOK_CREATOR.py'],
     pathex=[],
     binaries=[],
     datas=[('img/logo.ico', '.')],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='workbook_creator',
+    name='WORKBOOK_CREATOR',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

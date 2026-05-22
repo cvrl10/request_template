@@ -5,28 +5,30 @@ from tkinter import ttk
 import re
 import os
 import sys
+from configparser import ConfigParser
 
-try:
-    base = sys._MEIPASS
-except Exception:
-    base = os.path.abspath('.')
+file = open('stdout_err.log', mode='w')
+sys.stdout = file
+sys.stderr = file
 
+parser = ConfigParser()
+parser.read('config.ini')
 
-sys.stdout = open('stdout.log', mode='w')
-#sys.stdout = open('stderr_stdout.log', mode='a')
+MAX = parser.getint('Parameters', 'triplicate')
+SPINBOX_TO = parser.getint('Parameters', 'spinbox_to')
+
 class App:
     def __init__(self):
         self.root = Tk()
         self.root.iconbitmap('img/logo.ico')
-        #self.root.iconbitmap(os.path.join(base, 'img/logo.ico'))
 
         self.root.title('workbook_creator')
         self.root.resizable(False, False)
         self.root.geometry('325x500')
 
-        self.root.columnconfigure(0, weight=1)#
-        self.root.columnconfigure(1, weight=1)#
-        self.root.columnconfigure(2, weight=1)#
+        self.root.columnconfigure(0, weight=1)
+        self.root.columnconfigure(1, weight=1)
+        self.root.columnconfigure(2, weight=1)
 
         self.root.rowconfigure(0, weight=2)
         self.root.rowconfigure(1, weight=4)
@@ -58,7 +60,7 @@ class App:
 
         self.replicates = IntVar()
         Radiobutton(radio_frame, text='duplicate', variable=self.replicates, value=2).grid(row=0, column=0)
-        Radiobutton(radio_frame, text='triplicate', variable=self.replicates, value=3).grid(row=0, column=1)
+        Radiobutton(radio_frame, text='triplicate', variable=self.replicates, value=MAX).grid(row=0, column=1)
         self.replicates.set(2)
 
         loi = Label(self.top_frame, text='L.O.I')
@@ -95,7 +97,7 @@ class App:
         self.microwave_label.grid(row=1, column=0, sticky='ne')
         self.microwave_element_frame, self.microwave_sample_frame = self.create_element_and_sample_frame(1, name='microwave')
 
-        self.microwave_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name='microwave')
+        self.microwave_spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name='microwave')
         self.microwave_spinbox.grid(row=1, column=2, sticky='nw')
         self.microwave_spinbox.config(command=self.__spinbox_handler(self.microwave_spinbox,
                                                                      self.microwave_element_frame,
@@ -105,7 +107,7 @@ class App:
         self.katanax_label.grid(row=2, column=0, sticky='ne')
         self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='', name='katanax')
 
-        self.katanax_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name='katanax')
+        self.katanax_spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name='katanax')
         self.katanax_spinbox.grid(row=2, column=2, sticky='nw')
         self.katanax_spinbox.config(command=self.__spinbox_handler(self.katanax_spinbox,
                                                                      self.katanax_element_frame,
@@ -115,7 +117,7 @@ class App:
         self.hotplate_label.grid(row=3, column=0, sticky='ne')
         self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='', name='hotplate')
 
-        self.hotplate_spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name='hotplate')
+        self.hotplate_spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name='hotplate')
         self.hotplate_spinbox.grid(row=3, column=2, sticky='nw')
         self.hotplate_spinbox.config(command=self.__spinbox_handler(self.hotplate_spinbox,
                                                                      self.hotplate_element_frame,
@@ -134,7 +136,7 @@ class App:
         self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
         self.submit.grid(row=0, column=0)
 
-        self.submit.bind('<Enter>', lambda _: self.submit.config(bg='green'))
+        self.submit.bind('<Enter>', lambda _: self.submit.config(bg='#82DF7C'))
         self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace'))
 
 
@@ -143,7 +145,7 @@ class App:
         element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
         element_frame.grid(row=row, column=1, sticky='nsew')
 
-        #spinbox = Spinbox(self.middle_frame, from_=1, to=10, width=2, name=name)
+        #spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name=name)
         #spinbox.grid(row=row, column=2, sticky='w')
 
         sample_frame = Frame(self.middle_frame, bg=color, name=f'{name}_sample')
@@ -166,7 +168,7 @@ class App:
     def __add_checkbutton(self, menu_list):
         def func(_):
             self.check_vars = {}
-            print(f'size of menu_list: {len(menu_list)}')
+            #print(f'size of menu_list: {len(menu_list)}')
             for menu in menu_list:
                 menu.delete(0, 'end')
                 for sample in self.__extract_sample_id():
@@ -181,7 +183,7 @@ class App:
                     self.check_vars[key].append(var)
                     menu.add_checkbutton(label=sample, variable=var)
 
-                    print(self.check_vars)
+                    #print(self.check_vars)
         return func
 
     def __extract_sample_id(self):
@@ -196,12 +198,12 @@ class App:
         return samples
 
     def __spinbox_handler(self, spinbox, element_frame, sample_frame, name):
-        print(f'firing from: {name}')
-        print(f'initial child cound: {len(element_frame.winfo_children())}')
+        #print(f'firing from: {name}')
+        #print(f'initial child cound: {len(element_frame.winfo_children())}')
         def func():
             count = int(spinbox.get())
             child_count = len(element_frame.winfo_children())
-            print(f'child_count {child_count}')
+            #print(f'child_count {child_count}')
             if count > child_count:
                 for i in range(child_count, count):
                     entry = Entry(element_frame, name=f'{name}entry_{i}')
@@ -228,7 +230,7 @@ class App:
 
                     menu = self.root.nametowidget(menu)
                     self.menu_list.remove(menu)
-                    print(f'menu is: {menu}')
+                    #print(f'menu is: {menu}')
 
                     button.destroy()
 
@@ -248,7 +250,7 @@ class App:
                 continue
             selected_sample = [sample for sample, var in zip(samples, self.check_vars[str(menubutton)]) if var.get() == 1]
             elements = re.split(r'[,\s]+', entry.get())
-            print(f'elements: {elements}')
+            #print(f'elements: {elements}')
             digestion.append((elements, selected_sample))
         return digestion
 
@@ -263,7 +265,6 @@ class App:
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
 
-
         for elements, samples in microwave:
             template.add_microwave(elements, samples)
 
@@ -275,7 +276,7 @@ class App:
 
         template.create_analysis_worksheet()
         workbook.close()
-        print(template.element_set)
+        #print(template.element_set)
         os.startfile('master_workbook.xlsx')
 
 

@@ -3,25 +3,26 @@ from configparser import ConfigParser
 import re
 from datetime import date
 from pathlib import Path
-import logging
+#import logging
 from database import query_database
 import sys
 
-sys.stdout = open('stdout.log', mode='w')
-#sys.stdout = open('stderr_stdout.log', mode='a')
+file = open('stdout_err.log', mode='w')
+sys.stdout = file
+sys.stderr = file
 
 EMPTY_CELL = '#FFFFCC'
 WEIGHT_COLUMN = 6
 VOLUME_COLUMN = WEIGHT_COLUMN + 1
 DILUTION_COLUMN = VOLUME_COLUMN + 1
 log_file = 'create_template.log'
-logging.basicConfig(filename=log_file, level=logging.INFO, filemode='w')
-logger = logging.getLogger(log_file)
+#logging.basicConfig(filename=log_file, level=logging.INFO, filemode='w')
+#logger = logging.getLogger(log_file)
 
 
-base = Path(__file__).parent
-config_path = base/'config.ini'
-print(config_path)
+#base = Path(__file__).parent
+#config_path = base/'config.ini'
+#print(config_path)
 ANALYSIS = {'cr+6_epa': 'UV-Vis analysis', 'cr6+_epa': 'UV-Vis analysis', 'cr6_epa': 'UV-Vis analysis'}
 parser = ConfigParser()
 parser.read('config.ini')
@@ -437,7 +438,7 @@ class Template:
 
         create_microwave_program()
         microwave = self.Digestion(name='microwave', elements=elements, format=self.format)
-        logger.info(f'{microwave.name} with sample(s)={samples} digesting element(s)={elements}')
+        #logger.info(f'{microwave.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, microwave, volume='')
         self.__move_cursor(SPACING)
         self.digestion_sheet.autofit()
@@ -460,7 +461,7 @@ class Template:
         self.__move_cursor()
 
         hotplate = self.Digestion(name='hotplate', elements=elements, format=self.format)
-        logger.info(f'{hotplate.name} with sample(s)={samples} digesting element(s)={elements}')
+        #logger.info(f'{hotplate.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, hotplate, volume='')
         self.__move_cursor(SPACING)
         self.digestion_sheet.autofit()
@@ -484,7 +485,7 @@ class Template:
         self.__move_cursor()
 
         katanax = self.Digestion(name='katanax', elements=elements, format=self.format)
-        logger.info(f'{katanax.name} with sample(s)={samples} digesting element(s)={elements}')
+        #logger.info(f'{katanax.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, katanax, volume=250)
         self.__move_cursor(SPACING)
         self.digestion_sheet.autofit()
@@ -504,13 +505,13 @@ class Template:
                 self.sample_to_elements[sample] = digestion.elements.copy()  # this is fine because I've taken the consideration that there won't be any empty list
                 print(self.sample_to_elements)
                 for element in digestion.elements:
-                    logger.info(f'adding {element} to {sample}')
+                    #logger.info(f'adding {element} to {sample}')
                     '''mapping each element to its Digestion object, haven't tested what happen if same element from different digestion will map'''
                     self.element_to_digestion[element] = digestion
             else:
                 self.sample_to_elements[sample].extend(digestion.elements.copy())
                 for element in digestion.elements:
-                    logger.info(f'adding {element} to {sample}')
+                    #logger.info(f'adding {element} to {sample}')
                     self.element_to_digestion[element] = digestion
 
             for i in range(1, self.COPY+1):
@@ -590,13 +591,13 @@ class Template:
             weight_ref = f'digestion_page!{weight_cell}'
             volume_ref = f'digestion_page!{volume_cell}'
 
-            logger.info(f'referencing {sample_id} weight from {weight_ref }')
-            logger.info(f'referencing {sample_id} volume from {volume_ref}')
+            #logger.info(f'referencing {sample_id} weight from {weight_ref }')
+            #logger.info(f'referencing {sample_id} volume from {volume_ref}')
 
             return weight_ref, volume_ref
 
         def store_data(self, sample_id, source_row_index):
-            logger.info(f'storing: {sample_id} @digestion_page!{source_row_index}')
+            #logger.info(f'storing: {sample_id} @digestion_page!{source_row_index}')
             self.sampleid_to_sourcerow[sample_id] = source_row_index
 
         def __str__(self):

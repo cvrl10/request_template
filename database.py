@@ -3,7 +3,9 @@ import sqlite3
 from datetime import datetime
 import sys
 
-sys.stdout = open('stdout.log', mode='w')
+file = open('stdout_err.log', mode='w')
+sys.stdout = file
+sys.stderr = file
 
 def query_database(elements):
     lot = {}
@@ -32,7 +34,6 @@ def query_database(elements):
                                                         datetime.strptime(record['expiration'], date_format).strftime('%Y-%m-%d')))
                 except (ValueError, sqlite3.IntegrityError) as e:
                     print(e)
-                    pass
 
         conn.commit()
         placeholders = ', '.join('?' for _ in elements)

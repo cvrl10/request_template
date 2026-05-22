@@ -1,4 +1,4 @@
-('C:\\Users\\carla\\clariant\\request_template\\build\\workbook_creator\\PYZ-00.pyz',
+('C:\\Users\\carla\\clariant\\request_template\\build\\WORKBOOK_CREATOR\\PYZ-00.pyz',
  [('_compat_pickle', 'C:\\Python310\\lib\\_compat_pickle.py', 'PYMODULE'),
   ('_compression', 'C:\\Python310\\lib\\_compression.py', 'PYMODULE'),
   ('_py_abc', 'C:\\Python310\\lib\\_py_abc.py', 'PYMODULE'),
