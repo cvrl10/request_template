@@ -1,13 +1,10 @@
 hotplate_0
-{200118339: ['LOI']}
-storing: 200118339_1
-storing: 200118339_2
-{200118339: ['LOI'], 200118340: ['LOI']}
-storing: 200118340_1
-storing: 200118340_2
-{200118339: ['LOI'], 200118340: ['LOI'], 200118341: ['LOI']}
-storing: 200118341_1
-storing: 200118341_2
+{200126511: ['LOI']}
+storing: 200126511_1
+storing: 200126511_2
+{200126511: ['LOI'], 200126512: ['LOI']}
+storing: 200126512_1
+storing: 200126512_2
 time data 'July 30 2026' does not match format '%b %d %Y'
 time data 'Nov 30 2027' does not match format '%B %d %Y'
 time data 'Jan 30 2026' does not match format '%B %d %Y'
@@ -36,22 +33,15 @@ time data 'Oct 30 2026' does not match format '%B %d %Y'
 time data 'Oct 30 2026' does not match format '%B %d %Y'
 time data 'Oct 30 2026' does not match format '%B %d %Y'
 UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
-
 
 
 hotplate_0
-{200118340: ['LOI']}
-storing: 200118340_1
-storing: 200118340_2
-hotplate_1
-{200118340: ['LOI'], 200118339: ['Ca']}
-storing: 200118339_1
-storing: 200118339_2
-storing: 200118340_1
-storing: 200118340_2
-{200118340: ['LOI', 'Ca'], 200118339: ['Ca'], 200118341: ['Ca']}
-storing: 200118341_1
-storing: 200118341_2
+{200126511: ['LOI']}
+storing: 200126511_1
+storing: 200126511_2
+{200126511: ['LOI'], 200126512: ['LOI']}
+storing: 200126512_1
+storing: 200126512_2
 time data 'July 30 2026' does not match format '%b %d %Y'
 time data 'Nov 30 2027' does not match format '%B %d %Y'
 time data 'Jan 30 2026' does not match format '%B %d %Y'
@@ -80,73 +70,5 @@ time data 'Oct 30 2026' does not match format '%B %d %Y'
 time data 'Oct 30 2026' does not match format '%B %d %Y'
 time data 'Oct 30 2026' does not match format '%B %d %Y'
 UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
-and iterating through element: in self.element_to_digestion {'LOI': hotplate_0, 'Ca': hotplate_1}
-this is sample: 200118339
-hotplate_1
-corection=$F$7
-corection=$F$7
 
-and iterating through element: in self.element_to_digestion {'LOI': hotplate_0, 'Ca': hotplate_1}
-this is sample: 200118340
-hotplate_1
-corection=$F$7
-corection=$F$7
-
-and iterating through element: in self.element_to_digestion {'LOI': hotplate_0, 'Ca': hotplate_1}
-this is sample: 200118341
-hotplate_1
-corection=$F$7
-corection=$F$7
-
-hotplate_0
-{200118340: ['LOI']}
-storing: 200118340_1
-storing: 200118340_2
-hotplate_1
-{200118340: ['LOI'], 200118339: ['Ca']}
-storing: 200118339_1
-storing: 200118339_2
-{200118340: ['LOI'], 200118339: ['Ca'], 200118341: ['Ca']}
-storing: 200118341_1
-storing: 200118341_2
-time data 'July 30 2026' does not match format '%b %d %Y'
-time data 'Nov 30 2027' does not match format '%B %d %Y'
-time data 'Jan 30 2026' does not match format '%B %d %Y'
-time data 'Feb 28 2026' does not match format '%B %d %Y'
-time data 'Apr 30 2027' does not match format '%B %d %Y'
-time data 'March 30 2026' does not match format '%b %d %Y'
-time data 'Oct 30 2026' does not match format '%B %d %Y'
-time data 'Aug 30 2026' does not match format '%B %d %Y'
-UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
-time data 'Aug 30 2026' does not match format '%B %d %Y'
-time data 'Feb 28 2027' does not match format '%B %d %Y'
-time data 'Oct 30 2026' does not match format '%B %d %Y'
-time data 'Sep 30 2026' does not match format '%B %d %Y'
-time data 'July 30 2026' does not match format '%b %d %Y'
-UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
-time data 'Aug 30 2026' does not match format '%B %d %Y'
-UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
-time data 'Feb 28 2027' does not match format '%B %d %Y'
-time data 'April 30 2026' does not match format '%b %d %Y'
-time data 'July 30 2026' does not match format '%b %d %Y'
-time data 'Aug 30 2026' does not match format '%B %d %Y'
-time data 'Aug 30 2026' does not match format '%B %d %Y'
-UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
-time data 'Sep 30 2026' does not match format '%B %d %Y'
-time data 'Oct 30 2026' does not match format '%B %d %Y'
-time data 'Oct 30 2026' does not match format '%B %d %Y'
-time data 'Oct 30 2026' does not match format '%B %d %Y'
-UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
-and iterating through element: in self.element_to_digestion {'LOI': hotplate_0, 'Ca': hotplate_1}
-this is sample: 200118339
-hotplate_1
-corection=$F$7
-corection=$F$7
-
-
-and iterating through element: in self.element_to_digestion {'LOI': hotplate_0, 'Ca': hotplate_1}
-this is sample: 200118341
-hotplate_1
-corection=$F$7
-corection=$F$7
 

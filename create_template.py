@@ -162,6 +162,9 @@ class Template:
             if self.__contains_chrome_3(self.sample_to_elements[sample]):
                 cr2O3, cr6 = self.__edit_list(self.sample_to_elements[sample])
             for element in self.sample_to_elements[sample]:
+                if element.upper() == 'LOI':
+                    worksheet.autofit()
+                    continue
                 print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 digestion_object = self.element_to_digestion[element]
                 if self.__is_chrome_3(element.lower()):
