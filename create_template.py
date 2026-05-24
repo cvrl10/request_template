@@ -16,13 +16,7 @@ WEIGHT_COLUMN = 6
 VOLUME_COLUMN = WEIGHT_COLUMN + 1
 DILUTION_COLUMN = VOLUME_COLUMN + 1
 log_file = 'create_template.log'
-#logging.basicConfig(filename=log_file, level=logging.INFO, filemode='w')
-#logger = logging.getLogger(log_file)
 
-
-#base = Path(__file__).parent
-#config_path = base/'config.ini'
-#print(config_path)
 ANALYSIS = {'cr+6_epa': 'UV-Vis analysis', 'cr6+_epa': 'UV-Vis analysis', 'cr6_epa': 'UV-Vis analysis'}
 parser = ConfigParser()
 parser.read('config.ini')
@@ -32,10 +26,14 @@ ic_analysis = parser.get('Analysis', 'ic')
 for element in re.split(r'[,\s]+', ic_analysis):
     ANALYSIS.update({element.lower(): 'IC analysis'})
 
+ise_analysis = parser.get('Analysis', 'ise')
+for element in re.split(r'[,\s]+', ise_analysis):
+    ANALYSIS.update({element.lower(): 'ISE analysis'})
+
 titration_analysis = parser.get('Analysis', 'titration')
 titration_analysis = map(lambda s: s.lower(), re.split(r'[,\s]+', titration_analysis))
 
-titration_analysis_list = list(titration_analysis)
+TITRATION_ANALYSIS = list(titration_analysis)
 
 STEP = parser.getint('Microwave Program', 'step')
 WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
@@ -170,7 +168,7 @@ class Template:
                     self.__create_titration_table_cr3(worksheet, element, sample, cr2O3, cr6, correction_factor)
                     worksheet.autofit()
                     continue
-                if element.lower() in titration_analysis_list:
+                if element.lower() in TITRATION_ANALYSIS:
                     move_to = self.row + 2
                     self.__create_titration_table(worksheet, element, sample, correction_factor)
                     for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
@@ -223,7 +221,7 @@ class Template:
     def __edit_list(self, sample_to_elements_list):
         skip_list = []
         print(f'printing parameter: {sample_to_elements_list}')
-        check_list = list(map(lambda e: e.lower(), titration_analysis_list))
+        check_list = list(map(lambda e: e.lower(), TITRATION_ANALYSIS))
         for e in sample_to_elements_list:
             if e.lower() in check_list:
                 print(e in sample_to_elements_list)
