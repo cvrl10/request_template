@@ -17,23 +17,19 @@ VOLUME_COLUMN = WEIGHT_COLUMN + 1
 DILUTION_COLUMN = VOLUME_COLUMN + 1
 log_file = 'create_template.log'
 
-ANALYSIS = {'cr+6_epa': 'UV-Vis analysis', 'cr6+_epa': 'UV-Vis analysis', 'cr6_epa': 'UV-Vis analysis'}
 parser = ConfigParser()
+parser.optionxform = str
 parser.read('config.ini')
+ANALYSIS = {}
 
+for key, value in parser.items('Analysis'):
+    for element in re.split(r'[,\s]+', value):
+        ANALYSIS.update({element.lower(): f'{key} analysis'})
 
-ic_analysis = parser.get('Analysis', 'ic')
-for element in re.split(r'[,\s]+', ic_analysis):
-    ANALYSIS.update({element.lower(): 'IC analysis'})
+TITRATION_ANALYSIS = parser.get('Analysis', 'titration')
+TITRATION_ANALYSIS = map(lambda s: s.lower(), re.split(r'[,\s]+', TITRATION_ANALYSIS))
 
-ise_analysis = parser.get('Analysis', 'ise')
-for element in re.split(r'[,\s]+', ise_analysis):
-    ANALYSIS.update({element.lower(): 'ISE analysis'})
-
-titration_analysis = parser.get('Analysis', 'titration')
-titration_analysis = map(lambda s: s.lower(), re.split(r'[,\s]+', titration_analysis))
-
-TITRATION_ANALYSIS = list(titration_analysis)
+TITRATION_ANALYSIS = list(TITRATION_ANALYSIS)
 
 STEP = parser.getint('Microwave Program', 'step')
 WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
