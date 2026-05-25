@@ -1,4 +1,4 @@
-from create_template import Template
+from create_workbook import Template
 import xlsxwriter
 from tkinter import *
 from tkinter import ttk
@@ -90,7 +90,7 @@ class App:
         self.menu_list = []
         self.check_vars = {}
 
-        self.element_label = Label(self.middle_frame, text='element(s)')
+        self.element_label = Label(self.middle_frame, text='analyte(s)')
         self.element_label.grid(row=0, column=1, sticky='w')
 
         self.microwave_label = Label(self.middle_frame, text='Microwave')
