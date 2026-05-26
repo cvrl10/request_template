@@ -21,6 +21,7 @@ parser = ConfigParser()
 parser.optionxform = str
 parser.read('config.ini')
 ANALYSIS = {}
+COMPOUND = {}
 
 for key, value in parser.items('Analysis'):
     for element in re.split(r'[,\s]+', value):
@@ -28,8 +29,16 @@ for key, value in parser.items('Analysis'):
 
 TITRATION_ANALYSIS = parser.get('Analysis', 'titration')
 TITRATION_ANALYSIS = map(lambda s: s.lower(), re.split(r'[,\s]+', TITRATION_ANALYSIS))
-
 TITRATION_ANALYSIS = list(TITRATION_ANALYSIS)
+
+for compound, analyte in parser.items('Compound'):
+    print('here')
+    for analyte in re.split(r'[,\s]+', analyte):
+        if analyte.lower() not in COMPOUND:
+            COMPOUND[analyte.lower()] = []
+            COMPOUND[analyte.lower()].append(compound)
+        else:
+            COMPOUND[analyte.lower()].append(compound)
 
 STEP = parser.getint('Microwave Program', 'step')
 WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
@@ -122,14 +131,17 @@ class Template:
         percent_average = f'=AVERAGE({percent_start}:{percent_end})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
 
-        self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} oxide factor:', self.result_string_format)
-        worksheet.write(self.row, 2, '', self.workbook.add_format({'align': 'left'}))
-        oxide_factor = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
-        oxide_average = f'=AVERAGE({percent_start}:{percent_end})*({oxide_factor})'
-        self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} oxide result:', self.result_string_format)
-        worksheet.write_formula(self.row, 2, oxide_average, self.reported_percent_format)
+        compounds = COMPOUND.get(element.lower(), False)
+        if compounds:
+            for compound in compounds:
+                self.__move_cursor()
+                worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} {compound} factor:', self.result_string_format)
+                worksheet.write(self.row, 2, '', self.workbook.add_format({'align': 'left'}))
+                compound_factor = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
+                compound_average = f'=AVERAGE({percent_start}:{percent_end})*({compound_factor})'
+                self.__move_cursor()
+                worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} {compound} result:', self.result_string_format)
+                worksheet.write_formula(self.row, 2, compound_average, self.reported_percent_format)
 
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} lot:', self.result_string_format)
