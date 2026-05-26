@@ -139,7 +139,8 @@ class App:
         self.submit.bind('<Enter>', lambda _: self.submit.config(bg='#82DF7C'))
         self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace'))
 
-
+        self.root.bind('<Control-c>', lambda _: os.startfile('config.ini'))
+        self.root.bind('<Control-l>', lambda _: os.startfile('stdout_err.log'))
 
     def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')

@@ -2,8 +2,6 @@ import xlsxwriter
 from configparser import ConfigParser
 import re
 from datetime import date
-from pathlib import Path
-#import logging
 from database import query_database
 import sys
 
@@ -15,43 +13,14 @@ EMPTY_CELL = '#FFFFCC'
 WEIGHT_COLUMN = 6
 VOLUME_COLUMN = WEIGHT_COLUMN + 1
 DILUTION_COLUMN = VOLUME_COLUMN + 1
-log_file = 'create_template.log'
 
 parser = ConfigParser()
 parser.optionxform = str
 parser.read('config.ini')
-ANALYSIS = {}
-COMPOUND = {}
-
-for key, value in parser.items('Analysis'):
-    for element in re.split(r'[,\s]+', value):
-        ANALYSIS.update({element.lower(): f'{key} analysis'})
-
-TITRATION_ANALYSIS = parser.get('Analysis', 'titration')
-TITRATION_ANALYSIS = map(lambda s: s.lower(), re.split(r'[,\s]+', TITRATION_ANALYSIS))
-TITRATION_ANALYSIS = list(TITRATION_ANALYSIS)
-
-DEFAULT_ANALYSIS = parser.get('Analysis', 'default')
-
-for compound, analyte in parser.items('Compound'):
-    print('here')
-    for analyte in re.split(r'[,\s]+', analyte):
-        if analyte.lower() not in COMPOUND:
-            COMPOUND[analyte.lower()] = []
-            COMPOUND[analyte.lower()].append(compound)
-        else:
-            COMPOUND[analyte.lower()].append(compound)
-
-STEP = parser.getint('Microwave Program', 'step')
-WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
-CONC_DECIMAL = parser.getint('Decimal', 'concentration')
-TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
-TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
-LIMS = parser.getint('Decimal', 'LIMS')
-SPACING = 2
 
 class Template:
     def __init__(self, wb, request_id, sample_copy, loi=True):
+        self.__config()
         self.loi = loi
         self.workbook = wb
         self.request_id = request_id
@@ -66,11 +35,11 @@ class Template:
         self.header_format = wb.add_format({'border': 1, 'bold': True, 'align': 'center'})
         self.label_cell_format = wb.add_format({'border': 1, 'bold': True})
         self.empty_cell_format = wb.add_format({'border': 1})
-        self.weight_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(WEIGHT_DECIMAL)})
-        self.conc_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(CONC_DECIMAL)})
-        self.titrant_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(TITRANT_VOL)})
-        self.titrant_result_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(TITRANT_RESULT)})
-        self.lims_format = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(LIMS)})
+        self.weight_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(self.WEIGHT_DECIMAL)})
+        self.conc_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(self.CONC_DECIMAL)})
+        self.titrant_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(self.TITRANT_VOL)})
+        self.titrant_result_cell = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(self.TITRANT_RESULT)})
+        self.lims_format = wb.add_format({'border': 1, 'num_format': Template.__rounding_places(self.LIMS)})
         self.empty_cell_format_left = wb.add_format({'border': 1, 'align': 'left'})
         self.result_cell_format = wb.add_format({'border': 1, 'num_format': '0.00'})
         self.result_string_format = wb.add_format({'align': 'right'})
@@ -78,8 +47,8 @@ class Template:
                                           'valign': 'top',
                                           'text_wrap': True,
                                           'italic': True})
-        self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(LIMS)}" ppm"'})
-        self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(LIMS)}" %"'})
+        self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(self.LIMS)}" ppm"'})
+        self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(self.LIMS)}" %"'})
         color = '#000000'
         color = '#FFFFFF'
         self.white_font_format = wb.add_format({'font_color': color})
@@ -97,8 +66,40 @@ class Template:
     def __rounding_places(rounding_places):
         return f'0.{"0"*rounding_places}'
 
+    def __config(self):
+        parser.optionxform = str
+        parser.read('config.ini')
+        self.ANALYSIS = {}
+        self.COMPOUND = {}
+
+        for key, value in parser.items('Analysis'):
+            for element in re.split(r'[,\s]+', value):
+                self.ANALYSIS.update({element.lower(): f'{key} analysis'})
+
+        TITRATION_ANALYSIS = parser.get('Analysis', 'titration')
+        TITRATION_ANALYSIS = map(lambda s: s.lower(), re.split(r'[,\s]+', TITRATION_ANALYSIS))
+        self.TITRATION_ANALYSIS = list(TITRATION_ANALYSIS)
+
+        self.DEFAULT_ANALYSIS = parser.get('Analysis', 'default')
+
+        for compound, analyte in parser.items('Compound'):
+            for analyte in re.split(r'[,\s]+', analyte):
+                if analyte.lower() not in self.COMPOUND:
+                    self.COMPOUND[analyte.lower()] = []
+                    self.COMPOUND[analyte.lower()].append(compound)
+                else:
+                    self.COMPOUND[analyte.lower()].append(compound)
+
+        self.STEP = parser.getint('Microwave Program', 'step')
+        self.WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
+        self.CONC_DECIMAL = parser.getint('Decimal', 'concentration')
+        self.TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
+        self.TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
+        self.LIMS = parser.getint('Decimal', 'LIMS')
+        self.SPACING = 2
+
     def __create_analysis_table(self, worksheet, element, sample):
-        analysis = ANALYSIS.get(element.lower(), f'{DEFAULT_ANALYSIS} analysis')
+        analysis = self.ANALYSIS.get(element.lower(), f'{self.DEFAULT_ANALYSIS} analysis')
         analysis = f'{element} {analysis}'
         worksheet.merge_range(self.row, 0, self.row, 1, analysis, self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
@@ -133,7 +134,7 @@ class Template:
         percent_average = f'=AVERAGE({percent_start}:{percent_end})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
 
-        compounds = COMPOUND.get(element.lower(), False)
+        compounds = self.COMPOUND.get(element.lower(), False)
         if compounds:
             for compound in sorted(compounds):
                 self.__move_cursor()
@@ -155,7 +156,7 @@ class Template:
                                       'format': self.workbook.add_format({'bg_color': EMPTY_CELL})
                                       })
         lot_address = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
 
         return {'element': element.lower(), 'destination_address': lot_address}
         #return Lot(element.lower(), lot_address)
@@ -181,7 +182,7 @@ class Template:
                     self.__create_titration_table_cr3(worksheet, element, sample, cr2O3, cr6, correction_factor)
                     worksheet.autofit()
                     continue
-                if element.lower() in TITRATION_ANALYSIS:
+                if element.lower() in self.TITRATION_ANALYSIS:
                     move_to = self.row + 2
                     self.__create_titration_table(worksheet, element, sample, correction_factor)
                     for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
@@ -222,7 +223,7 @@ class Template:
         worksheet.write(self.row, 1, self.request_id, self.workbook.add_format({'align': 'left'}))
 
         self.__move_cursor()
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
 
     def __contains_chrome_3(self, element_list):
             bool = list(filter(self.__is_chrome_3, element_list))
@@ -234,7 +235,7 @@ class Template:
     def __edit_list(self, sample_to_elements_list):
         skip_list = []
         print(f'printing parameter: {sample_to_elements_list}')
-        check_list = list(map(lambda e: e.lower(), TITRATION_ANALYSIS))
+        check_list = list(map(lambda e: e.lower(), self.TITRATION_ANALYSIS))
         for e in sample_to_elements_list:
             if e.lower() in check_list:
                 print(e in sample_to_elements_list)
@@ -271,13 +272,13 @@ class Template:
         worksheet.write(self.row, 0, f'{sample}', self.label_cell_format)
         worksheet.write_formula(self.row, 1, total_cell, self.titrant_result_cell)
         worksheet.write_formula(self.row, 2, cr6_cell, self.titrant_result_cell)
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})*({10_000})', self.reported_ppm_format)
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})', self.reported_percent_format)
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
 
     def __create_titration_table(self, worksheet, element, sample, correction_factor):
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element} titration analysis', self.workbook.add_format({'align': 'left'}))
@@ -317,7 +318,7 @@ class Template:
         percent_average = f'=AVERAGE({ppm_start}:{ppm_end})*(1/{correction_factor})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
         percent_row = self.row
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
         #worksheet.autofit()
 
         return xlsxwriter.utility.xl_rowcol_to_cell(percent_row, 2)
@@ -355,7 +356,7 @@ class Template:
         worksheet.write_formula(self.row, 5, f'1-({loi_cell}/100)', self.workbook.add_format({'border': 1, 'num_format': '0.0000'}))
 
         correction_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5, True, True)
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
 
         return correction_cell
 
@@ -408,7 +409,7 @@ class Template:
                 self.__move_cursor()
             write(data=[15, 1200, 180, 65, 110])
             write(data=[15, 1500, 240, 65, 110])
-            for _ in range(STEP-2):
+            for _ in range(self.STEP-2):
                 write(data=['', '', '', '', ''])
 
         self.digestion_sheet.merge_range(self.row, 0, self.row, 4, 'Microwave', self.header_format)
@@ -449,9 +450,8 @@ class Template:
 
         create_microwave_program()
         microwave = self.Digestion(name='microwave', elements=elements, format=self.format)
-        #logger.info(f'{microwave.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, microwave, volume='')
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
 
     def add_hotplate(self, elements: list, samples: list):
@@ -474,7 +474,7 @@ class Template:
         hotplate = self.Digestion(name='hotplate', elements=elements, format=self.format)
         #logger.info(f'{hotplate.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, hotplate, volume='')
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
 
     def add_katanax(self, elements: list, samples: list):
@@ -498,7 +498,7 @@ class Template:
         katanax = self.Digestion(name='katanax', elements=elements, format=self.format)
         #logger.info(f'{katanax.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, katanax, volume=250)
-        self.__move_cursor(SPACING)
+        self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
 
 
