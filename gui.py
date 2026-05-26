@@ -198,8 +198,6 @@ class App:
         return samples
 
     def __spinbox_handler(self, spinbox, element_frame, sample_frame, name):
-        #print(f'firing from: {name}')
-        #print(f'initial child cound: {len(element_frame.winfo_children())}')
         def func():
             count = int(spinbox.get())
             child_count = len(element_frame.winfo_children())

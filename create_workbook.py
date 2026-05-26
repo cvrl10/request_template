@@ -31,6 +31,8 @@ TITRATION_ANALYSIS = parser.get('Analysis', 'titration')
 TITRATION_ANALYSIS = map(lambda s: s.lower(), re.split(r'[,\s]+', TITRATION_ANALYSIS))
 TITRATION_ANALYSIS = list(TITRATION_ANALYSIS)
 
+DEFAULT_ANALYSIS = parser.get('Analysis', 'default')
+
 for compound, analyte in parser.items('Compound'):
     print('here')
     for analyte in re.split(r'[,\s]+', analyte):
@@ -96,7 +98,7 @@ class Template:
         return f'0.{"0"*rounding_places}'
 
     def __create_analysis_table(self, worksheet, element, sample):
-        analysis = ANALYSIS.get(element.lower(), f'ICP analysis')
+        analysis = ANALYSIS.get(element.lower(), f'{DEFAULT_ANALYSIS} analysis')
         analysis = f'{element} {analysis}'
         worksheet.merge_range(self.row, 0, self.row, 1, analysis, self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
@@ -614,30 +616,5 @@ class Template:
 
         def __repr__(self):
             return str(self)
-
-
-copy = 1
-
-#LOI = True
-
-#url = 'master_template.xlsx'
-#workbook = xlsxwriter.Workbook(url)
-
-#template = Template(workbook, 100482511, 2, loi=LOI)
-#s = ['200127586', '200127587']
-
-#for i in range(copy):
-    #template.add_microwave(['Cr', 'Cu'], s)
-
-#for i in range(copy):
-    #template.add_katanax(['Ti', 'Si'], ['200127587', '200127588'])
-
-#for i in range(copy):
-    #template.add_hotplate(['Cr3', 'Cr6', 'Cr2O3'], ['200127586'])
-
-#template.create_analysis_worksheet()
-#workbook.close()
-
-#os.startfile('master_template.xlsx')
 
 
