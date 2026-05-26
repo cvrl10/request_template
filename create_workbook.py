@@ -133,7 +133,7 @@ class Template:
 
         compounds = COMPOUND.get(element.lower(), False)
         if compounds:
-            for compound in compounds:
+            for compound in sorted(compounds):
                 self.__move_cursor()
                 worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} {compound} factor:', self.result_string_format)
                 worksheet.write(self.row, 2, '', self.workbook.add_format({'align': 'left'}))
