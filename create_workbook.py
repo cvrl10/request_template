@@ -106,6 +106,7 @@ class Template:
         worksheet.write(self.row, 2, 'conc. [mg/L]', self.label_cell_format)
         worksheet.set_column(2, 2, len('conc. [mg/L]'))
         worksheet.write(self.row, 3, f'{element}_ppm{self.append}', self.label_cell_format)
+        worksheet.set_column(self.row, 3, len('#DIV/0!'))
         worksheet.write(self.row, 4, f'%{element}{self.append}', self.label_cell_format)
         self.__move_cursor()
 
