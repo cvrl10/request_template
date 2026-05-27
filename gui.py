@@ -143,8 +143,10 @@ class App:
 
         self.root.bind('<Control-c>', lambda _: os.startfile('config.ini'))
 
-        notepad = Path(parser.get('Path', 'notepad'))
-        self.root.bind('<Control-l>', lambda _: subprocess.Popen([notepad, 'lot.csv']))
+        try:
+            self.root.bind('<Control-l>', lambda _: subprocess.Popen([Path(r'C:\Windows\System32\notepad.exe'), 'lot.csv']))
+        except Exception as e:
+            print(e)
 
     def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
@@ -264,8 +266,15 @@ class App:
 
         COPY = self.replicates.get()
         loi = self.loi.get()
-        destination = Path(parser.get('Path', 'destination'))
-        url = destination/'master_workbook.xlsx' if destination.exists() else 'master_workbook.xlsx'
+        url = 'master_workbook.xlsx'
+        try:
+            parser.read('config.ini')
+            destination = Path(parser.get('Path', 'destination'))
+            if destination.exists():
+                url = destination/url
+        except Exception as e:
+            print(e)
+
         print(f'path={url}')
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
@@ -281,7 +290,6 @@ class App:
 
         template.create_analysis_worksheet()
         workbook.close()
-        #print(template.element_set)
         os.startfile(url)
 
 
