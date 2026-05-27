@@ -15,8 +15,6 @@ VOLUME_COLUMN = WEIGHT_COLUMN + 1
 DILUTION_COLUMN = VOLUME_COLUMN + 1
 
 parser = ConfigParser()
-parser.optionxform = str
-parser.read('config.ini')
 
 class Template:
     def __init__(self, wb, request_id, sample_copy, loi=True):

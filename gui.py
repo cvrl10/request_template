@@ -3,7 +3,9 @@ import xlsxwriter
 from tkinter import *
 from tkinter import ttk
 import re
+import subprocess
 import os
+from  pathlib import Path
 import sys
 from configparser import ConfigParser
 
@@ -14,7 +16,6 @@ sys.stderr = file
 parser = ConfigParser()
 parser.read('config.ini')
 
-MAX = parser.getint('Parameters', 'triplicate')
 SPINBOX_TO = parser.getint('Parameters', 'spinbox_to')
 
 class App:
@@ -60,7 +61,8 @@ class App:
 
         self.replicates = IntVar()
         Radiobutton(radio_frame, text='duplicate', variable=self.replicates, value=2).grid(row=0, column=0)
-        Radiobutton(radio_frame, text='triplicate', variable=self.replicates, value=MAX).grid(row=0, column=1)
+        parser.read('config.ini')
+        Radiobutton(radio_frame, text='triplicate', variable=self.replicates, value=parser.getint('Parameters', 'triplicate')).grid(row=0, column=1)
         self.replicates.set(2)
 
         loi = Label(self.top_frame, text='L.O.I')
@@ -140,7 +142,9 @@ class App:
         self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace'))
 
         self.root.bind('<Control-c>', lambda _: os.startfile('config.ini'))
-        self.root.bind('<Control-l>', lambda _: os.startfile('stdout_err.log'))
+
+        notepad = Path(parser.get('Path', 'notepad'))
+        self.root.bind('<Control-l>', lambda _: subprocess.Popen([notepad, 'lot.csv']))
 
     def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
@@ -260,7 +264,9 @@ class App:
 
         COPY = self.replicates.get()
         loi = self.loi.get()
-        url = 'master_workbook.xlsx'
+        destination = Path(parser.get('Path', 'destination'))
+        url = destination/'master_workbook.xlsx' if destination.exists() else 'master_workbook.xlsx'
+        print(f'path={url}')
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, self.request_id_entry.get(), COPY, loi=loi)
 
@@ -276,7 +282,7 @@ class App:
         template.create_analysis_worksheet()
         workbook.close()
         #print(template.element_set)
-        os.startfile('master_workbook.xlsx')
+        os.startfile(url)
 
 
     def run(self):
