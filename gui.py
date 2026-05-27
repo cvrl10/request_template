@@ -141,10 +141,14 @@ class App:
         self.submit.bind('<Enter>', lambda _: self.submit.config(bg='#82DF7C'))
         self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace'))
 
-        self.root.bind('<Control-c>', lambda _: os.startfile('config.ini'))
+        self.root.bind('<Control-comma>', lambda _: os.startfile('config.ini'))
+        self.root.bind('<Alt-c>', lambda _: os.startfile('config.ini'))
+        self.root.bind('<F1>', lambda _: os.startfile('config.ini'))
 
         try:
             self.root.bind('<Control-l>', lambda _: subprocess.Popen([Path(r'C:\Windows\System32\notepad.exe'), 'lot.csv']))
+            self.root.bind('<Alt-l>', lambda _: subprocess.Popen([Path(r'C:\Windows\System32\notepad.exe'), 'lot.csv']))
+
         except Exception as e:
             print(e)
 
