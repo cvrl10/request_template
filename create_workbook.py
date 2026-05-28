@@ -88,7 +88,7 @@ class Template:
                 else:
                     self.COMPOUND[analyte.lower()].append(compound)
 
-        self.STEP = parser.getint('Microwave Program', 'step')
+        self.STEP = parser.getint('Microwave Program', 'steps')
         self.WEIGHT_DECIMAL = parser.getint('Decimal', 'weight')
         self.CONC_DECIMAL = parser.getint('Decimal', 'concentration')
         self.TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
@@ -175,7 +175,7 @@ class Template:
                 if element.upper() == 'LOI':
                     worksheet.autofit()
                     continue
-                print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
+                #print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 digestion_object = self.element_to_digestion[element]
                 if self.__is_chrome_3(element.lower()):
                     self.__create_titration_table_cr3(worksheet, element, sample, cr2O3, cr6, correction_factor)
@@ -363,9 +363,7 @@ class Template:
         self.row = 0
         formula_page = self.workbook.add_worksheet('formula_page')
         analyte_set = set(map(lambda analyte: analyte.lower(), self.element_set))
-        print(analyte_set)
         titration_set = set(self.TITRATION_ANALYSIS)
-        print(titration_set)
 
         if analyte_set - titration_set:
             self.__write_calculation(formula_page)
@@ -375,7 +373,6 @@ class Template:
             self.__write_titration(formula_page)
 
         formula_page.autofit()
-
         self.workbook.set_properties(
             {
                 'author': 'Carl Archemetre',
@@ -422,9 +419,19 @@ class Template:
                 for i in range(5):
                     self.digestion_sheet.write(self.row, i, data[i], self.empty_cell_format)
                 self.__move_cursor()
-            write(data=[15, 1200, 180, 65, 110])
-            write(data=[15, 1500, 240, 65, 110])
-            for _ in range(self.STEP-2):
+
+            preset = 0
+            for key in parser['Microwave Program'].keys():
+                match = re.match(r'step \d+', key)
+                if match:
+                    data = parser.get('Microwave Program', match.group())
+                    data = list(map(int, data.split(',')))
+                    write(data=data)
+                    preset += 1
+
+            #write(data=[15, 1200, 180, 65, 110])
+            #write(data=[15, 1500, 240, 65, 110])
+            for _ in range(self.STEP-preset):
                 write(data=['', '', '', '', ''])
 
         self.digestion_sheet.merge_range(self.row, 0, self.row, 4, 'Microwave', self.header_format)
@@ -511,7 +518,6 @@ class Template:
         self.__move_cursor()
 
         katanax = self.Digestion(name='katanax', elements=elements, format=self.format)
-        #logger.info(f'{katanax.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, katanax, volume=250)
         self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
@@ -531,13 +537,11 @@ class Template:
                 self.sample_to_elements[sample] = digestion.elements.copy()  # this is fine because I've taken the consideration that there won't be any empty list
                 print(self.sample_to_elements)
                 for element in digestion.elements:
-                    #logger.info(f'adding {element} to {sample}')
                     '''mapping each element to its Digestion object, haven't tested what happen if same element from different digestion will map'''
                     self.element_to_digestion[element] = digestion
             else:
                 self.sample_to_elements[sample].extend(digestion.elements.copy())
                 for element in digestion.elements:
-                    #logger.info(f'adding {element} to {sample}')
                     self.element_to_digestion[element] = digestion
 
             for i in range(1, self.COPY+1):
