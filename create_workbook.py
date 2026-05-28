@@ -341,9 +341,9 @@ class Template:
         self.__move_cursor()
 
         worksheet.write(self.row, 0, f'{sample_id}', self.label_cell_format)
-        worksheet.write(self.row, 1, '', self.empty_cell_format)
-        worksheet.write(self.row, 2, '', self.empty_cell_format)
-        worksheet.write(self.row, 3, '', self.empty_cell_format)
+        worksheet.write(self.row, 1, '', self.weight_cell)
+        worksheet.write(self.row, 2, '', self.weight_cell)
+        worksheet.write(self.row, 3, '', self.weight_cell)
 
         A = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 1)
         B = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
@@ -362,31 +362,18 @@ class Template:
     def __create_formula_sheet(self):
         self.row = 0
         formula_page = self.workbook.add_worksheet('formula_page')
-        formula_page.write(self.row, 0, 'A = crucible', self.italic_bold_format)
-        self.__move_cursor()
-        formula_page.write(self.row, 0, 'B = crucible + sample', self.italic_bold_format)
-        self.__move_cursor()
-        formula_page.write(self.row, 0, 'C = crucible + sample after drying', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%LOI = ([B-A]-[C-A])/(B-A)*100%', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, 'ppm M+ = [conc.][volume][dilution]/[weight]', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%M+ = [conc.][volume][dilution]/([weight]*10,000)', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%MO = [oxide factor]*%M+', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, 'ppm M+  [dried] = ppm M+/([1-(%LOI)/100])', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%M+  [dried] = %M+/([1-(%LOI)/100])', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%MO [dried] = %MO/([1-(%LOI)/100])', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%Cr(VI) = (1.733[mL FAS][N FAS])/([weight])', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%Cr2O3 = 1.462*[%Cr(VI)]', self.italic_bold_format)
-        self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%Cr(III) = total_Cr - Cr(VI)', self.italic_bold_format)
+        analyte_set = set(map(lambda analyte: analyte.lower(), self.element_set))
+        print(analyte_set)
+        titration_set = set(self.TITRATION_ANALYSIS)
+        print(titration_set)
+
+        if analyte_set - titration_set:
+            self.__write_calculation(formula_page)
+        if self.loi:
+            self.__write_loi(formula_page)
+        if analyte_set & titration_set:
+            self.__write_titration(formula_page)
+
         formula_page.autofit()
 
         self.workbook.set_properties(
@@ -397,7 +384,36 @@ class Template:
             }
         )
 
+    def __write_loi(self, formula_page):
+        formula_page.write(self.row, 0, 'A = crucible', self.italic_bold_format)
+        self.__move_cursor()
+        formula_page.write(self.row, 0, 'B = crucible + sample', self.italic_bold_format)
+        self.__move_cursor()
+        formula_page.write(self.row, 0, 'C = crucible + sample after drying', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%LOI = ([B-A]-[C-A])/(B-A)*100%', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, 'ppm M+  [dried] = ppm M+/([1-(%LOI)/100])', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%M+  [dried] = %M+/([1-(%LOI)/100])', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%MO [dried] = %MO/([1-(%LOI)/100])', self.italic_bold_format)
+        self.__move_cursor(2)
 
+    def __write_calculation(self, formula_page):
+        formula_page.write(self.row, 0, 'ppm M+ = [conc.][volume][dilution]/[weight]', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%M+ = [conc.][volume][dilution]/([weight]*10,000)', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%MO = [oxide factor]*%M+', self.italic_bold_format)
+        self.__move_cursor(2)
+
+    def __write_titration(self, formula_page):
+        formula_page.write(self.row, 0, '%Cr(VI) = (1.733[mL FAS][N FAS])/([weight])', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%Cr2O3 = 1.462*[%Cr(VI)]', self.italic_bold_format)
+        self.__move_cursor(2)
+        formula_page.write(self.row, 0, '%Cr(III) = total_Cr - Cr(VI)', self.italic_bold_format)
 
     def add_microwave(self, elements: list, samples: list):
         self.element_set.update(elements)
