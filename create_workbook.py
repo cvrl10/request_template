@@ -427,7 +427,7 @@ class Template:
         self.element_set.update(elements)
         def create_microwave_program():
             def write(data):
-                for i in range(5):
+                for i in range(len(data)):
                     self.digestion_sheet.write(self.row, i, data[i], self.empty_cell_format)
                 self.__move_cursor()
 
