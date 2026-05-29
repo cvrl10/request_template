@@ -273,7 +273,7 @@ class App:
         url = 'master_workbook.xlsx'
         try:
             parser.read('config.ini')
-            destination = Path(parser.get('Path', 'destination'))
+            destination = Path(parser.get('Path', 'directory'))
             if destination.exists():
                 url = destination/url
         except Exception as e:

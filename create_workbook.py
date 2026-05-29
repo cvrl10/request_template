@@ -158,7 +158,6 @@ class Template:
         self.__move_cursor(self.SPACING)
 
         return {'element': element.lower(), 'destination_address': lot_address}
-        #return Lot(element.lower(), lot_address)
 
     def create_analysis_worksheet(self):
         lot_info = query_database(list(self.element_set))
@@ -169,8 +168,10 @@ class Template:
             correction_factor = 1
             if self.loi:
                 correction_factor = self.__create_loi_table(sample, worksheet)
+
             if self.__contains_chrome_3(self.sample_to_elements[sample]):
                 cr2O3, cr6 = self.__edit_list(self.sample_to_elements[sample])
+
             for element in self.sample_to_elements[sample]:
                 if element.upper() == 'LOI':
                     worksheet.autofit()
@@ -190,13 +191,13 @@ class Template:
                     worksheet.autofit()
                     continue
                 move_to = self.row + 2
-                lot = self.__create_analysis_table(worksheet, element, sample)##########
+                lot = self.__create_analysis_table(worksheet, element, sample)
                 worksheet.autofit()
                 lots.append(lot)
 
                 #remeber keys/elements should be unique if not throw exception
-                print(f'this is sample: {sample}')
-                print(digestion_object.name)
+                #print(f'this is sample: {sample}')
+                #print(digestion_object.name)
                 for sample_id in [f'{sample}_{i}'for i in range(1, self.COPY + 1)]:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
                     move_to += 1
@@ -225,24 +226,19 @@ class Template:
         self.__move_cursor(self.SPACING)
 
     def __contains_chrome_3(self, element_list):
-            bool = list(filter(self.__is_chrome_3, element_list))
             return list(filter(self.__is_chrome_3, element_list))
 
     def __is_chrome_3(self, element):
-        return element.lower() in ['criii', 'cr3', 'cr_3', 'cr3+', 'cr_3+', 'cr_three', 'crthree']
+        return element.lower() in ['criii', 'cr3', 'cr3+', 'cr_3+', 'cr_three', 'crthree']
 
     def __edit_list(self, sample_to_elements_list):
         skip_list = []
-        print(f'printing parameter: {sample_to_elements_list}')
         check_list = list(map(lambda e: e.lower(), self.TITRATION_ANALYSIS))
         for e in sample_to_elements_list:
             if e.lower() in check_list:
-                print(e in sample_to_elements_list)
                 skip_list.append(e)
-        print(f'inside edit_list:{skip_list}')
         for e in skip_list:
             sample_to_elements_list.remove(e)
-        print(f'list after editing: {sample_to_elements_list}')
         '''ensuring that sort order always put cr2o3 first in the list'''
         skip_list.sort(key=lambda e: 'o3' not in e.lower())
         return skip_list
@@ -277,6 +273,19 @@ class Template:
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
         worksheet.write_formula(self.row, 2, f'=({total_cell}-{cr6_cell})', self.reported_percent_format)
+
+        compounds = self.COMPOUND.get(element.lower(), False)
+        if compounds:
+            percent_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
+            for compound in sorted(compounds):
+                self.__move_cursor()
+                worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} {compound} factor:', self.result_string_format)
+                worksheet.write(self.row, 2, '', self.workbook.add_format({'align': 'left'}))
+                compound_factor = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
+                compound_result = f'={percent_cell}*({compound_factor})'
+                self.__move_cursor()
+                worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} {compound} result:', self.result_string_format)
+                worksheet.write_formula(self.row, 2, compound_result, self.reported_percent_format)
         self.__move_cursor(self.SPACING)
 
     def __create_titration_table(self, worksheet, element, sample, correction_factor):
@@ -367,8 +376,10 @@ class Template:
 
         if analyte_set - titration_set:
             self.__write_calculation(formula_page)
+
         if self.loi:
             self.__write_loi(formula_page)
+
         if analyte_set & titration_set:
             self.__write_titration(formula_page)
 
@@ -429,8 +440,6 @@ class Template:
                     write(data=data)
                     preset += 1
 
-            #write(data=[15, 1200, 180, 65, 110])
-            #write(data=[15, 1500, 240, 65, 110])
             for _ in range(self.STEP-preset):
                 write(data=['', '', '', '', ''])
 
@@ -494,7 +503,6 @@ class Template:
         self.__move_cursor()
 
         hotplate = self.Digestion(name='hotplate', elements=elements, format=self.format)
-        #logger.info(f'{hotplate.name} with sample(s)={samples} digesting element(s)={elements}')
         self.__create_sample_row(samples, hotplate, volume='')
         self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
@@ -531,11 +539,11 @@ class Template:
         self.digestion_sheet.write(self.row, 1, 'weight (g)', self.label_cell_format)
         self.digestion_sheet.write(self.row, 2, 'volume (mL)', self.label_cell_format)
         self.__move_cursor()
-        print(f'{digestion.name}')
+        #print(f'{digestion.name}')
         for sample in samples:
             if sample not in self.sample_to_elements:
                 self.sample_to_elements[sample] = digestion.elements.copy()  # this is fine because I've taken the consideration that there won't be any empty list
-                print(self.sample_to_elements)
+                #print(self.sample_to_elements)
                 for element in digestion.elements:
                     '''mapping each element to its Digestion object, haven't tested what happen if same element from different digestion will map'''
                     self.element_to_digestion[element] = digestion
@@ -550,7 +558,6 @@ class Template:
                 self.digestion_sheet.write(self.row, 1, '', self.weight_cell)
                 self.digestion_sheet.write(self.row, 2, volume, self.empty_cell_format)
 
-                print(f'storing: {sample_id}')
                 digestion.store_data(sample_id, self.row)
                 self.__move_cursor()
 
@@ -592,7 +599,6 @@ class Template:
             volume_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, VOLUME_COLUMN)
             dilution_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, DILUTION_COLUMN)
             weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(to_row, WEIGHT_COLUMN)
-            print(f'corection={correction_factor}')
             ppm_calculation = f'=(({conc_cell})*({volume_cell})*({dilution_cell}))/({weight_cell}*{correction_factor})'
 
             destination_worksheet.write_formula(to_row, 3, ppm_calculation, self.format['result'])
