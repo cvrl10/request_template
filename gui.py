@@ -1,3 +1,5 @@
+from tkinter.ttk import Style
+
 from create_workbook import Template
 import xlsxwriter
 from tkinter import *
@@ -12,6 +14,8 @@ from configparser import ConfigParser
 file = open('stdout_err.log', mode='w')
 sys.stdout = file
 sys.stderr = file
+
+ACTIVE_BACKGROUND = '#e6e6e6'
 
 parser = ConfigParser()
 parser.read('config.ini')
@@ -52,12 +56,17 @@ class App:
 
         request_id_label = Label(self.top_frame, text='Request ID:')
         request_id_label.grid(row=0, column=0, sticky='e')
-        self.request_id_entry = Entry(self.top_frame)
+        self.request_id_entry = Entry(self.top_frame, highlightthickness=1)
         self.request_id_entry.grid(row=0, column=1, sticky='w')
+
+        self.__textbox_handler(self.request_id_entry)
+
         sample = Label(self.top_frame, text='Sample(s):')
         sample.grid(row=1, column=0, sticky='e')
-        self.sample_entry = Entry(self.top_frame)
+        self.sample_entry = Entry(self.top_frame, highlightthickness=1)
         self.sample_entry.grid(row=1, column=1, sticky='w')
+
+        self.__textbox_handler(self.sample_entry)
 
         self.replicates = IntVar()
         Radiobutton(radio_frame, text='duplicate', variable=self.replicates, value=2).grid(row=0, column=0)
@@ -138,8 +147,9 @@ class App:
         self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
         self.submit.grid(row=0, column=0)
 
-        self.submit.bind('<Enter>', lambda _: self.submit.config(bg='#82DF7C'))
-        self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace'))
+        old_color = '#82DF7C'
+        self.submit.bind('<Enter>', lambda _: self.submit.config(bg=ACTIVE_BACKGROUND, cursor='hand2'))
+        self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace', cursor='arrow'))
 
         self.root.bind('<Control-comma>', lambda _: os.startfile('config.ini'))
         self.root.bind('<Alt-c>', lambda _: os.startfile('config.ini'))
@@ -152,6 +162,14 @@ class App:
         except Exception as e:
             print(e)
 
+    def __textbox_handler(self, entry):
+        default = entry.cget('highlightbackground')
+        entry.bind('<Enter>', lambda _: entry.config(highlightbackground='#4a90e2'))
+        entry.bind('<Leave>', lambda _: entry.config(highlightbackground=default))
+
+        entry.bind('<FocusIn>', lambda _: entry.config(highlightcolor='#4a90e2'))
+        entry.bind('<FocusOut>', lambda _: entry.config(highlightcolor=default))
+
     def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
         element_frame.grid(row=row, column=1, sticky='nsew')
@@ -162,11 +180,16 @@ class App:
         sample_frame = Frame(self.middle_frame, bg=color, name=f'{name}_sample')
         sample_frame.grid(row=row, column=3, sticky='nsew')
 
-        entry = Entry(element_frame, name=f'{name}entry_{0}')
+        entry = Entry(element_frame, name=f'{name}entry_{0}', highlightthickness=1)
         entry.pack(side='top')
+
+        self.__textbox_handler(entry)
 
         menubutton = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{0}', relief='raised')
         menubutton.pack(side='top')
+
+        menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
+        menubutton.bind('<Leave>', lambda _: menubutton.config(bg='SystemButtonFace', cursor='arrow'))
 
         menu = Menu(menubutton, tearoff=0)
         self.menu_list.append(menu)  # added initial menu button here
@@ -215,11 +238,16 @@ class App:
             #print(f'child_count {child_count}')
             if count > child_count:
                 for i in range(child_count, count):
-                    entry = Entry(element_frame, name=f'{name}entry_{i}')
+                    entry = Entry(element_frame, name=f'{name}entry_{i}', highlightthickness=1)
                     entry.pack(side='top')
+
+                    self.__textbox_handler(entry)
 
                     button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{i}', relief='raised')
                     button.pack(side='top')
+
+                    button.bind('<Enter>', lambda _: button.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
+                    button.bind('<Leave>', lambda _: button.config(bg='SystemButtonFace', cursor='arrow'))
 
                     menu = Menu(button, tearoff=0)
                     self.menu_list.append(menu)
