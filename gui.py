@@ -10,12 +10,14 @@ import os
 from  pathlib import Path
 import sys
 from configparser import ConfigParser
+from tooltip import ToolTip
 
 file = open('stdout_err.log', mode='w')
 sys.stdout = file
 sys.stderr = file
 
-ACTIVE_BACKGROUND = '#e6e6e6'
+BACKGROUND = '#e6e6e6'
+ACTIVE_BACKGROUND = '#5a5a5a'
 
 parser = ConfigParser()
 parser.read('config.ini')
@@ -24,6 +26,7 @@ SPINBOX_TO = parser.getint('Parameters', 'spinbox_to')
 
 class App:
     def __init__(self):
+        self.RETURN = False
         self.root = Tk()
         self.root.iconbitmap('img/logo.ico')
 
@@ -134,7 +137,6 @@ class App:
                                                                      self.hotplate_element_frame,
                                                                      self.hotplate_sample_frame, name='hotplate'))
 
-
         self.sample_entry.bind('<Return>', self.__add_checkbutton(self.menu_list))
 
         bg = 'red'
@@ -144,12 +146,12 @@ class App:
         self.bottom_frame.columnconfigure(0, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
 
-        self.submit = Button(self.bottom_frame, text='Submit', command=lambda: self.__submit())
+        self.submit = Button(self.bottom_frame, text='SUBMIT', command=lambda: self.__submit(), bg=BACKGROUND)
         self.submit.grid(row=0, column=0)
 
         old_color = '#82DF7C'
-        self.submit.bind('<Enter>', lambda _: self.submit.config(bg=ACTIVE_BACKGROUND, cursor='hand2'))
-        self.submit.bind('<Leave>', lambda _: self.submit.config(bg='SystemButtonFace', cursor='arrow'))
+        self.submit.bind('<Enter>', lambda _: self.submit.config(bg=ACTIVE_BACKGROUND, fg='white', cursor='hand2'))
+        self.submit.bind('<Leave>', lambda _: self.submit.config(bg=BACKGROUND, fg='black', cursor='arrow'))
 
         self.root.bind('<Control-comma>', lambda _: os.startfile('config.ini'))
         self.root.bind('<Alt-c>', lambda _: os.startfile('config.ini'))
@@ -170,6 +172,10 @@ class App:
         entry.bind('<FocusIn>', lambda _: entry.config(highlightcolor='#4a90e2'))
         entry.bind('<FocusOut>', lambda _: entry.config(highlightcolor=default))
 
+    def __menubutton_handler(self, menubutton):
+        #menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, activeforeground='white', cursor='hand2'))
+        menubutton.bind('<Leave>', lambda _: menubutton.config(bg=BACKGROUND, fg='black', cursor='arrow'))
+
     def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
         element_frame.grid(row=row, column=1, sticky='nsew')
@@ -185,11 +191,13 @@ class App:
 
         self.__textbox_handler(entry)
 
-        menubutton = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{0}', relief='raised')
+        menubutton = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{0}', relief='raised', bg=BACKGROUND)
         menubutton.pack(side='top')
 
-        menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
-        menubutton.bind('<Leave>', lambda _: menubutton.config(bg='SystemButtonFace', cursor='arrow'))
+        #menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
+        #menubutton.bind('<Leave>', lambda _: menubutton.config(bg='SystemButtonFace', cursor='arrow'))
+        self.__menubutton_handler(menubutton)
+        ToolTip(menubutton)
 
         menu = Menu(menubutton, tearoff=0)
         self.menu_list.append(menu)  # added initial menu button here
@@ -202,7 +210,6 @@ class App:
     def __add_checkbutton(self, menu_list):
         def func(_):
             self.check_vars = {}
-            #print(f'size of menu_list: {len(menu_list)}')
             for menu in menu_list:
                 menu.delete(0, 'end')
                 for sample in self.__extract_sample_id():
@@ -243,11 +250,11 @@ class App:
 
                     self.__textbox_handler(entry)
 
-                    button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{i}', relief='raised')
+                    button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{i}', relief='raised', bg=BACKGROUND)
                     button.pack(side='top')
 
-                    button.bind('<Enter>', lambda _: button.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
-                    button.bind('<Leave>', lambda _: button.config(bg='SystemButtonFace', cursor='arrow'))
+                    self.__menubutton_handler(button)
+                    ToolTip(button)
 
                     menu = Menu(button, tearoff=0)
                     self.menu_list.append(menu)
