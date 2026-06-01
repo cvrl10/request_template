@@ -99,10 +99,25 @@ class PeriodicTable:
 
     def __clear(self):
         def func():
-            print(self.selected)
+            ELEMENTS = set([button.cget('text') for button in self.window.winfo_children()])
+            entry = re.split(r'[,\s]+', self.entry.get())
             self.entry.delete(0, tk.END)
-            self.entry.insert(0, ', '.join(self.selected))
+
+            if '' in entry:
+                entry_set = set()
+            else:
+                entry_set = set(entry)
+
+            not_periodic = entry_set - ELEMENTS
+            analytes = self.selected.copy()
+
+            for analyte in not_periodic:
+                analytes.insert(0, analyte)
+            analytes.sort()
+
+            self.entry.insert(0, ', '.join(analytes))
             self.hide()
+
         return func
 
     def hide(self):
@@ -110,6 +125,7 @@ class PeriodicTable:
 
     def show(self):
         self.window.deiconify()
+
     def __create_grid(self):
         for i in range(9):
             self.window.grid_rowconfigure(i, weight=1)
@@ -151,8 +167,9 @@ class PeriodicTable:
                 else:
                     button.config(relief='raised', bg=BACKGROUND, fg='black')
                     self.selected.remove(button.cget('text'))
-                print(self.selected)
+                #print(self.selected)
             return func
+
         def highlight(button):
             def func(_):
                 if button.cget('relief')=='raised':
@@ -160,7 +177,7 @@ class PeriodicTable:
                     button.config(highlightcolor='#4a90e2')
             return func
 
-        button = tk.Button(self.window, text=element, bg=BACKGROUND, relief='raised', highlightthickness=2)
+        button = tk.Button(self.window, text=element, bg=BACKGROUND, relief='raised', highlightthickness=2, name=element.lower())
         button.bind('<Enter>', highlight(button))
         #ToolTip(button, button.cget('text'), position='n', offset=-5)
         button.config(command=clicked(button))
@@ -171,16 +188,35 @@ def show(entry, table):
         elements = list(map(lambda e: e.title(), re.split(r'[,\s]+', entry.get())))
         print('inside show')
         print(elements)
+        entry_set = set(elements)
+        selected_set = set(table.selected)
+        print(f'entry contains: {entry_set}')
+        if '' in entry_set:
+            diff = set()
+        else:
+            diff = selected_set - entry_set
+        print(f'difference should be unselected: {diff}')
+        for element in diff:
+            print(f'diff: {element}')
+            button = table.window.nametowidget(element.lower())
+            button.invoke()
+            print(f'evoking {button}')
+
+
         if '' in elements:#to capture cleared textbox reset the  buttons
             for button in table.window.winfo_children():
                 relief = button.cget('relief')
                 if relief == 'sunken':
                     button.invoke()
+                    pass
+
         for button in table.window.winfo_children():
             element = button.cget('text')
             if element in elements:
                 if element not in table.selected:
+                    pass
                     button.invoke()
+
         table.show()
 
     return func
@@ -189,7 +225,9 @@ def show(entry, table):
 root = tk.Tk()
 root.geometry('600x400')
 entry = tk.Entry(root)
+other = tk.Entry(root)
 entry.pack()
+other.pack()
 
 p = PeriodicTable(entry)
 
