@@ -13,8 +13,8 @@ from configparser import ConfigParser
 from tooltip import ToolTip
 
 file = open('stdout_err.log', mode='w')
-sys.stdout = file
-sys.stderr = file
+#sys.stdout = file
+#sys.stderr = file
 
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
@@ -164,6 +164,8 @@ class App:
         except Exception as e:
             print(e)
 
+        #self.root.bind_all('<ButtonRelease-1>', lambda _: self.root.after(10, self.__unclick(self.menu_list)))
+
     def __textbox_handler(self, entry):
         default = entry.cget('highlightbackground')
         entry.bind('<Enter>', lambda _: entry.config(highlightbackground='#4a90e2'))
@@ -174,7 +176,17 @@ class App:
 
     def __menubutton_handler(self, menubutton):
         #menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, activeforeground='white', cursor='hand2'))
-        menubutton.bind('<Leave>', lambda _: menubutton.config(bg=BACKGROUND, fg='black', cursor='arrow'))
+        menubutton.bind('<Leave>', lambda _: (menubutton.config(bg=BACKGROUND, fg='black', cursor='arrow'), print('leaving')))
+
+
+    def __unclick(self, menu_list):
+        #delete this method
+        print('inside unclick')
+        for menu in menu_list:
+            print(menu.master)
+            menu.master.event_generate('<FocusOut>')
+
+
 
     def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
@@ -197,9 +209,13 @@ class App:
         #menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
         #menubutton.bind('<Leave>', lambda _: menubutton.config(bg='SystemButtonFace', cursor='arrow'))
         self.__menubutton_handler(menubutton)
-        ToolTip(menubutton)
+        ToolTip(menubutton, 'selected sample(s) for digestion', position='e', offset=5)
 
         menu = Menu(menubutton, tearoff=0)
+        #menu.bind('<<MenuSelect>>', lambda _: menubutton.config(relief='sunken', background=ACTIVE_BACKGROUND, foreground='white'))
+        #menu.bind('<FocusOut>', lambda _: (menubutton.config(relief='raised', background=BACKGROUND, foreground='black'),print('FocusOut')))
+        #menu.bind('<Unmap>', lambda _: menubutton.config(relief='raised', background=BACKGROUND, foreground='black'))
+        #menu.bind('<Unmap>', lambda _: (menubutton.config(relief='raised', background=BACKGROUND, foreground='black'), print('FocusOut')))
         self.menu_list.append(menu)  # added initial menu button here
         menubutton.config(menu=menu)
 
@@ -254,9 +270,10 @@ class App:
                     button.pack(side='top')
 
                     self.__menubutton_handler(button)
-                    ToolTip(button)
+                    ToolTip(button, 'selected sample(s) for digestion', position='e', offset=5)
 
                     menu = Menu(button, tearoff=0)
+                    #menu.bind('<Unmap>', lambda _: button.config(relief='raised'))
                     self.menu_list.append(menu)
                     button.config(menu=menu)
                 #evoke entry <Return> to force sample updates on new menu_buttons
