@@ -85,23 +85,36 @@ class ToolTip:
 #root.mainloop()
 
 class PeriodicTable:
-    def __init__(self, textbox):
-        self.window = tk.Toplevel(textbox)
-        self.entry = textbox
+    def __init__(self, textbox, root):
+        #self.window = tk.Toplevel(textbox)
+        self.window = tk.Toplevel(root)
+        #self.entry = textbox
         self.hide()
-        self.__create_grid()
-        self.__fill_grid()
+        #self.__create_grid()
+        #self.__fill_grid()
 
-
+        self.textbox = {}
         self.selected = []
+        self.active_frame = None
         self.window.protocol('WM_DELETE_WINDOW', self.__clear())
+
+    def add_textbox(self, entry):
+        frame = tk.Frame(self.window, name=entry.winfo_name())
+        self.textbox[entry.winfo_name()] = frame
+        self.__create_grid(frame)
+        self.__fill_grid(frame)
+        #frame.withdraw()
 
 
     def __clear(self):
         def func():
-            ELEMENTS = set([button.cget('text') for button in self.window.winfo_children()])
-            entry = re.split(r'[,\s]+', self.entry.get())
-            self.entry.delete(0, tk.END)
+            frame, textbox = self.active_frame
+            print(f'frame_name={frame.winfo_name()}')
+            #parent = frame.master
+            #print(parent)
+            ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
+            entry = re.split(r'[,\s]+', textbox.get())
+            textbox.delete(0, tk.END)
 
             if '' in entry:
                 entry_set = set()
@@ -115,7 +128,7 @@ class PeriodicTable:
                 analytes.insert(0, analyte)
             analytes.sort()
 
-            self.entry.insert(0, ', '.join(analytes))
+            textbox.insert(0, ', '.join(analytes))
             self.hide()
 
         return func
@@ -123,19 +136,19 @@ class PeriodicTable:
     def hide(self):
         self.window.withdraw()
 
-    def show(self):
+    def __show(self):
         self.window.deiconify()
 
-    def __create_grid(self):
+    def __create_grid(self, frame):
         for i in range(9):
-            self.window.grid_rowconfigure(i, weight=1)
+            frame.grid_rowconfigure(i, weight=1)
         for i in range(18):
-            self.window.grid_columnconfigure(i, weight=1)
+            frame.grid_columnconfigure(i, weight=1)
 
-    def __fill_grid(self):
+    def __fill_grid(self, frame):
         def fill_row(row, range, elements):
             for i, element in zip(range, elements):
-                button = self.__button(element)
+                button = self.__button(element, frame)
                 button.grid(row=row, column=i, sticky='nsew')
 
         FULL_RANGE = [i for i in range(18)]
@@ -157,7 +170,7 @@ class PeriodicTable:
                                                                 'Fm', 'Md', 'No', 'Lr'])
 
 
-    def __button(self, element):
+    def __button(self, element, frame):
         def clicked(button):
             def func():
                 relief = button.cget('relief')
@@ -177,67 +190,83 @@ class PeriodicTable:
                     button.config(highlightcolor='#4a90e2')
             return func
 
-        button = tk.Button(self.window, text=element, bg=BACKGROUND, relief='raised', highlightthickness=2, name=element.lower())
+        button = tk.Button(frame, text=element, bg=BACKGROUND, relief='raised', highlightthickness=2, name=element.lower())
         button.bind('<Enter>', highlight(button))
         #ToolTip(button, button.cget('text'), position='n', offset=-5)
         button.config(command=clicked(button))
         return button
 
-def show(entry, table):
-    def func(_):
-        elements = list(map(lambda e: e.title(), re.split(r'[,\s]+', entry.get())))
-        print('inside show')
-        print(elements)
-        entry_set = set(elements)
-        selected_set = set(table.selected)
-        print(f'entry contains: {entry_set}')
-        if '' in entry_set:
-            diff = set()
-        else:
-            diff = selected_set - entry_set
-        print(f'difference should be unselected: {diff}')
-        for element in diff:
-            print(f'diff: {element}')
-            button = table.window.nametowidget(element.lower())
-            button.invoke()
-            print(f'evoking {button}')
 
 
-        if '' in elements:#to capture cleared textbox reset the  buttons
-            for button in table.window.winfo_children():
-                relief = button.cget('relief')
-                if relief == 'sunken':
-                    button.invoke()
-                    pass
+    def show(self, entry):
+        def func(_):
+            name = entry.winfo_name()
+            print(f'name={name}')
+            frame = self.textbox[entry.winfo_name()]
+            if self.active_frame == None:
+                frame.pack()
+                self.active_frame = (frame, entry)
+            else:
+                hide_this_frame, _ = self.active_frame
+                hide_this_frame.pack_forget()
+                self.active_frame = (frame, entry)
+                frame.pack()
 
-        for button in table.window.winfo_children():
-            element = button.cget('text')
-            if element in elements:
-                if element not in table.selected:
-                    pass
-                    button.invoke()
+            print(f'opening this frame: {frame.winfo_name}')
 
-        table.show()
+            elements = list(map(lambda e: e.title(), re.split(r'[,\s]+', entry.get())))
+            print('inside show')
+            print(elements)
+            entry_set = set(elements)
+            selected_set = set(self.selected)
+            print(f'entry contains: {entry_set}')
+            if '' in entry_set:
+                diff = set()
+            else:
+                diff = selected_set - entry_set
+            print(f'difference should be unselected: {diff}')
+            for element in diff:
+                print(f'diff: {element}')
+                #button = table.window.nametowidget(element.lower())
+                button = frame.nametowidget(element.lower())
+                button.invoke()
+                print(f'evoking {button}')
 
-    return func
+
+            if '' in elements:#to capture cleared textbox reset the  buttons
+                #for button in table.window.winfo_children():
+                for button in frame.winfo_children():
+                    relief = button.cget('relief')
+                    if relief == 'sunken':
+                        button.invoke()
+                        pass
+
+            for button in frame.winfo_children():
+                element = button.cget('text')
+                if element in elements:
+                    if element not in self.selected:
+                        button.invoke()
+
+            self.__show()
+
+        return func
 
 
 root = tk.Tk()
 root.geometry('600x400')
-entry = tk.Entry(root)
-other = tk.Entry(root)
+entry = tk.Entry(root, name='entry')
+other = tk.Entry(root, name='other')
 entry.pack()
 other.pack()
 
-p = PeriodicTable(entry)
+p = PeriodicTable(entry, root)
+p.add_textbox(entry)
+p.add_textbox(other)
 
-entry.bind('<Double-Button-1>', show(entry, p))
+entry.bind('<Double-Button-1>', p.show(entry))
+other.bind('<Double-Button-1>', p.show(other))
 
 root.mainloop()
-
-
-
-
 
 
 
