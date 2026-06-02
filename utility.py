@@ -26,8 +26,8 @@ class ToolTip:
         #self.widget.config(activebackground=ACTIVE_BACKGROUND, activeforeground='white', cursor='hand2', bg=ACTIVE_BACKGROUND, fg='white')
         if self.tip_window:
             return
-        #x = self.widget.winfo_rootx() + self.widget.winfo_width() + 5
-        #y = self.widget.winfo_rooty()
+
+
         x, y = self.positioning(self.position, self.offset)
         self.tip_window = tk.Toplevel(self.widget)
 
@@ -61,6 +61,8 @@ class ToolTip:
             y = self.widget.winfo_rooty() + offset
         return x, y
 
+    def set_positiion(self):
+        pass
 
     def hide(self):
         if self.tip_window:
@@ -86,17 +88,19 @@ class ToolTip:
 
 class PeriodicTable:
     def __init__(self, root):
-        #self.window = tk.Toplevel(textbox)
         self.window = tk.Toplevel(root)
-        #self.entry = textbox
+        self.window.iconbitmap(r'img/periodic_table.ico')
         self.hide()
-        #self.__create_grid()
-        #self.__fill_grid()
 
         self.textbox = {}
         self.selected = {}
         self.active_frame = None
-        self.window.protocol('WM_DELETE_WINDOW', self.__clear())
+        self.window.protocol('WM_DELETE_WINDOW', self.clear())
+
+        root.update_idletasks()
+        x = root.winfo_x() + root.winfo_width() + 5
+        y = root.winfo_y()
+        self.window.geometry(f'+{x}+{y}')
 
     def add_textbox(self, entry):
         key = entry.winfo_name()
@@ -105,16 +109,14 @@ class PeriodicTable:
         self.textbox[key] = frame
         self.__create_grid(frame)
         self.__fill_grid(frame)
-        #frame.withdraw()
 
 
-    def __clear(self):
+    def clear(self):
         def func():
             frame, textbox = self.active_frame
             print(f'frame_name={frame.winfo_name()}')
             key = frame.winfo_name()
-            #parent = frame.master
-            #print(parent)
+
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
             entry = re.split(r'[,\s]+', textbox.get())
             textbox.delete(0, tk.END)
@@ -168,7 +170,7 @@ class PeriodicTable:
                                                                 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn'])
         fill_row(row=6, range=FULL_RANGE, elements=['Fr', 'Ra', 'Ac', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt',
                                                                 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'])
-        fill_row(row=7, range=FULL_RANGE, elements=[str(i) for i in range(100,118)])
+        fill_row(row=7, range=[0], elements=['*'])
         fill_row(row=8, range=LANTHANIDES, elements=['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy',
                                                                 'Ho', 'Er', 'Tm', 'Yb', 'Lu'])
         fill_row(row=9, range=ACTINIDES, elements=['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es',
@@ -196,15 +198,24 @@ class PeriodicTable:
             def func(_):
                 if button.cget('relief')=='raised':
                     button.focus_set()
-                    button.config(highlightcolor='#4a90e2')
+                    #button.config(highlightcolor='#4a90e2')
+                    button.config(bg='#4a90e2')
+            return func
+
+        def dehighlight(button):
+            def func(_):
+                if button.cget('relief')=='raised':
+                    button.focus_set()
+                    #button.config(highlightcolor='#4a90e2')
+                    button.config(bg=BACKGROUND)
             return func
 
         button = tk.Button(frame, text=element, bg=BACKGROUND, relief='raised', highlightthickness=2, name=element.lower())
         button.bind('<Enter>', highlight(button))
+        button.bind('<Leave>', dehighlight(button))
         #ToolTip(button, button.cget('text'), position='n', offset=-5)
         button.config(command=clicked(button))
         return button
-
 
 
     def show(self, entry):
@@ -214,9 +225,12 @@ class PeriodicTable:
         '''
 
         def func(_):
+            if self.active_frame:#this boolean is to prevent exception when there's no active frame
+                self.clear()()#this is to allow me to save entry while changing between frame w/o closing Toplevel
             name = entry.winfo_name()
             print(f'name={name}')
-            self.window.title(name)
+            title = name.replace('entry', '')
+            self.window.title(title)
             frame = self.textbox[entry.winfo_name()]
             if self.active_frame == None:#currently no active frame, so set the current frame to the frame tied to the tk.Entry evoking <Double-Button-1>
                 frame.pack()
@@ -253,7 +267,6 @@ class PeriodicTable:
                     relief = button.cget('relief')
                     if relief == 'sunken':
                         button.invoke()
-                        pass
 
             for button in frame.winfo_children():
                 element = button.cget('text')
@@ -265,11 +278,11 @@ class PeriodicTable:
 
         return func
 
-#'''
+'''
 root = tk.Tk()
 root.geometry('600x400')
-entry = tk.Entry(root, name='entry')
-other = tk.Entry(root, name='other')
+entry = tk.Entry(root, name='microwave_0entry')
+other = tk.Entry(root, name='katanax_0entry')
 entry.pack()
 other.pack()
 
@@ -280,7 +293,7 @@ p.add_textbox(other)
 entry.bind('<Double-Button-1>', p.show(entry))
 other.bind('<Double-Button-1>', p.show(other))
 
-root.mainloop()#'''
+root.mainloop()'''
 
 
 

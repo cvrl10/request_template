@@ -19,6 +19,8 @@ file = open('stdout_err.log', mode='w')
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
 
+HIGHLIGHT = '#4a90e2'
+
 parser = ConfigParser()
 parser.read('config.ini')
 
@@ -77,15 +79,19 @@ class App:
         self.__textbox_handler(self.sample_entry)
 
         self.replicates = IntVar()
-        Radiobutton(radio_frame, text='duplicate', variable=self.replicates, value=2).grid(row=0, column=0)
+        r = Radiobutton(radio_frame, text='duplicate', variable=self.replicates, value=2)
+        r.grid(row=0, column=0)
+        #self.__radio_handler(r)
         parser.read('config.ini')
-        Radiobutton(radio_frame, text='triplicate', variable=self.replicates, value=parser.getint('Parameters', 'triplicate')).grid(row=0, column=1)
+        r = Radiobutton(radio_frame, text='triplicate', variable=self.replicates, value=parser.getint('Parameters', 'triplicate'))
+        r.grid(row=0, column=1)
+        #self.__radio_handler(r)
         self.replicates.set(2)
 
         loi = Label(self.top_frame, text='L.O.I')
         loi.grid(row=2, column=0, sticky='e')
         self.loi = IntVar()
-        loi_checkbox = Checkbutton(self.top_frame, variable=self.loi)
+        loi_checkbox = Checkbutton(self.top_frame, variable=self.loi, highlightthickness=1)
         loi_checkbox.grid(row=2, column=1, sticky='w')
 
 
@@ -170,6 +176,10 @@ class App:
             print(e)
 
         #self.root.bind_all('<ButtonRelease-1>', lambda _: self.root.after(10, self.__unclick(self.menu_list)))
+
+    def __radio_handler(self, radio):
+        radio.bind('<Enter>', lambda _: radio.config(fg=HIGHLIGHT))
+        radio.bind('<Leave>', lambda _: radio.config(fg='black'))
 
     def __textbox_handler(self, entry):
         default = entry.cget('highlightbackground')
@@ -272,6 +282,8 @@ class App:
                     entry = Entry(element_frame, name=f'{name}entry_{i}', highlightthickness=1)
                     entry.pack(side='top')
 
+                    PERIODIC_TABLE.add_textbox(entry)
+                    entry.bind('<Double-Button-1>', PERIODIC_TABLE.show(entry))
                     self.__textbox_handler(entry)
 
                     button = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{i}', relief='raised', bg=BACKGROUND)
