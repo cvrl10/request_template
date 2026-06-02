@@ -1,0 +1,43 @@
+name=microwaveentry_0
+opening this frame: <bound method Misc.winfo_name of <tkinter.Frame object .!toplevel.microwaveentry_0>>
+inside show
+['']
+entry contains: {''}
+difference should be unselected: set()
+inside clicked handler, what is selected: []
+inside clicked handler, what is selected: ['Al']
+inside clicked handler, what is selected: ['Al', 'Ca']
+frame_name=microwaveentry_0
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+
+
+
+

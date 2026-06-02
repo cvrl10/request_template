@@ -7,10 +7,10 @@ from tkinter import ttk
 import re
 import subprocess
 import os
-from  pathlib import Path
+from pathlib import Path
 import sys
 from configparser import ConfigParser
-from tooltip import ToolTip
+from utility import ToolTip, PeriodicTable
 
 file = open('stdout_err.log', mode='w')
 #sys.stdout = file
@@ -23,11 +23,16 @@ parser = ConfigParser()
 parser.read('config.ini')
 
 SPINBOX_TO = parser.getint('Parameters', 'spinbox_to')
+PERIODIC_TABLE = None
 
 class App:
     def __init__(self):
         self.RETURN = False
         self.root = Tk()
+
+        global PERIODIC_TABLE
+        PERIODIC_TABLE = PeriodicTable(self.root)
+
         self.root.iconbitmap('img/logo.ico')
 
         self.root.title('workbook_creator')
@@ -200,6 +205,9 @@ class App:
 
         entry = Entry(element_frame, name=f'{name}entry_{0}', highlightthickness=1)
         entry.pack(side='top')
+
+        PERIODIC_TABLE.add_textbox(entry)
+        entry.bind('<Double-Button-1>', PERIODIC_TABLE.show(entry))
 
         self.__textbox_handler(entry)
 

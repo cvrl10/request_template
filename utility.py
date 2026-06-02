@@ -85,7 +85,7 @@ class ToolTip:
 #root.mainloop()
 
 class PeriodicTable:
-    def __init__(self, textbox, root):
+    def __init__(self, root):
         #self.window = tk.Toplevel(textbox)
         self.window = tk.Toplevel(root)
         #self.entry = textbox
@@ -94,13 +94,15 @@ class PeriodicTable:
         #self.__fill_grid()
 
         self.textbox = {}
-        self.selected = []
+        self.selected = {}
         self.active_frame = None
         self.window.protocol('WM_DELETE_WINDOW', self.__clear())
 
     def add_textbox(self, entry):
-        frame = tk.Frame(self.window, name=entry.winfo_name())
-        self.textbox[entry.winfo_name()] = frame
+        key = entry.winfo_name()
+        self.selected[key] = []
+        frame = tk.Frame(self.window, name=key)
+        self.textbox[key] = frame
         self.__create_grid(frame)
         self.__fill_grid(frame)
         #frame.withdraw()
@@ -110,6 +112,7 @@ class PeriodicTable:
         def func():
             frame, textbox = self.active_frame
             print(f'frame_name={frame.winfo_name()}')
+            key = frame.winfo_name()
             #parent = frame.master
             #print(parent)
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
@@ -122,7 +125,7 @@ class PeriodicTable:
                 entry_set = set(entry)
 
             not_periodic = entry_set - ELEMENTS
-            analytes = self.selected.copy()
+            analytes = self.selected[key].copy()
 
             for analyte in not_periodic:
                 analytes.insert(0, analyte)
@@ -140,7 +143,8 @@ class PeriodicTable:
         self.window.deiconify()
 
     def __create_grid(self, frame):
-        for i in range(9):
+        #for i in range(9):
+        for i in range(10):
             frame.grid_rowconfigure(i, weight=1)
         for i in range(18):
             frame.grid_columnconfigure(i, weight=1)
@@ -164,22 +168,27 @@ class PeriodicTable:
                                                                 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn'])
         fill_row(row=6, range=FULL_RANGE, elements=['Fr', 'Ra', 'Ac', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt',
                                                                 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'])
-        fill_row(row=7, range=LANTHANIDES, elements=['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy',
+        fill_row(row=7, range=FULL_RANGE, elements=[str(i) for i in range(100,118)])
+        fill_row(row=8, range=LANTHANIDES, elements=['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy',
                                                                 'Ho', 'Er', 'Tm', 'Yb', 'Lu'])
-        fill_row(row=8, range=ACTINIDES, elements=['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es',
+        fill_row(row=9, range=ACTINIDES, elements=['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es',
                                                                 'Fm', 'Md', 'No', 'Lr'])
+        print(['###']*18)
 
 
     def __button(self, element, frame):
         def clicked(button):
             def func():
+                key = frame.winfo_name()
+                selected = self.selected[key]
+                print(f'inside clicked handler, what is selected: {selected}')
                 relief = button.cget('relief')
                 if relief == 'raised':
                     button.config(relief='sunken', bg=ACTIVE_BACKGROUND, fg='white')
-                    self.selected.append(button.cget('text'))
+                    selected.append(button.cget('text'))
                 else:
                     button.config(relief='raised', bg=BACKGROUND, fg='black')
-                    self.selected.remove(button.cget('text'))
+                    selected.remove(button.cget('text'))
                 #print(self.selected)
             return func
 
@@ -199,14 +208,20 @@ class PeriodicTable:
 
 
     def show(self, entry):
+        ''':param entry: takes a tk.Entry object
+            :return: the handler for <Double-Button-1> that displays the periodic frame inside tk.Toplevel
+             for selecting elements tied to the tk.Entry
+        '''
+
         def func(_):
             name = entry.winfo_name()
             print(f'name={name}')
+            self.window.title(name)
             frame = self.textbox[entry.winfo_name()]
-            if self.active_frame == None:
+            if self.active_frame == None:#currently no active frame, so set the current frame to the frame tied to the tk.Entry evoking <Double-Button-1>
                 frame.pack()
                 self.active_frame = (frame, entry)
-            else:
+            else:#here we hide the old frame to set active_frame to display the frame tied to the tk.Entry evoking <Double-Button-1>
                 hide_this_frame, _ = self.active_frame
                 hide_this_frame.pack_forget()
                 self.active_frame = (frame, entry)
@@ -218,7 +233,7 @@ class PeriodicTable:
             print('inside show')
             print(elements)
             entry_set = set(elements)
-            selected_set = set(self.selected)
+            selected_set = set(self.selected[name])
             print(f'entry contains: {entry_set}')
             if '' in entry_set:
                 diff = set()
@@ -233,8 +248,7 @@ class PeriodicTable:
                 print(f'evoking {button}')
 
 
-            if '' in elements:#to capture cleared textbox reset the  buttons
-                #for button in table.window.winfo_children():
+            if '' in elements: #to capture cleared textbox reset the  buttons
                 for button in frame.winfo_children():
                     relief = button.cget('relief')
                     if relief == 'sunken':
@@ -244,14 +258,14 @@ class PeriodicTable:
             for button in frame.winfo_children():
                 element = button.cget('text')
                 if element in elements:
-                    if element not in self.selected:
+                    if element not in self.selected[name]:
                         button.invoke()
 
             self.__show()
 
         return func
 
-
+#'''
 root = tk.Tk()
 root.geometry('600x400')
 entry = tk.Entry(root, name='entry')
@@ -259,14 +273,14 @@ other = tk.Entry(root, name='other')
 entry.pack()
 other.pack()
 
-p = PeriodicTable(entry, root)
+p = PeriodicTable(root)
 p.add_textbox(entry)
 p.add_textbox(other)
 
 entry.bind('<Double-Button-1>', p.show(entry))
 other.bind('<Double-Button-1>', p.show(other))
 
-root.mainloop()
+root.mainloop()#'''
 
 
 
