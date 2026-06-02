@@ -6,6 +6,197 @@ AUTO_CLOSE = 3000
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
 
+ELEMENT_FULL_NAME = {    # Period 1
+    'H': 'H: Hydrogen',
+    'He': 'He: Helium',
+
+    # Period 2
+    'Li': 'Li: Lithium',
+    'Be': 'Be: Beryllium',
+    'B': 'B: Boron',
+    'C': 'C: Carbon',
+    'N': 'N: Nitrogen',
+    'O': 'O: Oxygen',
+    'F': 'F: Fluorine',
+    'Ne': 'Ne: Neon',
+
+    # Period 3
+    'Na': 'Na: Sodium',
+    'Mg': 'Mg: Magnesium',
+    'Al': 'Al: Aluminum',
+    'Si': 'Si: Silicon',
+    'P': 'P: Phosphorus',
+    'S': 'S: Sulfur',
+    'Cl': 'Cl: Chlorine',
+    'Ar': 'Ar: Argon',
+
+    # Period 4
+    'K': 'K: Potassium',
+    'Ca': 'Ca: Calcium',
+    'Sc': 'Sc: Scandium',
+    'Ti': 'Ti: Titanium',
+    'V': 'V: Vanadium',
+    'Cr': 'Cr: Chromium',
+    'Mn': 'Mn: Manganese',
+    'Fe': 'Fe: Iron',
+    'Co': 'Co: Cobalt',
+    'Ni': 'Ni: Nickel',
+    'Cu': 'Cu: Copper',
+    'Zn': 'Zn: Zinc',
+    'Ga': 'Ga: Gallium',
+    'Ge': 'Ge: Germanium',
+    'As': 'As: Arsenic',
+    'Se': 'Se: Selenium',
+    'Br': 'Br: Bromine',
+    'Kr': 'Kr: Krypton',
+
+    # Period 5
+    'Rb': 'Rb: Rubidium',
+    'Sr': 'Sr: Strontium',
+    'Y': 'Y: Yttrium',
+    'Zr': 'Zr: Zirconium',
+    'Nb': 'Nb: Niobium',
+    'Mo': 'Mo: Molybdenum',
+    'Tc': 'Tc: Technetium',
+    'Ru': 'Ru: Ruthenium',
+    'Rh': 'Rh: Rhodium',
+    'Pd': 'Pd: Palladium',
+    'Ag': 'Ag: Silver',
+    'Cd': 'Cd: Cadmium',
+    'In': 'In: Indium',
+    'Sn': 'Sn: Tin',
+    'Sb': 'Sb: Antimony',
+    'Te': 'Te: Tellurium',
+    'I': 'I: Iodine',
+    'Xe': 'Xe: Xenon',
+
+    # Period 6
+    'Cs': 'Cs: Cesium',
+    'Ba': 'Ba: Barium',
+
+    # Lanthanides
+    'La': 'La: Lanthanum',
+    'Ce': 'Ce: Cerium',
+    'Pr': 'Pr: Praseodymium',
+    'Nd': 'Nd: Neodymium',
+    'Pm': 'Pm: Promethium',
+    'Sm': 'Sm: Samarium',
+    'Eu': 'Eu: Europium',
+    'Gd': 'Gd: Gadolinium',
+    'Tb': 'Tb: Terbium',
+    'Dy': 'Dy: Dysprosium',
+    'Ho': 'Ho: Holmium',
+    'Er': 'Er: Erbium',
+    'Tm': 'Tm: Thulium',
+    'Yb': 'Yb: Ytterbium',
+    'Lu': 'Lu: Lutetium',
+
+    # Continue Period 6
+    'Hf': 'Hf: Hafnium',
+    'Ta': 'Ta: Tantalum',
+    'W': 'W: Tungsten',
+    'Re': 'Re: Rhenium',
+    'Os': 'Os: Osmium',
+    'Ir': 'Ir: Iridium',
+    'Pt': 'Pt: Platinum',
+    'Au': 'Au: Gold',
+    'Hg': 'Hg: Mercury',
+    'Tl': 'Tl: Thallium',
+    'Pb': 'Pb: Lead',
+    'Bi': 'Bi: Bismuth',
+    'Po': 'Po: Polonium',
+    'At': 'At: Astatine',
+    'Rn': 'Rn: Radon',
+
+    # Period 7
+    'Fr': 'Fr: Francium',
+    'Ra': 'Ra: Radium',
+
+    # Actinides
+    'Ac': 'Ac: Actinium',
+    'Th': 'Th: Thorium',
+    'Pa': 'Pa: Protactinium',
+    'U': 'U: Uranium',
+    'Np': 'Np: Neptunium',
+    'Pu': 'Pu: Plutonium',
+    'Am': 'Am: Americium',
+    'Cm': 'Cm: Curium',
+    'Bk': 'Bk: Berkelium',
+    'Cf': 'Cf: Californium',
+    'Es': 'Es: Einsteinium',
+    'Fm': 'Fm: Fermium',
+    'Md': 'Md: Mendelevium',
+    'No': 'No: Nobelium',
+    'Lr': 'Lr: Lawrencium',
+
+    # Continue Period 7
+    'Rf': 'Rf: Rutherfordium',
+    'Db': 'Db: Dubnium',
+    'Sg': 'Sg: Seaborgium',
+    'Bh': 'Bh: Bohrium',
+    'Hs': 'Hs: Hassium',
+    'Mt': 'Mt: Meitnerium',
+    'Ds': 'Ds: Darmstadtium',
+    'Rg': 'Rg: Roentgenium',
+    'Cn': 'Cn: Copernicium',
+    'Nh': 'Nh: Nihonium',
+    'Fl': 'Fl: Flerovium',
+    'Mc': 'Mc: Moscovium',
+    'Lv': 'Lv: Livermorium',
+    'Ts': 'Ts: Tennessine',
+    'Og': 'Og: Oganesson'
+}
+
+class ButtonTooltip:
+    def __init__(self, widget, adjacent):
+        self.widget = widget
+        #print(f'winfo_name: {self.widget.winfo_name()}')
+        self.adjacent = widget.master.nametowidget(adjacent)
+        self.tip_window = None
+
+        widget.bind('<Enter>', self.show)
+        widget.bind('<Leave>', self.hide)
+
+    def show(self, _):
+        if self.widget.cget('relief') == 'raised':
+            self.widget.focus_set()
+            self.widget.config(bg='#4a90e2')
+        if self.tip_window:
+            return
+
+        self.tip_window = tk.Toplevel(self.widget)
+        self.tip_window.wm_overrideredirect(True)
+
+        element = self.widget.cget('text')
+        tip = tk.Label(
+            self.tip_window,
+            text=ELEMENT_FULL_NAME.get(element, f'{element}: Placeholder'),
+            bg='#FFFFE0',
+            #bg='#4a90e2',
+            fg='black',
+            relief='solid',
+            borderwidth=0,
+            padx=5,
+            pady=2
+        )
+
+        tip.pack()
+
+        self.tip_window.update_idletasks()
+        x = self.adjacent.winfo_rootx() + self.adjacent.winfo_width()*3
+        y = self.adjacent.winfo_rooty() + self.widget.winfo_height() // 2
+        y = y - self.tip_window.winfo_height() // 2
+
+        self.tip_window.wm_geometry(f'+{x}+{y}')
+
+    def hide(self, _):
+        if self.widget.cget('relief') == 'raised':
+            self.widget.focus_set()
+            self.widget.config(bg=BACKGROUND)
+        if self.tip_window:
+            self.tip_window.destroy()
+            self.tip_window = None
+
 class ToolTip:
     def __init__(self, widget, tip, position, offset):
         self.widget = widget
@@ -26,7 +217,6 @@ class ToolTip:
         #self.widget.config(activebackground=ACTIVE_BACKGROUND, activeforeground='white', cursor='hand2', bg=ACTIVE_BACKGROUND, fg='white')
         if self.tip_window:
             return
-
 
         x, y = self.positioning(self.position, self.offset)
         self.tip_window = tk.Toplevel(self.widget)
@@ -198,7 +388,6 @@ class PeriodicTable:
             def func(_):
                 if button.cget('relief')=='raised':
                     button.focus_set()
-                    #button.config(highlightcolor='#4a90e2')
                     button.config(bg='#4a90e2')
             return func
 
@@ -213,10 +402,9 @@ class PeriodicTable:
         button = tk.Button(frame, text=element, bg=BACKGROUND, relief='raised', highlightthickness=2, name=element.lower())
         button.bind('<Enter>', highlight(button))
         button.bind('<Leave>', dehighlight(button))
-        #ToolTip(button, button.cget('text'), position='n', offset=-5)
+        ButtonTooltip(button, 'h')
         button.config(command=clicked(button))
         return button
-
 
     def show(self, entry):
         ''':param entry: takes a tk.Entry object
@@ -261,7 +449,6 @@ class PeriodicTable:
                 button.invoke()
                 print(f'evoking {button}')
 
-
             if '' in elements: #to capture cleared textbox reset the  buttons
                 for button in frame.winfo_children():
                     relief = button.cget('relief')
@@ -278,7 +465,7 @@ class PeriodicTable:
 
         return func
 
-'''
+#'''
 root = tk.Tk()
 root.geometry('600x400')
 entry = tk.Entry(root, name='microwave_0entry')
@@ -293,7 +480,7 @@ p.add_textbox(other)
 entry.bind('<Double-Button-1>', p.show(entry))
 other.bind('<Double-Button-1>', p.show(other))
 
-root.mainloop()'''
+root.mainloop()#'''
 
 
 
