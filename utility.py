@@ -6,6 +6,7 @@ AUTO_CLOSE = 3000
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
 
+NON_METAL_FG = 'black'
 ALKALI_BG = '#FFF4F2'
 METALLOIDS_BG = 'white'
 NOBLE_BG = 'black'
@@ -13,25 +14,35 @@ NOBLE_FG = 'white'
 TRANSITION_BG = '#FFFFE0'
 ACTINIDE_BG = '#A8DCAB'
 #ACTINIDE_BG = '#BEFDB7'
+POST_TRANSITION_FG = 'red'
 
-DEFAULT = {'bg': BACKGROUND}
+DEFAULT = {'bg': BACKGROUND, 'fg': 'black'}
 
 PARAMETERS = {
-    'Li': {'bg': ALKALI_BG},
-    'Na': {'bg': ALKALI_BG},
-    'K':  {'bg': ALKALI_BG},
-    'Rb': {'bg': ALKALI_BG},
-    'Cs': {'bg': ALKALI_BG},
-    'Fr': {'bg': ALKALI_BG},
 
-    'B': {'bg': METALLOIDS_BG},
-    'Si': {'bg': METALLOIDS_BG},
-    'Ge': {'bg': METALLOIDS_BG},
-    'Po': {'bg': METALLOIDS_BG},
-    'As': {'bg': METALLOIDS_BG},
-    'Sb': {'bg': METALLOIDS_BG},
-    'Te': {'bg': METALLOIDS_BG},
-    'At': {'bg': METALLOIDS_BG},
+    'H': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+    'C': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+    'N': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+    'O': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+    'P': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+    'S': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+    'Se': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+
+    'Li': {'bg': ALKALI_BG, 'fg': 'black'},
+    'Na': {'bg': ALKALI_BG, 'fg': 'black'},
+    'K':  {'bg': ALKALI_BG, 'fg': 'black'},
+    'Rb': {'bg': ALKALI_BG, 'fg': 'black'},
+    'Cs': {'bg': ALKALI_BG, 'fg': 'black'},
+    'Fr': {'bg': ALKALI_BG, 'fg': 'black'},
+
+    'B': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'Si': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'Ge': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'Po': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'As': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'Sb': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'Te': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'At': {'bg': METALLOIDS_BG, 'fg': 'black'},
 
     'He': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
     'Ne': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
@@ -41,63 +52,76 @@ PARAMETERS = {
     'Rn': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
     'Og': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
 
-    'Sc': {'bg': TRANSITION_BG},
-    'Ti': {'bg': TRANSITION_BG},
-    'V':  {'bg': TRANSITION_BG},
-    'Cr': {'bg': TRANSITION_BG},
-    'Mn': {'bg': TRANSITION_BG},
-    'Fe': {'bg': TRANSITION_BG},
-    'Co': {'bg': TRANSITION_BG},
-    'Ni': {'bg': TRANSITION_BG},
-    'Cu': {'bg': TRANSITION_BG},
-    'Zn': {'bg': TRANSITION_BG},
+    'Sc': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Ti': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'V':  {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Cr': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Mn': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Fe': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Co': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Ni': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Cu': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Zn': {'bg': TRANSITION_BG, 'fg': 'black'},
 
-    'Y':  {'bg': TRANSITION_BG},
-    'Zr': {'bg': TRANSITION_BG},
-    'Nb': {'bg': TRANSITION_BG},
-    'Mo': {'bg': TRANSITION_BG},
-    'Tc': {'bg': TRANSITION_BG},
-    'Ru': {'bg': TRANSITION_BG},
-    'Rh': {'bg': TRANSITION_BG},
-    'Pd': {'bg': TRANSITION_BG},
-    'Ag': {'bg': TRANSITION_BG},
-    'Cd': {'bg': TRANSITION_BG},
+    'Y':  {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Zr': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Nb': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Mo': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Tc': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Ru': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Rh': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Pd': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Ag': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Cd': {'bg': TRANSITION_BG, 'fg': 'black'},
 
-    'Hf': {'bg': TRANSITION_BG},
-    'Ta': {'bg': TRANSITION_BG},
-    'W':  {'bg': TRANSITION_BG},
-    'Re': {'bg': TRANSITION_BG},
-    'Os': {'bg': TRANSITION_BG},
-    'Ir': {'bg': TRANSITION_BG},
-    'Pt': {'bg': TRANSITION_BG},
-    'Au': {'bg': TRANSITION_BG},
-    'Hg': {'bg': TRANSITION_BG},
+    'Hf': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Ta': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'W':  {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Re': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Os': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Ir': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Pt': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Au': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Hg': {'bg': TRANSITION_BG, 'fg': 'black'},
 
-    'Rf': {'bg': TRANSITION_BG},
-    'Db': {'bg': TRANSITION_BG},
-    'Sg': {'bg': TRANSITION_BG},
-    'Bh': {'bg': TRANSITION_BG},
-    'Hs': {'bg': TRANSITION_BG},
-    'Mt': {'bg': TRANSITION_BG},
-    'Ds': {'bg': TRANSITION_BG},
-    'Rg': {'bg': TRANSITION_BG},
-    'Cn': {'bg': TRANSITION_BG},
+    'Rf': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Db': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Sg': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Bh': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Hs': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Mt': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Ds': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Rg': {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Cn': {'bg': TRANSITION_BG, 'fg': 'black'},
 
-    'Ac': {'bg': ACTINIDE_BG},
-    'Th': {'bg': ACTINIDE_BG},
-    'Pa': {'bg': ACTINIDE_BG},
-    'U':  {'bg': ACTINIDE_BG},
-    'Np': {'bg': ACTINIDE_BG},
-    'Pu': {'bg': ACTINIDE_BG},
-    'Am': {'bg': ACTINIDE_BG},
-    'Cm': {'bg': ACTINIDE_BG},
-    'Bk': {'bg': ACTINIDE_BG},
-    'Cf': {'bg': ACTINIDE_BG},
-    'Es': {'bg': ACTINIDE_BG},
-    'Fm': {'bg': ACTINIDE_BG},
-    'Md': {'bg': ACTINIDE_BG},
-    'No': {'bg': ACTINIDE_BG},
-    'Lr': {'bg': ACTINIDE_BG},
+    'Ac': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Th': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Pa': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'U':  {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Np': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Pu': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Am': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Cm': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Bk': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Cf': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Es': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Fm': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Md': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'No': {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'Lr': {'bg': ACTINIDE_BG, 'fg': 'black'},
+
+    'Al': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Ga': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'In': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Sn': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Tl': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Pb': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Bi': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    #'Po': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Nh': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Fl': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Mc': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Lv': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
 }
 
 ELEMENT_FULL_NAME = {    # Period 1
@@ -254,7 +278,8 @@ class ButtonTooltip:
     def show(self, _):
         if self.widget.cget('relief') == 'raised':
             self.widget.focus_set()
-            self.widget.config(bg='#4a90e2')
+            self.widget.config(bg='#4a90e2', fg='black')
+            #self.widget.config(bg='#4a90e2')
         if self.tip_window:
             return
 
@@ -361,15 +386,6 @@ class ToolTip:
 
         self.hide()
 
-
-#root = tk.Tk()
-
-#button = tk.Button(root, text='click me')
-#button.pack(padx=40, pady=40)
-
-#ToolTip(button)
-
-#root.mainloop()
 
 class PeriodicTable:
     def __init__(self, root):

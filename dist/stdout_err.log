@@ -1,0 +1,162 @@
+name=microwaveentry_0
+opening this frame: <bound method Misc.winfo_name of <tkinter.Frame object .!toplevel.microwaveentry_0>>
+inside show
+['']
+entry contains: {''}
+difference should be unselected: set()
+frame_name=microwaveentry_0
+entry contains: ['']
+e
+frame_name=microwaveentry_0
+entry contains: ['']
+name=microwaveentry_0
+opening this frame: <bound method Misc.winfo_name of <tkinter.Frame object .!toplevel.microwaveentry_0>>
+inside show
+['']
+entry contains: {''}
+difference should be unselected: set()
+inside clicked handler, what is selected: []
+inside clicked handler, what is selected: ['Cl']
+inside clicked handler, what is selected: ['Cl', 'Cu']
+frame_name=microwaveentry_0
+entry contains: ['']
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 163, in <lambda>
+  File "gui.py", line 342, in __submit
+  File "gui.py", line 335, in __grab_data
+KeyError: '.dynamic.microwave_sample.microwavebutton_0'
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\06 June\master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+
+e
+frame_name=microwaveentry_0
+entry contains: ['']
+name=microwaveentry_0
+opening this frame: <bound method Misc.winfo_name of <tkinter.Frame object .!toplevel.microwaveentry_0>>
+inside show
+['Cl', 'Cu', 'Pt']
+entry contains: {'Cu', 'Cl', 'Pt'}
+difference should be unselected: set()
+inside clicked handler, what is selected: ['Cl', 'Cu', 'Pt']
+inside clicked handler, what is selected: ['Cl', 'Pt']
+inside clicked handler, what is selected: ['Cl']
+frame_name=microwaveentry_0
+entry contains: ['Cl', 'Cu', 'Pt']
+frame_name=microwaveentry_0
+entry contains: ['']
+name=microwaveentry_0
+opening this frame: <bound method Misc.winfo_name of <tkinter.Frame object .!toplevel.microwaveentry_0>>
+inside show
+['']
+entry contains: {''}
+difference should be unselected: set()
+inside clicked handler, what is selected: []
+inside clicked handler, what is selected: ['Pt']
+frame_name=microwaveentry_0
+entry contains: ['']
+name=hotplateentry_0
+opening this frame: <bound method Misc.winfo_name of <tkinter.Frame object .!toplevel.hotplateentry_0>>
+inside show
+['']
+entry contains: {''}
+difference should be unselected: set()
+inside clicked handler, what is selected: []
+frame_name=hotplateentry_0
+entry contains: ['']
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\06 June\master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\06 June\master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\06 June\master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
