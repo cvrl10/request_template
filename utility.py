@@ -6,6 +6,20 @@ AUTO_CLOSE = 3000
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
 
+METALLOIDS = 'white'
+DEFAULT = {'bg': BACKGROUND}
+
+PARAMETERS = {
+    'B': {'bg': METALLOIDS},
+    'Si': {'bg': METALLOIDS},
+    'Ge': {'bg': METALLOIDS},
+    'Po': {'bg': METALLOIDS},
+    'As': {'bg': METALLOIDS},
+    'Sb': {'bg': METALLOIDS},
+    'Te': {'bg': METALLOIDS},
+    'At': {'bg': METALLOIDS},
+}
+
 ELEMENT_FULL_NAME = {    # Period 1
     'H': 'H: Hydrogen',
     'He': 'He: Helium',
@@ -192,7 +206,8 @@ class ButtonTooltip:
     def hide(self, _):
         if self.widget.cget('relief') == 'raised':
             self.widget.focus_set()
-            self.widget.config(bg=BACKGROUND)
+            text = self.widget.cget('text')
+            self.widget.config(**PARAMETERS.get(text, DEFAULT))
         if self.tip_window:
             self.tip_window.destroy()
             self.tip_window = None
@@ -309,6 +324,7 @@ class PeriodicTable:
 
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
             entry = re.split(r'[,\s]+', textbox.get())
+            print(f'entry contains: {entry}')
             textbox.delete(0, tk.END)
 
             if '' in entry:
@@ -365,23 +381,30 @@ class PeriodicTable:
                                                                 'Ho', 'Er', 'Tm', 'Yb', 'Lu'])
         fill_row(row=9, range=ACTINIDES, elements=['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es',
                                                                 'Fm', 'Md', 'No', 'Lr'])
-        print(['###']*18)
-
 
     def __button(self, element, frame):
         def clicked(button):
             def func():
                 key = frame.winfo_name()
+                #
+                #_, textbox = self.active_frame
+                #print(f'frame.master: {frame.master}')
+                #print(f'inside_clicked: {textbox.get()}')
+                #current_entry = re.split(r'[,\s]+', textbox.get())
+                #
                 selected = self.selected[key]
                 print(f'inside clicked handler, what is selected: {selected}')
                 relief = button.cget('relief')
                 if relief == 'raised':
                     button.config(relief='sunken', bg=ACTIVE_BACKGROUND, fg='white')
+                    #current_entry.append(button.cget('text'))#
                     selected.append(button.cget('text'))
                 else:
                     button.config(relief='raised', bg=BACKGROUND, fg='black')
+                    #current_entry.remove(button.cget('text'))#
                     selected.remove(button.cget('text'))
-                #print(self.selected)
+                #current_entry.sort()
+                #textbox.insert(0, ', '.join(current_entry))#
             return func
 
         def highlight(button):
@@ -399,7 +422,7 @@ class PeriodicTable:
                     button.config(bg=BACKGROUND)
             return func
 
-        button = tk.Button(frame, text=element, bg=BACKGROUND, relief='raised', highlightthickness=2, name=element.lower())
+        button = tk.Button(frame, text=element, relief='raised', highlightthickness=2, name=element.lower(), **PARAMETERS.get(element, DEFAULT))
         button.bind('<Enter>', highlight(button))
         button.bind('<Leave>', dehighlight(button))
         ButtonTooltip(button, 'h')
@@ -413,7 +436,8 @@ class PeriodicTable:
         '''
 
         def func(_):
-            if self.active_frame:#this boolean is to prevent exception when there's no active frame
+            if self.active_frame:
+            #if self.active_frame and re.split(r'[,\s]+', entry.get())==['']:#this boolean is to prevent exception when there's no active frame
                 self.clear()()#this is to allow me to save entry while changing between frame w/o closing Toplevel
             name = entry.winfo_name()
             print(f'name={name}')
@@ -465,7 +489,7 @@ class PeriodicTable:
 
         return func
 
-#'''
+'''
 root = tk.Tk()
 root.geometry('600x400')
 entry = tk.Entry(root, name='microwave_0entry')
@@ -480,7 +504,7 @@ p.add_textbox(other)
 entry.bind('<Double-Button-1>', p.show(entry))
 other.bind('<Double-Button-1>', p.show(other))
 
-root.mainloop()#'''
+root.mainloop()'''
 
 
 

@@ -13,8 +13,8 @@ from configparser import ConfigParser
 from utility import ToolTip, PeriodicTable
 
 file = open('stdout_err.log', mode='w')
-#sys.stdout = file
-#sys.stderr = file
+sys.stdout = file
+sys.stderr = file
 
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
@@ -24,22 +24,24 @@ HIGHLIGHT = '#4a90e2'
 parser = ConfigParser()
 parser.read('config.ini')
 
-SPINBOX_TO = parser.getint('Parameters', 'spinbox_to')
+UPPER_LIMIT = parser.getint('Parameters', 'upper_limit')
 PERIODIC_TABLE = None
+
+SAMPLE_COPY = {2: 'duplicate', 3: 'triplicate'}
 
 class App:
     def __init__(self):
         self.RETURN = False
         self.root = Tk()
 
-        global PERIODIC_TABLE
-        PERIODIC_TABLE = PeriodicTable(self.root)
-
         self.root.iconbitmap('img/logo.ico')
 
         self.root.title('workbook_creator')
         self.root.resizable(False, False)
         self.root.geometry('325x500')
+
+        global PERIODIC_TABLE
+        PERIODIC_TABLE = PeriodicTable(self.root)
 
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
@@ -83,7 +85,8 @@ class App:
         r.grid(row=0, column=0)
         #self.__radio_handler(r)
         parser.read('config.ini')
-        r = Radiobutton(radio_frame, text='triplicate', variable=self.replicates, value=parser.getint('Parameters', 'triplicate'))
+        i = parser.getint('Parameters', 'max_sample_copies')
+        r = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
         r.grid(row=0, column=1)
         #self.__radio_handler(r)
         self.replicates.set(2)
@@ -122,7 +125,7 @@ class App:
         self.microwave_label.grid(row=1, column=0, sticky='ne')
         self.microwave_element_frame, self.microwave_sample_frame = self.create_element_and_sample_frame(1, name='microwave')
 
-        self.microwave_spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name='microwave')
+        self.microwave_spinbox = Spinbox(self.middle_frame, from_=1, to=UPPER_LIMIT, width=2, name='microwave')
         self.microwave_spinbox.grid(row=1, column=2, sticky='nw')
         self.microwave_spinbox.config(command=self.__spinbox_handler(self.microwave_spinbox,
                                                                      self.microwave_element_frame,
@@ -132,7 +135,7 @@ class App:
         self.katanax_label.grid(row=2, column=0, sticky='ne')
         self.katanax_element_frame, self.katanax_sample_frame = self.create_element_and_sample_frame(2, color='', name='katanax')
 
-        self.katanax_spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name='katanax')
+        self.katanax_spinbox = Spinbox(self.middle_frame, from_=1, to=UPPER_LIMIT, width=2, name='katanax')
         self.katanax_spinbox.grid(row=2, column=2, sticky='nw')
         self.katanax_spinbox.config(command=self.__spinbox_handler(self.katanax_spinbox,
                                                                      self.katanax_element_frame,
@@ -142,7 +145,7 @@ class App:
         self.hotplate_label.grid(row=3, column=0, sticky='ne')
         self.hotplate_element_frame, self.hotplate_sample_frame = self.create_element_and_sample_frame(3, color='', name='hotplate')
 
-        self.hotplate_spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name='hotplate')
+        self.hotplate_spinbox = Spinbox(self.middle_frame, from_=1, to=UPPER_LIMIT, width=2, name='hotplate')
         self.hotplate_spinbox.grid(row=3, column=2, sticky='nw')
         self.hotplate_spinbox.config(command=self.__spinbox_handler(self.hotplate_spinbox,
                                                                      self.hotplate_element_frame,
