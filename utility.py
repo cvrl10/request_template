@@ -6,18 +6,98 @@ AUTO_CLOSE = 3000
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
 
-METALLOIDS = 'white'
+ALKALI_BG = '#FFF4F2'
+METALLOIDS_BG = 'white'
+NOBLE_BG = 'black'
+NOBLE_FG = 'white'
+TRANSITION_BG = '#FFFFE0'
+ACTINIDE_BG = '#A8DCAB'
+#ACTINIDE_BG = '#BEFDB7'
+
 DEFAULT = {'bg': BACKGROUND}
 
 PARAMETERS = {
-    'B': {'bg': METALLOIDS},
-    'Si': {'bg': METALLOIDS},
-    'Ge': {'bg': METALLOIDS},
-    'Po': {'bg': METALLOIDS},
-    'As': {'bg': METALLOIDS},
-    'Sb': {'bg': METALLOIDS},
-    'Te': {'bg': METALLOIDS},
-    'At': {'bg': METALLOIDS},
+    'Li': {'bg': ALKALI_BG},
+    'Na': {'bg': ALKALI_BG},
+    'K':  {'bg': ALKALI_BG},
+    'Rb': {'bg': ALKALI_BG},
+    'Cs': {'bg': ALKALI_BG},
+    'Fr': {'bg': ALKALI_BG},
+
+    'B': {'bg': METALLOIDS_BG},
+    'Si': {'bg': METALLOIDS_BG},
+    'Ge': {'bg': METALLOIDS_BG},
+    'Po': {'bg': METALLOIDS_BG},
+    'As': {'bg': METALLOIDS_BG},
+    'Sb': {'bg': METALLOIDS_BG},
+    'Te': {'bg': METALLOIDS_BG},
+    'At': {'bg': METALLOIDS_BG},
+
+    'He': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
+    'Ne': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
+    'Ar': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
+    'Kr': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
+    'Xe': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
+    'Rn': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
+    'Og': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
+
+    'Sc': {'bg': TRANSITION_BG},
+    'Ti': {'bg': TRANSITION_BG},
+    'V':  {'bg': TRANSITION_BG},
+    'Cr': {'bg': TRANSITION_BG},
+    'Mn': {'bg': TRANSITION_BG},
+    'Fe': {'bg': TRANSITION_BG},
+    'Co': {'bg': TRANSITION_BG},
+    'Ni': {'bg': TRANSITION_BG},
+    'Cu': {'bg': TRANSITION_BG},
+    'Zn': {'bg': TRANSITION_BG},
+
+    'Y':  {'bg': TRANSITION_BG},
+    'Zr': {'bg': TRANSITION_BG},
+    'Nb': {'bg': TRANSITION_BG},
+    'Mo': {'bg': TRANSITION_BG},
+    'Tc': {'bg': TRANSITION_BG},
+    'Ru': {'bg': TRANSITION_BG},
+    'Rh': {'bg': TRANSITION_BG},
+    'Pd': {'bg': TRANSITION_BG},
+    'Ag': {'bg': TRANSITION_BG},
+    'Cd': {'bg': TRANSITION_BG},
+
+    'Hf': {'bg': TRANSITION_BG},
+    'Ta': {'bg': TRANSITION_BG},
+    'W':  {'bg': TRANSITION_BG},
+    'Re': {'bg': TRANSITION_BG},
+    'Os': {'bg': TRANSITION_BG},
+    'Ir': {'bg': TRANSITION_BG},
+    'Pt': {'bg': TRANSITION_BG},
+    'Au': {'bg': TRANSITION_BG},
+    'Hg': {'bg': TRANSITION_BG},
+
+    'Rf': {'bg': TRANSITION_BG},
+    'Db': {'bg': TRANSITION_BG},
+    'Sg': {'bg': TRANSITION_BG},
+    'Bh': {'bg': TRANSITION_BG},
+    'Hs': {'bg': TRANSITION_BG},
+    'Mt': {'bg': TRANSITION_BG},
+    'Ds': {'bg': TRANSITION_BG},
+    'Rg': {'bg': TRANSITION_BG},
+    'Cn': {'bg': TRANSITION_BG},
+
+    'Ac': {'bg': ACTINIDE_BG},
+    'Th': {'bg': ACTINIDE_BG},
+    'Pa': {'bg': ACTINIDE_BG},
+    'U':  {'bg': ACTINIDE_BG},
+    'Np': {'bg': ACTINIDE_BG},
+    'Pu': {'bg': ACTINIDE_BG},
+    'Am': {'bg': ACTINIDE_BG},
+    'Cm': {'bg': ACTINIDE_BG},
+    'Bk': {'bg': ACTINIDE_BG},
+    'Cf': {'bg': ACTINIDE_BG},
+    'Es': {'bg': ACTINIDE_BG},
+    'Fm': {'bg': ACTINIDE_BG},
+    'Md': {'bg': ACTINIDE_BG},
+    'No': {'bg': ACTINIDE_BG},
+    'Lr': {'bg': ACTINIDE_BG},
 }
 
 ELEMENT_FULL_NAME = {    # Period 1
