@@ -1,8 +1,66 @@
 name=microwaveentry_0
-opening this frame: <bound method Misc.winfo_name of <tkinter.Frame object .!toplevel.microwaveentry_0>>
-inside show
 ['']
-entry contains: {''}
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked=set()
 difference should be unselected: set()
+show() buttons that actually be clicked after operation=set()
+
+inside clicked handler, what is selected: []
+inside clicked handler, what is selected: ['Co']
+inside clicked handler, what is selected: []
+inside clicked handler, what is selected: ['Al']
+inside clicked handler, what is selected: []
 frame_name=microwaveentry_0
-entry contains: ['']
+name=microwaveentry_0
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={'Mg'}
+show() buttons that actually be clicked=set()
+difference should be unselected: {'Mg'}
+diff: Mg
+relief of button to evoke: sunken
+inside clicked handler, what is selected: ['Mg']
+evoking .!toplevel.microwaveentry_0.mg
+show() buttons that actually be clicked after operation=set()
+
+frame_name=microwaveentry_0
+name=microwaveentry_0
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked=set()
+difference should be unselected: set()
+show() buttons that actually be clicked after operation=set()
+
+frame_name=microwaveentry_0
+name=microwaveentry_0
+['Ca']
+show() tk.Entry={'Ca'}
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked={'Ca'}
+difference should be unselected: set()
+show() buttons that actually be clicked after operation={'Ca'}
+diff: Ca
+relief of button to evoke: raised
+inside clicked handler, what is selected: []
+evoking .!toplevel.microwaveentry_0.ca
+
+inside clicked handler, what is selected: ['Ca']
+frame_name=microwaveentry_0
+name=microwaveentry_0
+['Ca', 'O', 'No3', 'Cl']
+show() tk.Entry={'Cl', 'O', 'Ca', 'No3'}
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={'O', 'Ca'}
+show() buttons that actually be clicked={'Cl', 'O', 'Ca'}
+difference should be unselected: set()
+show() buttons that actually be clicked after operation={'Cl', 'O', 'Ca'}
+diff: Cl
+relief of button to evoke: raised
+inside clicked handler, what is selected: ['Ca', 'O']
+evoking .!toplevel.microwaveentry_0.cl
+diff: O
+diff: Ca
+
+inside clicked handler, what is selected: ['Ca', 'O', 'Cl']
+frame_name=microwaveentry_0

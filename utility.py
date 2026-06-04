@@ -268,7 +268,6 @@ ELEMENT_FULL_NAME = {    # Period 1
 class ButtonTooltip:
     def __init__(self, widget, adjacent):
         self.widget = widget
-        #print(f'winfo_name: {self.widget.winfo_name()}')
         self.adjacent = widget.master.nametowidget(adjacent)
         self.tip_window = None
 
@@ -279,7 +278,7 @@ class ButtonTooltip:
         if self.widget.cget('relief') == 'raised':
             self.widget.focus_set()
             self.widget.config(bg='#4a90e2', fg='black')
-            #self.widget.config(bg='#4a90e2')
+
         if self.tip_window:
             return
 
@@ -371,9 +370,6 @@ class ToolTip:
             y = self.widget.winfo_rooty() + offset
         return x, y
 
-    def set_positiion(self):
-        pass
-
     def hide(self):
         if self.tip_window:
             self.tip_window.destroy()
@@ -411,7 +407,6 @@ class PeriodicTable:
         self.__create_grid(frame)
         self.__fill_grid(frame)
 
-
     def clear(self):
         def func():
             frame, textbox = self.active_frame
@@ -419,14 +414,13 @@ class PeriodicTable:
             key = frame.winfo_name()
 
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
-            entry = re.split(r'[,\s]+', textbox.get())
-            print(f'entry contains: {entry}')
+            entry_set = set(re.split(r'[,\s]+', textbox.get()))
             textbox.delete(0, tk.END)
 
-            if '' in entry:
-                entry_set = set()
-            else:
-                entry_set = set(entry)
+            #if '' in entry:
+            entry_set.discard('')
+            #else:
+                #entry_set = set(entry)
 
             not_periodic = entry_set - ELEMENTS
             analytes = self.selected[key].copy()
@@ -482,35 +476,43 @@ class PeriodicTable:
         def clicked(button):
             def func():
                 key = frame.winfo_name()
+
                 #
-                #_, textbox = self.active_frame
-                #print(f'frame.master: {frame.master}')
-                #print(f'inside_clicked: {textbox.get()}')
-                #current_entry = re.split(r'[,\s]+', textbox.get())
+                '''this part functions to update tk.Entry as button is clicked, it is not required for normal operation.
+                 Follow current_entry'''
+                _, textbox = self.active_frame
+                current_entry = set(re.split(r'[,\s]+', textbox.get()))
+                current_entry.discard('')
                 #
                 selected = self.selected[key]
                 print(f'inside clicked handler, what is selected: {selected}')
                 relief = button.cget('relief')
                 if relief == 'raised':
                     button.config(relief='sunken', bg=ACTIVE_BACKGROUND, fg='white')
-                    #current_entry.append(button.cget('text'))#
+                    current_entry.add(button.cget('text'))#comment this out
                     selected.append(button.cget('text'))
                 else:
-                    button.config(relief='raised', bg=BACKGROUND, fg='black')
-                    #current_entry.remove(button.cget('text'))#
+                    #button.config(relief='raised', bg=BACKGROUND, fg='black')
+                    #key = button.cget('text')
+                    button.config(relief='raised', **PARAMETERS.get(element, DEFAULT))
+                    current_entry.discard(button.cget('text'))#
                     selected.remove(button.cget('text'))
-                #current_entry.sort()
-                #textbox.insert(0, ', '.join(current_entry))#
+                #
+                current_entry = list(current_entry)
+                current_entry.sort()#
+                textbox.delete(0, tk.END)#
+                textbox.insert(0, ', '.join(current_entry))#
+                #
             return func
 
         def highlight(button):
-            def func(_):
+            def func(_):#can be deleted? because ButtonToolTip handles this
                 if button.cget('relief')=='raised':
                     button.focus_set()
-                    button.config(bg='#4a90e2')
+                    button.config(bg='#4a90e2', fg='black')
             return func
 
-        def dehighlight(button):
+        def dehighlight(button):#can be deleted? because ButtonToolTip handles this
             def func(_):
                 if button.cget('relief')=='raised':
                     button.focus_set()
@@ -534,7 +536,8 @@ class PeriodicTable:
         def func(_):
             if self.active_frame:
             #if self.active_frame and re.split(r'[,\s]+', entry.get())==['']:#this boolean is to prevent exception when there's no active frame
-                self.clear()()#this is to allow me to save entry while changing between frame w/o closing Toplevel
+                #self.clear()()#this is to allow me to save entry while changing between frame w/o closing Toplevel
+                pass
             name = entry.winfo_name()
             print(f'name={name}')
             title = name.replace('entry', '')
@@ -549,26 +552,50 @@ class PeriodicTable:
                 self.active_frame = (frame, entry)
                 frame.pack()
 
-            print(f'opening this frame: {frame.winfo_name}')
+            #print(f'opening this frame: {frame.winfo_name}')
 
             elements = list(map(lambda e: e.title(), re.split(r'[,\s]+', entry.get())))
-            print('inside show')
+            #print(f'show() tk.Entry={elements}')
             print(elements)
             entry_set = set(elements)
+            entry_set.discard('')
             selected_set = set(self.selected[name])
-            print(f'entry contains: {entry_set}')
+            frame, _ = self.active_frame
+            ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
+            click_me = entry_set & ELEMENTS
+            #print(f'entry contains: {entry_set}')
+            print(f'show() tk.Entry={entry_set}')
+            print(f'show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={selected_set}')
+            print(f'show() buttons that actually be clicked={click_me}')
+            ''''
             if '' in entry_set:
                 diff = set()
             else:
-                diff = selected_set - entry_set
+                diff = selected_set - entry_set'''
+            entry_set.discard('')#
+            diff = selected_set - entry_set#
+            click_me = (entry_set & ELEMENTS) - diff
             print(f'difference should be unselected: {diff}')
             for element in diff:
                 print(f'diff: {element}')
                 #button = table.window.nametowidget(element.lower())
                 button = frame.nametowidget(element.lower())
+                relief = button.cget('relief')
+                print(f'relief of button to evoke: {relief}')
                 button.invoke()
                 print(f'evoking {button}')
 
+            print(f'show() buttons that actually be clicked after operation={click_me}')
+            for element in click_me:
+                print(f'diff: {element}')
+                #button = table.window.nametowidget(element.lower())
+                button = frame.nametowidget(element.lower())
+                relief = button.cget('relief')
+                if relief=='raised':
+                    print(f'relief of button to evoke: {relief}')
+                    button.invoke()
+                    print(f'evoking {button}')
+            '''
             if '' in elements: #to capture cleared textbox reset the  buttons
                 for button in frame.winfo_children():
                     relief = button.cget('relief')
@@ -580,16 +607,16 @@ class PeriodicTable:
                 if element in elements:
                     if element not in self.selected[name]:
                         button.invoke()
-
+            '''
             self.__show()
-
+            print()
         return func
 
 '''
 root = tk.Tk()
 root.geometry('600x400')
-entry = tk.Entry(root, name='microwave_0entry')
-other = tk.Entry(root, name='katanax_0entry')
+entry = tk.Entry(root, name='test_microwave_0entry')
+other = tk.Entry(root, name='test_katanax_0entry')
 entry.pack()
 other.pack()
 
