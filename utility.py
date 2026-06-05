@@ -20,6 +20,8 @@ DEFAULT = {'bg': BACKGROUND, 'fg': 'black'}
 
 PARAMETERS = {
 
+    #'*': {'bg': BACKGROUND, 'fg': BACKGROUND},
+
     'H': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
     'C': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
     'N': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
@@ -265,9 +267,15 @@ ELEMENT_FULL_NAME = {    # Period 1
     'Og': 'Og: Oganesson'
 }
 
-class ButtonTooltip:
-    def __init__(self, widget, adjacent):
+
+class Tooltip:
+    def __init__(self, widget):
         self.widget = widget
+
+
+class ButtonTooltip(Tooltip):
+    def __init__(self, widget, adjacent):
+        super().__init__(widget)
         self.adjacent = widget.master.nametowidget(adjacent)
         self.tip_window = None
 
@@ -316,9 +324,10 @@ class ButtonTooltip:
             self.tip_window.destroy()
             self.tip_window = None
 
-class ToolTip:
+
+class MenubuttonTooltip(Tooltip):
     def __init__(self, widget, tip):
-        self.widget = widget
+        super().__init__(widget)
         self.message = tip
         self.tip_window = None
         self.after_id = None
@@ -355,7 +364,6 @@ class ToolTip:
         )
 
         tip.pack()
-
         self.tip_window.after(AUTO_CLOSE, self.hide)
 
     def hide(self):
@@ -398,7 +406,6 @@ class PeriodicTable:
     def clear(self):
         def func():
             frame, textbox = self.active_frame
-            #print(f'frame_name={frame.winfo_name()}')
             key = frame.winfo_name()
 
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
@@ -424,8 +431,8 @@ class PeriodicTable:
     def __show(self):
         self.window.deiconify()
 
-    def __create_grid(self, frame):
-        #for i in range(9):
+    @staticmethod
+    def __create_grid(frame):
         for i in range(10):
             frame.grid_rowconfigure(i, weight=1)
         for i in range(18):
@@ -438,12 +445,13 @@ class PeriodicTable:
                 button.grid(row=row, column=i, sticky='nsew')
 
         FULL_RANGE = [i for i in range(18)]
-        LANTHANIDES = ACTINIDES = [i for i in range(3 ,17)]
+        LANTHANIDES = ACTINIDES = [i for i in range(3, 17)]
+
         fill_row(row=0, range=[0, 17], elements=['H', 'He'])
         fill_row(row=1, range=[0, 1, 12, 13, 14, 15, 16, 17], elements=['Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne'])
         fill_row(row=2, range=[0, 1, 12, 13, 14, 15, 16, 17], elements=['Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar'])
         fill_row(row=3, range=FULL_RANGE, elements=['K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co',
-                                                                'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr'])
+                                                    'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr'])
         fill_row(row=4, range=FULL_RANGE, elements=['Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh',
                                                                 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe'])
         fill_row(row=5, range=FULL_RANGE, elements=['Cs', 'Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir',
@@ -452,9 +460,9 @@ class PeriodicTable:
                                                                 'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'])
         fill_row(row=7, range=[0], elements=['*'])
         fill_row(row=8, range=LANTHANIDES, elements=['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy',
-                                                                'Ho', 'Er', 'Tm', 'Yb', 'Lu'])
+                                                     'Ho', 'Er', 'Tm', 'Yb', 'Lu'])
         fill_row(row=9, range=ACTINIDES, elements=['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es',
-                                                                'Fm', 'Md', 'No', 'Lr'])
+                                                   'Fm', 'Md', 'No', 'Lr'])
 
     def __button(self, element, frame):
         def clicked(button):
@@ -499,12 +507,7 @@ class PeriodicTable:
         '''
 
         def func(_):
-            if self.active_frame:
-            #if self.active_frame and re.split(r'[,\s]+', entry.get())==['']:#this boolean is to prevent exception when there's no active frame
-                #self.clear()()#this is to allow me to save entry while changing between frame w/o closing Toplevel
-                pass
             name = entry.winfo_name()
-            print(f'name={name}')
             title = name.replace('entry', '')
             self.window.title(title)
             frame = self.textbox[entry.winfo_name()]
@@ -517,8 +520,6 @@ class PeriodicTable:
                 self.active_frame = (frame, entry)
                 frame.pack()
 
-            #print(f'opening this frame: {frame.winfo_name}')
-
             elements = list(map(lambda e: e.title(), re.split(r'[,\s]+', entry.get())))
             #print(f'show() tk.Entry={elements}')
             print(elements)
@@ -527,40 +528,25 @@ class PeriodicTable:
             selected_set = set(self.selected[name])
             frame, _ = self.active_frame
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
-            #click_me = entry_set & ELEMENTS
-            #print(f'entry contains: {entry_set}')
+
             print(f'show() tk.Entry={entry_set}')
             print(f'show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={selected_set}')
-            #print(f'show() buttons that actually be clicked={click_me}')
-            ''''
-            if '' in entry_set:
-                diff = set()
-            else:
-                diff = selected_set - entry_set'''
-            entry_set.discard('')#
-            diff = selected_set - entry_set#
-            click_me = (entry_set & ELEMENTS) - diff
-            print(f'difference should be unselected: {diff}')
-            for element in diff:
-                print(f'diff: {element}')
-                #button = table.window.nametowidget(element.lower())
+
+            entry_set.discard('')
+            DESELECTED = selected_set - entry_set
+            click_me = (entry_set & ELEMENTS) - DESELECTED
+
+            for element in DESELECTED:
                 button = frame.nametowidget(element.lower())
-                relief = button.cget('relief')
-                print(f'relief of button to evoke: {relief}')
                 button.invoke()
-                print(f'evoking {button}')
 
             print(f'show() buttons that actually be clicked after operation={click_me}')
             for element in click_me:
-                print(f'diff: {element}')
-                #button = table.window.nametowidget(element.lower())
                 button = frame.nametowidget(element.lower())
                 relief = button.cget('relief')
-                if relief=='raised':
-                    print(f'relief of button to evoke: {relief}')
-                    button.invoke()
-                    print(f'evoking {button}')
-
+                if relief == 'sunken':
+                    continue
+                button.invoke()
 
             self.__show()
             print()

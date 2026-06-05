@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 import sys
 from configparser import ConfigParser
-from utility import ToolTip, PeriodicTable
+from utility import MenubuttonTooltip, PeriodicTable
 
 file = open('stdout_err.log', mode='w')
 sys.stdout = file
@@ -230,7 +230,7 @@ class App:
         #menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
         #menubutton.bind('<Leave>', lambda _: menubutton.config(bg='SystemButtonFace', cursor='arrow'))
         self.__menubutton_handler(menubutton)
-        ToolTip(menubutton, 'selected sample(s) for digestion')
+        MenubuttonTooltip(menubutton, 'selected sample(s) for digestion')
 
         menu = Menu(menubutton, tearoff=0)
         #menu.bind('<<MenuSelect>>', lambda _: menubutton.config(relief='sunken', background=ACTIVE_BACKGROUND, foreground='white'))
@@ -294,7 +294,7 @@ class App:
 
                     self.__menubutton_handler(button)
                     #ToolTip(button, 'selected sample(s) for digestion', position='e', offset=5)
-                    ToolTip(button, 'selected sample(s) for digestion')
+                    MenubuttonTooltip(button, 'selected sample(s) for digestion')
 
                     menu = Menu(button, tearoff=0)
                     #menu.bind('<Unmap>', lambda _: button.config(relief='raised'))
