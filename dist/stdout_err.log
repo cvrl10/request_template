@@ -1,0 +1,153 @@
+name=microwaveentry_0
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked=set()
+difference should be unselected: set()
+show() buttons that actually be clicked after operation=set()
+
+inside clicked handler, what is selected: []
+name=katanaxentry_0
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked=set()
+difference should be unselected: set()
+show() buttons that actually be clicked after operation=set()
+
+inside clicked handler, what is selected: []
+frame_name=katanaxentry_0
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+
+
+
+
+
+
+
+
+
+
+
+e
+e
+e
+e
+e
+e
+e
+e
+e
+e
+e
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+
+
+
+
+
+
+
+
+
+
+
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+UNIQUE constraint failed: lots.manufacturer, lots.element, lots.lot
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+
+
+
+
+
+
+
+
+
+
+

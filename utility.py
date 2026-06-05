@@ -410,23 +410,19 @@ class PeriodicTable:
     def clear(self):
         def func():
             frame, textbox = self.active_frame
-            print(f'frame_name={frame.winfo_name()}')
+            #print(f'frame_name={frame.winfo_name()}')
             key = frame.winfo_name()
 
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
-            entry_set = set(re.split(r'[,\s]+', textbox.get()))
+            ENTRY = set(re.split(r'[,\s]+', textbox.get()))
             textbox.delete(0, tk.END)
 
-            #if '' in entry:
-            entry_set.discard('')
-            #else:
-                #entry_set = set(entry)
+            ENTRY.discard('')
 
-            not_periodic = entry_set - ELEMENTS
+            COMPOUNDS = ENTRY - ELEMENTS
             analytes = self.selected[key].copy()
 
-            for analyte in not_periodic:
-                analytes.insert(0, analyte)
+            analytes.extend(COMPOUNDS)
             analytes.sort()
 
             textbox.insert(0, ', '.join(analytes))
@@ -492,8 +488,6 @@ class PeriodicTable:
                     current_entry.add(button.cget('text'))#comment this out
                     selected.append(button.cget('text'))
                 else:
-                    #button.config(relief='raised', bg=BACKGROUND, fg='black')
-                    #key = button.cget('text')
                     button.config(relief='raised', **PARAMETERS.get(element, DEFAULT))
                     current_entry.discard(button.cget('text'))#
                     selected.remove(button.cget('text'))

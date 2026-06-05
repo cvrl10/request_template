@@ -86,8 +86,8 @@ class App:
         #self.__radio_handler(r)
         parser.read('config.ini')
         i = parser.getint('Parameters', 'max_sample_copies')
-        r = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
-        r.grid(row=0, column=1)
+        self.radio_button = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
+        self.radio_button.grid(row=0, column=1)
         #self.__radio_handler(r)
         self.replicates.set(2)
 
@@ -343,11 +343,12 @@ class App:
         katanax = self.__grab_data(self.katanax_element_frame, self.katanax_sample_frame)
         hotplate = self.__grab_data(self.hotplate_element_frame, self.hotplate_sample_frame)
 
+        parser.read('config.ini')
         COPY = self.replicates.get()
         loi = self.loi.get()
         url = 'master_workbook.xlsx'
+
         try:
-            parser.read('config.ini')
             destination = Path(parser.get('Path', 'directory'))
             if destination.exists():
                 url = destination/url
