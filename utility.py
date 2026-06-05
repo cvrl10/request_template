@@ -317,11 +317,9 @@ class ButtonTooltip:
             self.tip_window = None
 
 class ToolTip:
-    def __init__(self, widget, tip, position, offset):
+    def __init__(self, widget, tip):
         self.widget = widget
         self.message = tip
-        self.position = position
-        self.offset = offset
         self.tip_window = None
         self.after_id = None
 
@@ -337,7 +335,8 @@ class ToolTip:
         if self.tip_window:
             return
 
-        x, y = self.positioning(self.position, self.offset)
+        x = self.widget.winfo_rootx() + self.widget.winfo_width() + 5
+        y = self.widget.winfo_rooty()
         self.tip_window = tk.Toplevel(self.widget)
 
         self.tip_window.wm_overrideredirect(True)
@@ -358,17 +357,6 @@ class ToolTip:
         tip.pack()
 
         self.tip_window.after(AUTO_CLOSE, self.hide)
-
-    def positioning(self, location, offset):
-        if location == 'e':
-            print(location)
-            x = self.widget.winfo_rootx() + self.widget.winfo_width() + offset
-            y = self.widget.winfo_rooty()
-        if location == 'n':
-            print(location)
-            x = self.widget.winfo_rootx()
-            y = self.widget.winfo_rooty() + offset
-        return x, y
 
     def hide(self):
         if self.tip_window:
@@ -499,24 +487,7 @@ class PeriodicTable:
                 #
             return func
 
-        def highlight(button):
-            def func(_):#can be deleted? because ButtonToolTip handles this
-                if button.cget('relief')=='raised':
-                    button.focus_set()
-                    button.config(bg='#4a90e2', fg='black')
-            return func
-
-        def dehighlight(button):#can be deleted? because ButtonToolTip handles this
-            def func(_):
-                if button.cget('relief')=='raised':
-                    button.focus_set()
-                    #button.config(highlightcolor='#4a90e2')
-                    button.config(bg=BACKGROUND)
-            return func
-
         button = tk.Button(frame, text=element, relief='raised', highlightthickness=2, name=element.lower(), **PARAMETERS.get(element, DEFAULT))
-        button.bind('<Enter>', highlight(button))
-        button.bind('<Leave>', dehighlight(button))
         ButtonTooltip(button, 'h')
         button.config(command=clicked(button))
         return button
@@ -556,11 +527,11 @@ class PeriodicTable:
             selected_set = set(self.selected[name])
             frame, _ = self.active_frame
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
-            click_me = entry_set & ELEMENTS
+            #click_me = entry_set & ELEMENTS
             #print(f'entry contains: {entry_set}')
             print(f'show() tk.Entry={entry_set}')
             print(f'show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={selected_set}')
-            print(f'show() buttons that actually be clicked={click_me}')
+            #print(f'show() buttons that actually be clicked={click_me}')
             ''''
             if '' in entry_set:
                 diff = set()
@@ -589,22 +560,12 @@ class PeriodicTable:
                     print(f'relief of button to evoke: {relief}')
                     button.invoke()
                     print(f'evoking {button}')
-            '''
-            if '' in elements: #to capture cleared textbox reset the  buttons
-                for button in frame.winfo_children():
-                    relief = button.cget('relief')
-                    if relief == 'sunken':
-                        button.invoke()
 
-            for button in frame.winfo_children():
-                element = button.cget('text')
-                if element in elements:
-                    if element not in self.selected[name]:
-                        button.invoke()
-            '''
+
             self.__show()
             print()
         return func
+
 
 '''
 root = tk.Tk()
