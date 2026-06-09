@@ -8,12 +8,14 @@ ACTIVE_BACKGROUND = '#5a5a5a'
 
 NON_METAL_FG = 'black'
 ALKALI_BG = '#FFF4F2'
+ALKALI_BG = '#FFDEF5'
 METALLOIDS_BG = 'white'
 NOBLE_BG = 'black'
 NOBLE_FG = 'white'
 TRANSITION_BG = '#FFFFE0'
 ACTINIDE_BG = '#A8DCAB'
 #ACTINIDE_BG = '#BEFDB7'
+LANTHANIDE_BG = '#FFA778'
 POST_TRANSITION_FG = 'red'
 
 DEFAULT = {'bg': BACKGROUND, 'fg': 'black'}
@@ -95,6 +97,22 @@ PARAMETERS = {
     'Ds': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Rg': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Cn': {'bg': TRANSITION_BG, 'fg': 'black'},
+
+    'La': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Ce': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Pr': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Nd': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Pm': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Sm': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Eu': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Gd': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Tb': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Dy': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Ho': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Er': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Tm': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Yb': {'bg': LANTHANIDE_BG, 'fg': 'black'},
+    'Lu': {'bg': LANTHANIDE_BG, 'fg': 'black'},
 
     'Ac': {'bg': ACTINIDE_BG, 'fg': 'black'},
     'Th': {'bg': ACTINIDE_BG, 'fg': 'black'},
@@ -388,7 +406,7 @@ class PeriodicTable:
         self.textbox = {}
         self.selected = {}
         self.active_frame = None
-        self.window.protocol('WM_DELETE_WINDOW', self.clear())
+        self.window.protocol('WM_DELETE_WINDOW', self.clear)
 
         root.update_idletasks()
         x = root.winfo_x() + root.winfo_width() + 5
@@ -404,26 +422,24 @@ class PeriodicTable:
         self.__fill_grid(frame)
 
     def clear(self):
-        def func():
-            frame, textbox = self.active_frame
-            key = frame.winfo_name()
+        frame, textbox = self.active_frame
+        key = frame.winfo_name()
 
-            ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
-            ENTRY = set(re.split(r'[,\s]+', textbox.get()))
-            textbox.delete(0, tk.END)
+        ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
+        ENTRY = set(re.split(r'[,\s]+', textbox.get()))
+        textbox.delete(0, tk.END)
 
-            ENTRY.discard('')
+        ENTRY.discard('')
 
-            COMPOUNDS = ENTRY - ELEMENTS
-            analytes = self.selected[key].copy()
+        COMPOUNDS = ENTRY - ELEMENTS
+        analytes = self.selected[key].copy()
 
-            analytes.extend(COMPOUNDS)
-            analytes.sort()
+        analytes.extend(COMPOUNDS)
+        analytes.sort()
 
-            textbox.insert(0, ', '.join(analytes))
-            self.hide()
+        textbox.insert(0, ', '.join(analytes))
+        self.hide()
 
-        return func
 
     def hide(self):
         self.window.withdraw()
