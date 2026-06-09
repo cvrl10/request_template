@@ -1,0 +1,29 @@
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked after operation=set()
+
+inside clicked handler, what is selected: []
+inside clicked handler, what is selected: ['F']
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked after operation=set()
+
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked after operation=set()
+
+['']
+show() tk.Entry=set()
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)=set()
+show() buttons that actually be clicked after operation=set()
+
+['Cl', 'F']
+show() tk.Entry={'Cl', 'F'}
+show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={'Cl', 'F'}
+show() buttons that actually be clicked after operation={'Cl', 'F'}
+
+inside clicked handler, what is selected: ['F', 'Cl']
+inside clicked handler, what is selected: ['Cl']

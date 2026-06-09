@@ -6,9 +6,12 @@ AUTO_CLOSE = 3000
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
 
+NONMETAL_BG = '#E6CCFF'
+NONMETAL_BG = 'yellow'
 NON_METAL_FG = 'black'
 ALKALI_BG = '#FFF4F2'
 ALKALI_BG = '#FFDEF5'
+ALKALINE_EARTH_FG = 'blue'
 METALLOIDS_BG = 'white'
 NOBLE_BG = 'black'
 NOBLE_FG = 'white'
@@ -24,13 +27,20 @@ PARAMETERS = {
 
     #'*': {'bg': BACKGROUND, 'fg': BACKGROUND},
 
-    'H': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
-    'C': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
-    'N': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
-    'O': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
-    'P': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
-    'S': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
-    'Se': {'bg': BACKGROUND, 'fg': NON_METAL_FG},
+    'H': {'bg': 'yellow', 'fg': 'black'},
+
+    'C': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'N': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'O': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'P': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'S': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'Se': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+
+    'F': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'Cl': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'Br': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'I': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'Ts': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
 
     'Li': {'bg': ALKALI_BG, 'fg': 'black'},
     'Na': {'bg': ALKALI_BG, 'fg': 'black'},
@@ -38,6 +48,13 @@ PARAMETERS = {
     'Rb': {'bg': ALKALI_BG, 'fg': 'black'},
     'Cs': {'bg': ALKALI_BG, 'fg': 'black'},
     'Fr': {'bg': ALKALI_BG, 'fg': 'black'},
+
+    'Be': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
+    'Mg': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
+    'Ca': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
+    'Sr': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
+    'Ba': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
+    'Ra': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
 
     'B': {'bg': METALLOIDS_BG, 'fg': 'black'},
     'Si': {'bg': METALLOIDS_BG, 'fg': 'black'},
