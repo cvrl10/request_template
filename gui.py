@@ -373,7 +373,6 @@ class App:
         workbook.close()
         os.startfile(url)
 
-
     def run(self):
         self.root.mainloop()
 

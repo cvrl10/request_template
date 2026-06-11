@@ -27,14 +27,14 @@ PARAMETERS = {
 
     #'*': {'bg': BACKGROUND, 'fg': BACKGROUND},
 
-    'H': {'bg': 'yellow', 'fg': 'black'},
+    #'H': {'bg': 'yellow', 'fg': 'black'},
 
-    'C': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'N': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'O': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'P': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'S': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'Se': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    #'C': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    #'N': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    #'O': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    #'P': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    #'S': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    #'Se': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
 
     'F': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
     'Cl': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
@@ -510,7 +510,7 @@ class PeriodicTable:
                 current_entry.discard('')
                 #
                 selected = self.selected[key]
-                print(f'inside clicked handler, what is selected: {selected}')
+                #print(f'inside clicked handler, what is selected: {selected}')
                 relief = button.cget('relief')
                 if relief == 'raised':
                     button.config(relief='sunken', bg=ACTIVE_BACKGROUND, fg='white')
@@ -555,15 +555,15 @@ class PeriodicTable:
 
             elements = list(map(lambda e: e.title(), re.split(r'[,\s]+', entry.get())))
             #print(f'show() tk.Entry={elements}')
-            print(elements)
+            #print(elements)
             entry_set = set(elements)
             entry_set.discard('')
             selected_set = set(self.selected[name])
             frame, _ = self.active_frame
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
 
-            print(f'show() tk.Entry={entry_set}')
-            print(f'show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={selected_set}')
+            #print(f'show() tk.Entry={entry_set}')
+            #print(f'show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={selected_set}')
 
             entry_set.discard('')
             DESELECTED = selected_set - entry_set
@@ -573,7 +573,7 @@ class PeriodicTable:
                 button = frame.nametowidget(element.lower())
                 button.invoke()
 
-            print(f'show() buttons that actually be clicked after operation={click_me}')
+            #print(f'show() buttons that actually be clicked after operation={click_me}')
             for element in click_me:
                 button = frame.nametowidget(element.lower())
                 relief = button.cget('relief')

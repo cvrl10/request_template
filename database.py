@@ -19,7 +19,7 @@ def query_database(elements):
         element TEXT,
         lot TEXT PRIMARY KEY,
         expiration DATE,
-        UNIQUE(manufacturer, element, lot)
+        UNIQUE(manufacturer, element, lot, expiration)
     );
     ''')
     try:
