@@ -42,7 +42,6 @@ class App:
 
         global PERIODIC_TABLE
         PERIODIC_TABLE = PeriodicTable(self.root)
-        #PERIODIC_TABLE.hide()
 
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
@@ -82,14 +81,14 @@ class App:
         self.__textbox_handler(self.sample_entry)
 
         self.replicates = IntVar()
-        r = Radiobutton(radio_frame, text='duplicate', variable=self.replicates, value=2)
-        r.grid(row=0, column=0)
-        #self.__radio_handler(r)
+        radio_button = Radiobutton(radio_frame, text='duplicate', variable=self.replicates, value=2)
+        radio_button.grid(row=0, column=0)
+        #self.__radio_handler(radio_button)
         parser.read('config.ini')
         i = parser.getint('Parameters', 'max_sample_copies')
-        self.radio_button = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
-        self.radio_button.grid(row=0, column=1)
-        #self.__radio_handler(r)
+        radio_button = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
+        radio_button.grid(row=0, column=1)
+        #self.__radio_handler(radio_button)
         self.replicates.set(2)
 
         loi = Label(self.top_frame, text='L.O.I')
@@ -179,6 +178,7 @@ class App:
         except Exception as e:
             print(e)
 
+        self.root.bind('<Double-Button-1>', lambda _: PERIODIC_TABLE.hide())
         #self.root.bind_all('<ButtonRelease-1>', lambda _: self.root.after(10, self.__unclick(self.menu_list)))
 
     def __radio_handler(self, radio):
