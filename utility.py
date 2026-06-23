@@ -417,10 +417,11 @@ class MenubuttonTooltip(Tooltip):
 class PeriodicTable:
     def __init__(self, root):
         self.window = tk.Toplevel(root)
-        self.window.iconbitmap(r'img/periodic_table.ico')
         self.hide()
+        self.window.iconbitmap(r'img/periodic_table.ico')
+        #self.hide()
 
-        self.textbox = {}
+        #self.textbox = {}
         self.selected = {}
         self.active_frame = None
         self.window.protocol('WM_DELETE_WINDOW', self.clear)
@@ -434,7 +435,8 @@ class PeriodicTable:
         key = entry.winfo_name()
         self.selected[key] = []
         frame = tk.Frame(self.window, name=key)
-        self.textbox[key] = frame
+        #self.hide()
+        #self.textbox[key] = frame
         self.__create_grid(frame)
         self.__fill_grid(frame)
 
@@ -543,7 +545,13 @@ class PeriodicTable:
             name = entry.winfo_name()
             title = name.replace('entry', '')
             self.window.title(title)
-            frame = self.textbox[entry.winfo_name()]
+            #frame = self.textbox[entry.winfo_name()]#delete
+            test_f = self.window.nametowidget(name)#delete
+            frame = self.window.nametowidget(name)
+            print(frame)
+            #print(test_f)
+            print(f'entry={entry.winfo_name()}')
+            print(f'frame={frame.winfo_name()}')
             if self.active_frame == None:#currently no active frame, so set the current frame to the frame tied to the tk.Entry evoking <Double-Button-1>
                 frame.pack()
                 self.active_frame = (frame, entry)
@@ -594,14 +602,14 @@ other = tk.Entry(root, name='test_katanax_0entry')
 entry.pack()
 other.pack()
 
-p = PeriodicTable(root)
-p.add_textbox(entry)
-p.add_textbox(other)
+pt = PeriodicTable(root)
+pt.add_textbox(entry)
+pt.add_textbox(other)
 
-entry.bind('<Double-Button-1>', p.show(entry))
-other.bind('<Double-Button-1>', p.show(other))
+entry.bind('<Double-Button-1>', pt.show(entry))
+other.bind('<Double-Button-1>', pt.show(other))
 
-root.mainloop()'''
+root.mainloop()#'''
 
 
 

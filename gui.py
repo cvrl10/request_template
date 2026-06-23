@@ -33,7 +33,7 @@ class App:
     def __init__(self):
         self.RETURN = False
         self.root = Tk()
-
+        self.root.withdraw()
         self.root.iconbitmap('img/logo.ico')
 
         self.root.title('workbook_creator')
@@ -42,6 +42,7 @@ class App:
 
         global PERIODIC_TABLE
         PERIODIC_TABLE = PeriodicTable(self.root)
+        #PERIODIC_TABLE.hide()
 
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
@@ -374,5 +375,6 @@ class App:
         os.startfile(url)
 
     def run(self):
+        self.root.deiconify()
         self.root.mainloop()
 

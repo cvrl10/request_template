@@ -17,9 +17,8 @@ def query_database(elements):
     CREATE TABLE lots (
         manufacturer TEXT,
         element TEXT,
-        lot TEXT PRIMARY KEY,
-        expiration DATE,
-        UNIQUE(manufacturer, element, lot, expiration)
+        lot TEXT,
+        expiration DATE     
     );
     ''')
     try:
