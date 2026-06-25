@@ -1,3 +1,36 @@
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 1921, in __call__
+TypeError: ButtonTooltip.hide() missing 1 required positional argument: '_'
+
+
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
 
 
 
@@ -7,14 +40,64 @@
 
 
 
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
 
 
 
 
-
-
-
-
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
 
 
 

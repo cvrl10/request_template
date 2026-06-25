@@ -7,19 +7,22 @@ BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
 
 NONMETAL_BG = '#E6CCFF'
-NONMETAL_BG = 'yellow'
+NONMETAL_BG = '#F9CD9D'
 NON_METAL_FG = 'black'
-ALKALI_BG = '#FFF4F2'
-ALKALI_BG = '#FFDEF5'
-ALKALINE_EARTH_FG = 'blue'
-METALLOIDS_BG = 'white'
+#ALKALI_BG = '#FFF4F2'
+ALKALI_BG = '#F3CDC3'
+ALKALINE_EARTH_BG = '#DCA195'
+ALKALINE_EARTH_FG = 'black'
+METALLOIDS_BG = '#748B7A'
 NOBLE_BG = 'black'
 NOBLE_FG = 'white'
+HALOGEN_BG = '#DC8A5D'
 TRANSITION_BG = '#FFFFE0'
 ACTINIDE_BG = '#A8DCAB'
 #ACTINIDE_BG = '#BEFDB7'
-LANTHANIDE_BG = '#FFA778'
-POST_TRANSITION_FG = 'red'
+LANTHANIDE_BG = '#718DA5'
+POST_TRANSITION_BG = '#A3B2A6'
+POST_TRANSITION_FG = 'black'
 
 DEFAULT = {'bg': BACKGROUND, 'fg': 'black'}
 
@@ -27,20 +30,20 @@ PARAMETERS = {
 
     #'*': {'bg': BACKGROUND, 'fg': BACKGROUND},
 
-    #'H': {'bg': 'yellow', 'fg': 'black'},
+    'H': {'bg': '#F9CD9D', 'fg': 'black'},
 
-    #'C': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    #'N': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    #'O': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    #'P': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    #'S': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    #'Se': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'C': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'N': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'O': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'P': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'S': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'Se': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
 
-    'F': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'Cl': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'Br': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'I': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
-    'Ts': {'bg': NONMETAL_BG, 'fg': NON_METAL_FG},
+    'F': {'bg': HALOGEN_BG, 'fg': NON_METAL_FG},
+    'Cl': {'bg': HALOGEN_BG, 'fg': NON_METAL_FG},
+    'Br': {'bg': HALOGEN_BG, 'fg': NON_METAL_FG},
+    'I': {'bg': HALOGEN_BG, 'fg': NON_METAL_FG},
+    'Ts': {'bg': HALOGEN_BG, 'fg': NON_METAL_FG},
 
     'Li': {'bg': ALKALI_BG, 'fg': 'black'},
     'Na': {'bg': ALKALI_BG, 'fg': 'black'},
@@ -49,12 +52,12 @@ PARAMETERS = {
     'Cs': {'bg': ALKALI_BG, 'fg': 'black'},
     'Fr': {'bg': ALKALI_BG, 'fg': 'black'},
 
-    'Be': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
-    'Mg': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
-    'Ca': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
-    'Sr': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
-    'Ba': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
-    'Ra': {'bg': BACKGROUND, 'fg': ALKALINE_EARTH_FG},
+    'Be': {'bg': ALKALINE_EARTH_BG, 'fg': ALKALINE_EARTH_FG},
+    'Mg': {'bg': ALKALINE_EARTH_BG, 'fg': ALKALINE_EARTH_FG},
+    'Ca': {'bg': ALKALINE_EARTH_BG, 'fg': ALKALINE_EARTH_FG},
+    'Sr': {'bg': ALKALINE_EARTH_BG, 'fg': ALKALINE_EARTH_FG},
+    'Ba': {'bg': ALKALINE_EARTH_BG, 'fg': ALKALINE_EARTH_FG},
+    'Ra': {'bg': ALKALINE_EARTH_BG, 'fg': ALKALINE_EARTH_FG},
 
     'B': {'bg': METALLOIDS_BG, 'fg': 'black'},
     'Si': {'bg': METALLOIDS_BG, 'fg': 'black'},
@@ -63,7 +66,7 @@ PARAMETERS = {
     'As': {'bg': METALLOIDS_BG, 'fg': 'black'},
     'Sb': {'bg': METALLOIDS_BG, 'fg': 'black'},
     'Te': {'bg': METALLOIDS_BG, 'fg': 'black'},
-    'At': {'bg': METALLOIDS_BG, 'fg': 'black'},
+    'At': {'bg': HALOGEN_BG, 'fg': 'black'},
 
     'He': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
     'Ne': {'bg': NOBLE_BG, 'fg': NOBLE_FG},
@@ -147,18 +150,18 @@ PARAMETERS = {
     'No': {'bg': ACTINIDE_BG, 'fg': 'black'},
     'Lr': {'bg': ACTINIDE_BG, 'fg': 'black'},
 
-    'Al': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Ga': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'In': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Sn': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Tl': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Pb': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Bi': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Al': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Ga': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'In': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Sn': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Tl': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Pb': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Bi': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
     #'Po': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Nh': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Fl': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Mc': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
-    'Lv': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    'Nh': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Fl': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Mc': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
+    'Lv': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
 }
 
 ELEMENT_FULL_NAME = {    # Period 1

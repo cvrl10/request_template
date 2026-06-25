@@ -71,6 +71,8 @@ class App:
         self.request_id_entry = Entry(self.top_frame, highlightthickness=1)
         self.request_id_entry.grid(row=0, column=1, sticky='w')
 
+        preset = parser.get('Autofill', 'request')
+        self.request_id_entry.bind('<Double-Button-1>', self.__autofill(self.request_id_entry, preset))
         self.__textbox_handler(self.request_id_entry)
 
         sample = Label(self.top_frame, text='Sample(s):')
@@ -78,6 +80,8 @@ class App:
         self.sample_entry = Entry(self.top_frame, highlightthickness=1)
         self.sample_entry.grid(row=1, column=1, sticky='w')
 
+        preset = parser.get('Autofill', 'sample')
+        self.sample_entry.bind('<Double-Button-1>', self.__autofill(self.sample_entry, preset))
         self.__textbox_handler(self.sample_entry)
 
         self.replicates = IntVar()
@@ -179,11 +183,18 @@ class App:
             print(e)
 
         self.root.bind('<Double-Button-1>', lambda _: PERIODIC_TABLE.hide())
-        #self.root.bind_all('<ButtonRelease-1>', lambda _: self.root.after(10, self.__unclick(self.menu_list)))
 
     def __radio_handler(self, radio):
         radio.bind('<Enter>', lambda _: radio.config(fg=HIGHLIGHT))
         radio.bind('<Leave>', lambda _: radio.config(fg='black'))
+
+    @staticmethod
+    def __autofill(entry, preset):
+        def func(_):
+            entry.delete(0, END)
+            entry.insert(0, preset)
+            return 'break'
+        return func
 
     def __textbox_handler(self, entry):
         default = entry.cget('highlightbackground')
@@ -228,8 +239,6 @@ class App:
         menubutton = Menubutton(sample_frame, width=9, text='select', name=f'{name}button_{0}', relief='raised', bg=BACKGROUND)
         menubutton.pack(side='top')
 
-        #menubutton.bind('<Enter>', lambda _: menubutton.config(activebackground=ACTIVE_BACKGROUND, cursor='hand2'))
-        #menubutton.bind('<Leave>', lambda _: menubutton.config(bg='SystemButtonFace', cursor='arrow'))
         self.__menubutton_handler(menubutton)
         MenubuttonTooltip(menubutton, 'selected sample(s) for digestion')
 
@@ -316,13 +325,11 @@ class App:
 
                     menu = self.root.nametowidget(menu)
                     self.menu_list.remove(menu)
-                    #print(f'menu is: {menu}')
 
                     button.destroy()
 
                 element_frame.update_idletasks()
                 sample_frame.update_idletasks()
-
 
         return func
 
