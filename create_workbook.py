@@ -446,7 +446,7 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 0, self.row, 4, 'Microwave', self.header_format)
         self.__move_cursor()
 
-        self.digestion_sheet.write(self.row, 0, 'Element(s)', self.label_cell_format)
+        self.digestion_sheet.write(self.row, 0, 'Analyte(s)', self.label_cell_format)
         self.digestion_sheet.merge_range(self.row, 1, self.row, 4, ', '.join(elements), self.empty_cell_format)
         self.__move_cursor()
 
@@ -490,7 +490,7 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'Hotplate', self.header_format)
         self.__move_cursor()
 
-        self.digestion_sheet.write(self.row, 0, 'Element(s)', self.label_cell_format)
+        self.digestion_sheet.write(self.row, 0, 'Analyte(s)', self.label_cell_format)
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, ', '.join(elements), self.empty_cell_format)
         self.__move_cursor()
 
@@ -512,7 +512,7 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 0, self.row, 2, 'Katanax', self.header_format)
         self.__move_cursor()
 
-        self.digestion_sheet.write(self.row, 0, 'Element(s)', self.label_cell_format)
+        self.digestion_sheet.write(self.row, 0, 'Analyte(s)', self.label_cell_format)
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, ', '.join(elements), self.empty_cell_format)
         self.__move_cursor()
 

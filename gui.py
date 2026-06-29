@@ -36,7 +36,7 @@ class App:
         self.root.withdraw()
         self.root.iconbitmap('img/logo.ico')
 
-        self.root.title('workbook_creator')
+        self.root.title('WORKBOOK TEMPLATE')
         self.root.resizable(False, False)
         self.root.geometry('325x500')
 
@@ -102,7 +102,8 @@ class App:
         loi_checkbox.grid(row=2, column=1, sticky='w')
 
 
-        self.middle_frame = Frame(self.root, name='dynamic')
+        self.middle_frame = Frame(self.root, name='dynamic', bg='SystemButtonFace')
+        #self.middle_frame = Frame(self.root, name='dynamic')
         self.middle_frame.grid(row=1, column=0, columnspan=3, sticky='nsew')
         self.middle_frame.configure(height=120)
         self.middle_frame.grid_propagate(False)
@@ -183,6 +184,7 @@ class App:
             print(e)
 
         self.root.bind('<Double-Button-1>', lambda _: PERIODIC_TABLE.hide())
+        self.root.bind('<Escape>', lambda _: self.root.destroy())
 
     def __radio_handler(self, radio):
         radio.bind('<Enter>', lambda _: radio.config(fg=HIGHLIGHT))
@@ -219,13 +221,13 @@ class App:
 
 
     def create_element_and_sample_frame(self, row: int, name, color=''):
-        element_frame = Frame(self.middle_frame, bg='', name=f'{name}_element')
+        element_frame = Frame(self.middle_frame, bg='SystemButtonFace', name=f'{name}_element')
         element_frame.grid(row=row, column=1, sticky='nsew')
 
         #spinbox = Spinbox(self.middle_frame, from_=1, to=SPINBOX_TO, width=2, name=name)
         #spinbox.grid(row=row, column=2, sticky='w')
 
-        sample_frame = Frame(self.middle_frame, bg=color, name=f'{name}_sample')
+        sample_frame = Frame(self.middle_frame, bg='SystemButtonFace', name=f'{name}_sample')
         sample_frame.grid(row=row, column=3, sticky='nsew')
 
         entry = Entry(element_frame, name=f'{name}entry_{0}', highlightthickness=1)
@@ -243,10 +245,6 @@ class App:
         MenubuttonTooltip(menubutton, 'selected sample(s) for digestion')
 
         menu = Menu(menubutton, tearoff=0)
-        #menu.bind('<<MenuSelect>>', lambda _: menubutton.config(relief='sunken', background=ACTIVE_BACKGROUND, foreground='white'))
-        #menu.bind('<FocusOut>', lambda _: (menubutton.config(relief='raised', background=BACKGROUND, foreground='black'),print('FocusOut')))
-        #menu.bind('<Unmap>', lambda _: menubutton.config(relief='raised', background=BACKGROUND, foreground='black'))
-        #menu.bind('<Unmap>', lambda _: (menubutton.config(relief='raised', background=BACKGROUND, foreground='black'), print('FocusOut')))
         self.menu_list.append(menu)  # added initial menu button here
         menubutton.config(menu=menu)
 
@@ -291,6 +289,7 @@ class App:
             child_count = len(element_frame.winfo_children())
             #print(f'child_count {child_count}')
             if count > child_count:
+                #self.root.withdraw()
                 for i in range(child_count, count):
                     entry = Entry(element_frame, name=f'{name}entry_{i}', highlightthickness=1)
                     entry.pack(side='top')
@@ -310,11 +309,13 @@ class App:
                     #menu.bind('<Unmap>', lambda _: button.config(relief='raised'))
                     self.menu_list.append(menu)
                     button.config(menu=menu)
+                #self.root.deiconify()
                 #evoke entry <Return> to force sample updates on new menu_buttons
                 self.sample_entry.focus_set()
                 self.sample_entry.event_generate('<Return>')
 
             elif child_count > count:
+                #self.root.withdraw()
                 for i in reversed(range(count, child_count)):
                     entry = element_frame.nametowidget(f'{name}entry_{i}')
                     entry.destroy()
@@ -330,6 +331,7 @@ class App:
 
                 element_frame.update_idletasks()
                 sample_frame.update_idletasks()
+                #self.root.deiconify()
 
         return func
 
