@@ -170,16 +170,16 @@ class Template:
                 correction_factor = self.__create_loi_table(sample, worksheet)
 
             if self.__contains_chrome_3(self.sample_to_elements[sample]):
-                cr2O3, cr6 = self.__edit_list(self.sample_to_elements[sample])
+                cr2o3, cr6 = self.__edit_list(self.sample_to_elements[sample])
 
-            for element in self.sample_to_elements[sample]:
+            for element in sorted(self.sample_to_elements[sample]):
                 if element.upper() == 'LOI':
                     worksheet.autofit()
                     continue
                 #print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
                 digestion_object = self.element_to_digestion[element]
                 if self.__is_chrome_3(element.lower()):
-                    self.__create_titration_table_cr3(worksheet, element, sample, cr2O3, cr6, correction_factor)
+                    self.__create_titration_table_cr3(worksheet, element, sample, cr2o3, cr6, correction_factor)
                     worksheet.autofit()
                     continue
                 if element.lower() in self.TITRATION_ANALYSIS:
@@ -226,7 +226,7 @@ class Template:
         self.__move_cursor(self.SPACING)
 
     def __contains_chrome_3(self, element_list):
-            return list(filter(self.__is_chrome_3, element_list))
+        return list(filter(self.__is_chrome_3, element_list))
 
     def __is_chrome_3(self, element):
         return element.lower() in ['criii', 'cr3', 'cr3+', 'cr_3+', 'cr_three', 'crthree']
@@ -425,6 +425,7 @@ class Template:
 
     def add_microwave(self, elements: list, samples: list):
         self.element_set.update(elements)
+
         def create_microwave_program():
             def write(data):
                 for i in range(len(data)):

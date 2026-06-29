@@ -1,7 +1,29 @@
 
 
-
-
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
 
 
 
@@ -31,30 +53,33 @@ time data 'Oct 30 2026' does not match format '%B %d %Y'
 time data 'Oct 30 2026' does not match format '%B %d %Y'
 
 
-Exception in Tkinter callback
-Traceback (most recent call last):
-  File "C:\Users\carla\clariant\request_template\venv\lib\site-packages\xlsxwriter\workbook.py", line 387, in close
-    self._store_workbook()
-  File "C:\Users\carla\clariant\request_template\venv\lib\site-packages\xlsxwriter\workbook.py", line 753, in _store_workbook
-    raise e
-  File "C:\Users\carla\clariant\request_template\venv\lib\site-packages\xlsxwriter\workbook.py", line 746, in _store_workbook
-    xlsx_file = ZipFile(
-  File "C:\Python310\lib\zipfile.py", line 1249, in __init__
-    self.fp = io.open(file, filemode)
-PermissionError: [Errno 13] Permission denied: 'master_workbook.xlsx'
+path=master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'March 30 2026' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
 
-During handling of the above exception, another exception occurred:
 
-Traceback (most recent call last):
-  File "C:\Python310\lib\tkinter\__init__.py", line 1921, in __call__
-    return self.func(*args)
-  File "C:\Users\carla\clariant\request_template\gui.py", line 168, in <lambda>
-    self.submit = Button(self.bottom_frame, text='SUBMIT', command=lambda: self.__submit(), bg=BACKGROUND)
-  File "C:\Users\carla\clariant\request_template\gui.py", line 383, in __submit
-    workbook.close()
-  File "C:\Users\carla\clariant\request_template\venv\lib\site-packages\xlsxwriter\workbook.py", line 389, in close
-    raise FileCreateError(e)
-xlsxwriter.exceptions.FileCreateError: [Errno 13] Permission denied: 'master_workbook.xlsx'
+
 path=master_workbook.xlsx
 time data 'July 30 2026' does not match format '%b %d %Y'
 time data 'Nov 30 2027' does not match format '%B %d %Y'
