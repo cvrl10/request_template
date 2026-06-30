@@ -193,8 +193,12 @@ class App:
     @staticmethod
     def __autofill(entry, preset):
         def func(_):
+            text = entry.get()
             entry.delete(0, END)
-            entry.insert(0, preset)
+            if text == '':
+                entry.insert(0, preset)
+            else:
+                entry.insert(0, '')
             return 'break'
         return func
 
