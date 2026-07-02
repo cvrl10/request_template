@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import re
 
 AUTO_CLOSE = 3000
@@ -460,7 +461,6 @@ class PeriodicTable:
         textbox.insert(0, ', '.join(analytes))
         self.hide()
 
-
     def hide(self):
         self.window.withdraw()
 
@@ -519,7 +519,6 @@ class PeriodicTable:
                 current_entry.discard('')
                 #
                 selected = self.selected[key]
-                #print(f'inside clicked handler, what is selected: {selected}')
                 relief = button.cget('relief')
                 if relief == 'raised':
                     button.config(relief='sunken', bg=ACTIVE_BACKGROUND, fg='white')
@@ -572,9 +571,6 @@ class PeriodicTable:
             frame, _ = self.active_frame
             ELEMENTS = set([button.cget('text') for button in frame.winfo_children()])
 
-            #print(f'show() tk.Entry={entry_set}')
-            #print(f'show() tk.Frame buttons that should be pressed based on the list (not that accurate in our case here)={selected_set}')
-
             entry_set.discard('')
             DESELECTED = selected_set - entry_set
             click_me = (entry_set & ELEMENTS) - DESELECTED
@@ -613,6 +609,119 @@ other.bind('<Double-Button-1>', pt.show(other))
 
 root.mainloop()#'''
 
+#root = tk.Tk()
+
+#modal = tk.Toplevel(root)
+#modal.title('Options')
+#modal.columnconfigure(0, weight=1)
+#modal.columnconfigure(1, weight=5)
+#modal.transient(root)
+#modal.grab_set()
+
+#root.wait_window(modal)
+
+ACTIVE_FRAME = None
+class Modal:
+    def __init__(self, root):
+        self.ACTIVE_FRAME = None
+        self.dialog = tk.Toplevel(root, bg='#FFFFFF')
+        self.dialog.title('Options')
+        self.dialog.geometry('400x400')
+        self.dialog.rowconfigure(0, weight=1)
+        self.dialog.columnconfigure(0, weight=1)
+        self.dialog.columnconfigure(1, weight=5)
+
+        button_frame = tk.Frame(self.dialog, bg='#F0F0F0')
+        #button_frame = tk.Frame(self.dialog, bg='black')
+        #button_frame.columnconfigure(0, weight=1)
+        #button_frame.rowconfigure(0, weight=1)
+        #button_frame.rowconfigure(0, weight=1)
+
+        button_frame.grid(row=0, column=0, sticky='nsew')
+        self.dialog.transient(root)
+
+        self.sort_var = None
+        container = self.__general_frame()
+        self.__add_button(button_frame, '   General', container=container)
+
+        container = self.__save_frame()
+        self.__add_button(button_frame, '   Save', container=container)
+        self.dialog.grab_set()
+
+    def __add_button(self, frame, text, container):
+        def func():
+            self.ACTIVE_FRAME.grid_remove()
+            self.ACTIVE_FRAME = container
+            container.grid()
+        button = tk.Button(frame, text=text, relief='flat', anchor='w', command=func)
+        #button.grid(row=row, column=0, sticky='new')
+        button.pack(expand=False, fill='x', anchor='n')
+        button.bind('<Enter>', lambda _: button.config(relief='groove'))
+        button.bind('<Leave>', lambda _: button.config(relief='flat'))
+
+    def __general_frame(self):
+        frame = tk.Frame(self.dialog, bg='#FFFFFF')
+        frame.grid(row=0, column=1, sticky='nsew')
+
+        frame.rowconfigure(0, weight=0)
+        frame.rowconfigure(1, weight=0)
+        frame.rowconfigure(2, weight=0)
+        frame.rowconfigure(3, weight=0)
+        frame.columnconfigure(0, weight=0)
+        frame.columnconfigure(1, weight=1)
+
+        #import tkinter.font as font
+        #d = font.nametofont('TkDefaultFont')
+        #print(d.actual())
+        title = tk.Label(frame, text='Workbook options', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
+        title.grid(row=0, column=0, columnspan=2, stick='nw')
+
+        seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
+        seperator.grid(row=1, column=0, columnspan=2, sticky='new')
+
+        self.sort_var = tk.IntVar(value=1)
+        #self.sort_var.set(1)
+        self.checkbox = tk.Checkbutton(frame, variable=self.sort_var, text='sort analyte(s)', bg='#FFFFFF')
+        self.checkbox.grid(row=2, column=0, sticky='nw')
+        #self.checkbox.select()
+        #label = tk.Label(frame, text='sort analyte(s)', bg='#FFFFFF')
+        #label.grid(row=2, column=1, sticky='nw')
+
+        calc_var = tk.IntVar()
+        checkbox = tk.Checkbutton(frame, variable=calc_var, text='show calculations', bg='#FFFFFF')
+        checkbox.grid(row=3, column=0, sticky='nw')
+        #label = tk.Label(frame, text='show calculations', bg='#FFFFFF')
+        #label.grid(row=3, column=1, sticky='nw')
+
+        frame.grid_remove()
+        self.ACTIVE_FRAME = frame
+        return frame
+
+    def __save_frame(self):
+        frame = tk.Frame(self.dialog, bg='#FFFFFF')
+        frame.grid(row=0, column=1, sticky='nsew')
+
+        frame.rowconfigure(0, weight=0)
+        frame.rowconfigure(1, weight=0)
+        frame.rowconfigure(2, weight=0)
+        frame.rowconfigure(3, weight=0)
+        frame.columnconfigure(0, weight=0)
+        frame.columnconfigure(1, weight=1)
+
+        title = tk.Label(frame, text='Save Documents', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
+        title.grid(row=0, column=0, columnspan=2, stick='nw')
+
+        seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
+        seperator.grid(row=1, column=0, columnspan=2, sticky='new')
+
+        frame.grid_remove()
+
+        return frame
+
+root = tk.Tk()
+Modal(root)
+
+root.mainloop()
 
 
 
