@@ -1,5 +1,8 @@
+import os
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog
+from configparser import ConfigParser
+from pathlib import Path
 import re
 
 AUTO_CLOSE = 3000
@@ -619,17 +622,18 @@ root.mainloop()#'''
 #modal.grab_set()
 
 #root.wait_window(modal)
+parser = ConfigParser()
+parser.read('config.ini')
 
-ACTIVE_FRAME = None
 class Modal:
     def __init__(self, root):
         self.ACTIVE_FRAME = None
         self.dialog = tk.Toplevel(root, bg='#FFFFFF')
         self.dialog.title('Options')
-        self.dialog.geometry('400x400')
+        self.dialog.geometry('700x400')
         self.dialog.rowconfigure(0, weight=1)
-        self.dialog.columnconfigure(0, weight=1)
-        self.dialog.columnconfigure(1, weight=5)
+        self.dialog.columnconfigure(0, weight=0)
+        self.dialog.columnconfigure(1, weight=1)
 
         button_frame = tk.Frame(self.dialog, bg='#F0F0F0')
         #button_frame = tk.Frame(self.dialog, bg='black')
@@ -642,10 +646,10 @@ class Modal:
 
         self.sort_var = None
         container = self.__general_frame()
-        self.__add_button(button_frame, '   General', container=container)
+        self.__add_button(button_frame, '   General         ', container=container)
 
         container = self.__save_frame()
-        self.__add_button(button_frame, '   Save', container=container)
+        self.__add_button(button_frame, '   Save    ', container=container)
         self.dialog.grab_set()
 
     def __add_button(self, frame, text, container):
@@ -680,18 +684,12 @@ class Modal:
         seperator.grid(row=1, column=0, columnspan=2, sticky='new')
 
         self.sort_var = tk.IntVar(value=1)
-        #self.sort_var.set(1)
         self.checkbox = tk.Checkbutton(frame, variable=self.sort_var, text='sort analyte(s)', bg='#FFFFFF')
         self.checkbox.grid(row=2, column=0, sticky='nw')
-        #self.checkbox.select()
-        #label = tk.Label(frame, text='sort analyte(s)', bg='#FFFFFF')
-        #label.grid(row=2, column=1, sticky='nw')
 
         calc_var = tk.IntVar()
         checkbox = tk.Checkbutton(frame, variable=calc_var, text='show calculations', bg='#FFFFFF')
         checkbox.grid(row=3, column=0, sticky='nw')
-        #label = tk.Label(frame, text='show calculations', bg='#FFFFFF')
-        #label.grid(row=3, column=1, sticky='nw')
 
         frame.grid_remove()
         self.ACTIVE_FRAME = frame
@@ -706,17 +704,46 @@ class Modal:
         frame.rowconfigure(2, weight=0)
         frame.rowconfigure(3, weight=0)
         frame.columnconfigure(0, weight=0)
-        frame.columnconfigure(1, weight=1)
+        frame.columnconfigure(1, weight=0)
+        frame.columnconfigure(2, weight=1)
 
         title = tk.Label(frame, text='Save Documents', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
         title.grid(row=0, column=0, columnspan=2, stick='nw')
 
         seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
-        seperator.grid(row=1, column=0, columnspan=2, sticky='new')
+        seperator.grid(row=1, column=0, columnspan=3, sticky='new')
+
+        label = tk.Label(frame, text='Default local file location:', bg='#FFFFFF')
+        label.grid(row=2, column=0, sticky='nw')
+
+        destination = Path(parser.get('Path', 'directory'))
+        if not destination.exists():
+            destination = Path.cwd()
+
+        self.entry = tk.Entry(frame, width=50)
+        self.entry.grid(row=2, column=1, sticky='w')
+        self.entry.insert(0, str(destination.resolve()))
+
+        browse = tk.Button(frame, text='Browse...', relief='groove', bg='#FFFFFF', command=self.__askdirectory)
+        browse.grid(row=2, column=2, sticky='w')
+
+        label = tk.Label(frame, text='Save As', bg='#FFFFFF')
+        label.grid(row=3, column=0, sticky='nw')
+
+        entry = tk.Entry(frame, width=50)
+        entry.grid(row=3, column=1, sticky='w')
+        entry.insert(0, 'master_workbook')
 
         frame.grid_remove()
 
         return frame
+
+    def __askdirectory(self):
+        directory = filedialog.askdirectory(parent=self.dialog, title='Modify Location', mustexist=True )
+        if not directory:
+            directory = self.entry.get()
+        self.entry.delete(0, tk.END)
+        self.entry.insert(0, directory )
 
 root = tk.Tk()
 Modal(root)
