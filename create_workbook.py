@@ -16,13 +16,15 @@ DILUTION_COLUMN = VOLUME_COLUMN + 1
 
 parser = ConfigParser()
 
+
 class Template:
-    def __init__(self, wb, request_id, sample_copy, loi=True):
+    def __init__(self, wb, request, replicates, loi, font_color):
         self.__config()
         self.loi = loi
+        self.sort = True
         self.workbook = wb
-        self.request_id = request_id
-        self.COPY = sample_copy
+        self.request_id = request
+        self.COPY = replicates
         self.row = 0
         self.digestion_sheet = wb.add_worksheet('digestion_page')
 
@@ -47,9 +49,8 @@ class Template:
                                           'italic': True})
         self.reported_ppm_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(self.LIMS)}" ppm"'})
         self.reported_percent_format = wb.add_format({'align': 'left', 'num_format': f'{Template.__rounding_places(self.LIMS)}" %"'})
-        color = '#000000'
-        color = '#FFFFFF'
-        self.white_font_format = wb.add_format({'font_color': color})
+
+        self.white_font_format = wb.add_format({'font_color': font_color})
         self.__create_header(self.digestion_sheet)
         self.sample_to_elements = {}
         self.element_to_digestion = {}
@@ -93,7 +94,7 @@ class Template:
         self.CONC_DECIMAL = parser.getint('Decimal', 'concentration')
         self.TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
         self.TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
-        self.LIMS = parser.getint('Decimal', 'LIMS')
+        self.LIMS = parser.getint('Decimal', 'lims')
         self.SPACING = 2
 
     def __create_analysis_table(self, worksheet, element, sample):
@@ -159,6 +160,9 @@ class Template:
 
         return {'element': element.lower(), 'destination_address': lot_address}
 
+    def sort_analytes(self, boolean: bool):
+        self.sort = bool(int(boolean))
+
     def create_analysis_worksheet(self):
         lot_info = query_database(list(self.element_set))
         for sample in sorted(self.sample_to_elements):
@@ -172,7 +176,12 @@ class Template:
             if self.__contains_chrome_3(self.sample_to_elements[sample]):
                 cr2o3, cr6 = self.__edit_list(self.sample_to_elements[sample])
 
-            for element in sorted(self.sample_to_elements[sample]):
+            if self.sort:
+                analytes = sorted(self.sample_to_elements[sample])
+            else:
+                analytes = self.sample_to_elements[sample]
+
+            for element in analytes:
                 if element.upper() == 'LOI':
                     worksheet.autofit()
                     continue

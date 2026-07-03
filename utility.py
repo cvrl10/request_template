@@ -5,6 +5,8 @@ from configparser import ConfigParser
 from pathlib import Path
 import re
 
+TEMP_CONFIG = None
+
 AUTO_CLOSE = 3000
 
 BACKGROUND = '#e6e6e6'
@@ -427,7 +429,8 @@ class PeriodicTable:
         self.location = False
         self.window = tk.Toplevel(root)
         self.hide()
-        self.window.iconbitmap(r'img/periodic_table.ico')
+        #self.window.iconbitmap(r'img/periodic_table.ico')
+        self.window.iconbitmap(r'img/blank.ico')
 
         self.selected = {}
         self.active_frame = None
@@ -590,7 +593,7 @@ class PeriodicTable:
                 button.invoke()
 
             self.__show()
-            print()
+            #print()
             return 'break'
         return func
 
@@ -612,59 +615,188 @@ other.bind('<Double-Button-1>', pt.show(other))
 
 root.mainloop()#'''
 
-#root = tk.Tk()
-
-#modal = tk.Toplevel(root)
-#modal.title('Options')
-#modal.columnconfigure(0, weight=1)
-#modal.columnconfigure(1, weight=5)
-#modal.transient(root)
-#modal.grab_set()
-
-#root.wait_window(modal)
 parser = ConfigParser()
 parser.read('config.ini')
 
+
 class Modal:
-    def __init__(self, root):
+    def __init__(self, root, _):
+        self.config = _
         self.ACTIVE_FRAME = None
+        self.root = root
         self.dialog = tk.Toplevel(root, bg='#FFFFFF')
+        self.dialog.protocol('WM_DELETE_WINDOW', self.hide)
+        self.hide()
         self.dialog.title('Options')
-        self.dialog.geometry('700x400')
+        self.dialog.iconbitmap('img/blank.ico')
         self.dialog.rowconfigure(0, weight=1)
+        self.dialog.rowconfigure(1, weight=0)
+
         self.dialog.columnconfigure(0, weight=0)
         self.dialog.columnconfigure(1, weight=1)
 
-        button_frame = tk.Frame(self.dialog, bg='#F0F0F0')
-        #button_frame = tk.Frame(self.dialog, bg='black')
-        #button_frame.columnconfigure(0, weight=1)
-        #button_frame.rowconfigure(0, weight=1)
-        #button_frame.rowconfigure(0, weight=1)
+        border = tk.Frame(self.dialog, bg='black', padx=1, pady=1)
+        border.rowconfigure(0, weight=1)
+        border.columnconfigure(0, weight=1)
+        border.grid(row=0, column=0, sticky='nsew')
 
-        button_frame.grid(row=0, column=0, sticky='nsew')
-        self.dialog.transient(root)
+        #self.button_frame = tk.Frame(self.dialog, bg='#F0F0F0', bd=1, relief='groove')
+        self.button_frame = tk.Frame(border, bg='#F0F0F0')
+        self.button_frame.grid(row=0, column=0, sticky='nsew')
 
-        self.sort_var = None
+        self.horizontal_frame = tk.Frame(self.dialog, bg='#FFFFFF')
+        #self.horizontal_frame = tk.Frame(self.dialog, bg='red')
+        self.horizontal_frame.grid(row=1, column=0, columnspan=2, sticky='sew')
+
+        cancel = tk.Button(self.horizontal_frame, text='Cancel', relief='groove', bg='#FFFFFF', width=8, command=self.__cancel)
+        cancel.pack(side='right', padx=(5, 6), pady=(0, 6))
+        self.__handler(cancel)
+
+        ok = tk.Button(self.horizontal_frame, text='Ok', relief='groove', bg='#FFFFFF', width=8, command=self.ok)
+        ok.pack(side='right', padx=5, pady=(0, 6))
+        self.__handler(ok)
+
         container = self.__general_frame()
-        self.__add_button(button_frame, '   General         ', container=container)
+        self.__add_button(self.button_frame, '   General         ', container=container)
 
         container = self.__save_frame()
-        self.__add_button(button_frame, '   Save    ', container=container)
+        self.__add_button(self.button_frame, '   Save           ', container=container)
+
+        exit = tk.Button(self.button_frame, text='   Exit', relief='flat', activebackground='#C42B1C',
+                         activeforeground='white', anchor='w', command=self.__cancel)
+        exit.pack(expand=False, fill='x', side=tk.BOTTOM)
+        exit.bind('<Enter>', lambda _: exit.config(relief='groove', bg='#C42B1C', fg='white'))
+        exit.bind('<Leave>', lambda _: exit.config(relief='flat', bg='SystemButtonFace', fg='black'))
+
+    def __handler(self, button):
+        button.bind('<Enter>', lambda _: button.config(bg='#F0F0F0'))
+        button.bind('<Leave>', lambda _: button.config(bg='#FFFFFF'))
+
+    def __tkentry_handler(self, entry):
+        entry.bind('<Enter>', lambda _: entry.config(bg='#F0F0F0'))
+        entry.bind('<Leave>',
+                   lambda _: entry.config(bg='#F0F0F0') if entry == self.dialog.focus_get() else entry.config(bg='white'))
+
+        entry.bind('<FocusIn>', lambda _: entry.config(bg='#F0F0F0'))
+        entry.bind('<FocusOut>', lambda _: entry.config(bg='white'))
+
+    def hide(self):
+        self.dialog.withdraw()
+        self.dialog.grab_release()
+
+    def show(self):
+        parser.read('config.ini')
+        destination = Path(parser.get('Path', 'directory')).resolve()
+        #print(f'inside show(), destination is: {destination}')
+        self.entry.delete(0, tk.END)
+
+        if destination.exists():
+            print(f'inside if, destination is:{destination}')
+            self.entry.insert(0, destination)
+        else:
+            inmemory_config = self.config[0]
+            directory = inmemory_config.get('Save', 'directory')
+            print(f'inside else, destination is:{directory}')
+
+            parser['Path']['directory'] = directory
+            file = open('config.ini', 'w')
+            parser.write(file)
+            file.close()
+
+            self.entry.insert(0, directory)
+
+        self.ok()
+        self.dialog.update_idletasks()
+        self.root.update_idletasks()
+        x = self.root.winfo_rootx() + (self.root.winfo_width() - self.dialog.winfo_width()) // 2
+        y = self.root.winfo_rooty() + (self.root.winfo_height() - self.dialog.winfo_height()) // 2
+        self.dialog.geometry(f'700x400+{x}+{y}')
+        self.dialog.transient(self.root)
         self.dialog.grab_set()
+        self.dialog.deiconify()
+
+    def __cancel(self):
+        inmemory_config = self.config[0]
+        #print({section: dict(inmemory_config.items(section)) for section in inmemory_config.sections()})
+        sort = inmemory_config.get('General', 'sort')
+        color = inmemory_config.get('General', 'calculation')
+        file = inmemory_config.get('Save', 'save as')
+        file = Path(file).stem
+        #print('inside __cancel()')
+        #print(file)
+        directory = inmemory_config.get('Save', 'directory')
+
+        self.sort_var.set(int(sort))
+        self.calc_var.set(color)
+
+        self.entry.delete(0, tk.END)
+        self.entry.insert(0, directory)
+
+        self.file.delete(0, tk.END)
+        self.file.insert(0, file)
+
+        self.hide()
+
+    def ok(self):
+        file = open('config.ini', 'w')
+        parser.write(file)
+        file.close()
+
+        #if self.config:
+            #inmemory_config = self.config[0]
+            #print({section: dict(inmemory_config.items(section)) for section in inmemory_config.sections()})
+        #print({section: dict(parser.items(section)) for section in parser.sections()})
+
+        file = Path(self.file.get())
+        ext = self.extension.get()
+        ext = re.search(r'(\.\w+)', ext).group()
+        #print('inside ok()')
+        #print(file)
+        #print(ext)
+        file = file.with_suffix(ext)
+        #print(file)
+
+        config = ConfigParser()
+        config['General'] = {}
+        config['General']['sort'] = str(self.sort_var.get())
+        config['General']['calculation'] = str(self.calc_var.get())
+        config['Save'] = {}
+        config['Save']['save as'] = str(file)
+        config['Save']['directory'] = self.entry.get()
+
+        self.config.insert(0, config)
+        self.hide()
 
     def __add_button(self, frame, text, container):
         def func():
             self.ACTIVE_FRAME.grid_remove()
+            unclick = self.button_frame.nametowidget(self.ACTIVE_FRAME.winfo_name())
+            unclick.config(bg='SystemButtonFace', relief='flat')
             self.ACTIVE_FRAME = container
+            name = self.ACTIVE_FRAME.winfo_name()
+            #print(name)
+            button = self.button_frame.nametowidget(name)
+            self.dialog.focus_set()
+            bg = button.cget('bg')
+
+            if bg == 'SystemButtonFace':
+                button.config(bg='#FFFFFF', relief='groove')
             container.grid()
-        button = tk.Button(frame, text=text, relief='flat', anchor='w', command=func)
+
+        #print(f'text={text}')
+        button = tk.Button(frame, text=text, name=text.lower().strip(), activebackground='white',
+                           relief='flat', anchor='w', command=func, pady=0, width=20)
+        if text.lower().strip() == 'general':
+            button.invoke()
+        #print(f'button: {button.winfo_name()}')
+        #print(f'button: {button._w}')
         #button.grid(row=row, column=0, sticky='new')
         button.pack(expand=False, fill='x', anchor='n')
-        button.bind('<Enter>', lambda _: button.config(relief='groove'))
-        button.bind('<Leave>', lambda _: button.config(relief='flat'))
+        button.bind('<Enter>', lambda _: button.config(relief='groove') if button.cget('bg') == 'SystemButtonFace' else None)
+        button.bind('<Leave>', lambda _: button.config(relief='flat') if button.cget('bg') == 'SystemButtonFace' else None)
 
     def __general_frame(self):
-        frame = tk.Frame(self.dialog, bg='#FFFFFF')
+        frame = tk.Frame(self.dialog, bg='#FFFFFF', name='general')
         frame.grid(row=0, column=1, sticky='nsew')
 
         frame.rowconfigure(0, weight=0)
@@ -678,17 +810,18 @@ class Modal:
         #d = font.nametofont('TkDefaultFont')
         #print(d.actual())
         title = tk.Label(frame, text='Workbook options', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
-        title.grid(row=0, column=0, columnspan=2, stick='nw')
+        title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
 
         seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
         seperator.grid(row=1, column=0, columnspan=2, sticky='new')
 
         self.sort_var = tk.IntVar(value=1)
-        self.checkbox = tk.Checkbutton(frame, variable=self.sort_var, text='sort analyte(s)', bg='#FFFFFF')
-        self.checkbox.grid(row=2, column=0, sticky='nw')
+        checkbox = tk.Checkbutton(frame, variable=self.sort_var, text='sort analyte(s)', bg='#FFFFFF')
+        checkbox.grid(row=2, column=0, sticky='nw')
 
-        calc_var = tk.IntVar()
-        checkbox = tk.Checkbutton(frame, variable=calc_var, text='show calculations', bg='#FFFFFF')
+        self.calc_var = tk.StringVar(value='#FFFFFF')
+        checkbox = tk.Checkbutton(frame, variable=self.calc_var, text='show calculations', bg='#FFFFFF', onvalue='red',
+                                  offvalue='#FFFFFF')
         checkbox.grid(row=3, column=0, sticky='nw')
 
         frame.grid_remove()
@@ -696,19 +829,21 @@ class Modal:
         return frame
 
     def __save_frame(self):
-        frame = tk.Frame(self.dialog, bg='#FFFFFF')
+        frame = tk.Frame(self.dialog, bg='#FFFFFF', name='save')
         frame.grid(row=0, column=1, sticky='nsew')
 
         frame.rowconfigure(0, weight=0)
         frame.rowconfigure(1, weight=0)
         frame.rowconfigure(2, weight=0)
         frame.rowconfigure(3, weight=0)
+        frame.rowconfigure(4, weight=0)
+
         frame.columnconfigure(0, weight=0)
         frame.columnconfigure(1, weight=0)
         frame.columnconfigure(2, weight=1)
 
         title = tk.Label(frame, text='Save Documents', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
-        title.grid(row=0, column=0, columnspan=2, stick='nw')
+        title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
 
         seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
         seperator.grid(row=1, column=0, columnspan=3, sticky='new')
@@ -721,18 +856,26 @@ class Modal:
             destination = Path.cwd()
 
         self.entry = tk.Entry(frame, width=50)
+        self.__tkentry_handler(self.entry)
         self.entry.grid(row=2, column=1, sticky='w')
         self.entry.insert(0, str(destination.resolve()))
 
-        browse = tk.Button(frame, text='Browse...', relief='groove', bg='#FFFFFF', command=self.__askdirectory)
-        browse.grid(row=2, column=2, sticky='w')
+        browse = tk.Button(frame, text='Browse...', relief='groove', bg='#FFFFFF', command=self.__askdirectory, pady=0)
+        browse.grid(row=2, column=2, sticky='w', padx=10, pady=(4, 0))
+        self.__handler(browse)
 
         label = tk.Label(frame, text='Save As', bg='#FFFFFF')
         label.grid(row=3, column=0, sticky='nw')
 
-        entry = tk.Entry(frame, width=50)
-        entry.grid(row=3, column=1, sticky='w')
-        entry.insert(0, 'master_workbook')
+        self.file = tk.Entry(frame, width=50)
+        self.__tkentry_handler(self.file)
+        self.file.grid(row=3, column=1, sticky='w')
+        self.file.insert(0, 'master_workbook')
+
+        self.extension = ttk.Combobox(frame, values=['Excel Workbook (*.xlsx)'], state='readonly')
+        self.extension.current(0)
+        self.extension.grid(row=4, column=1, sticky='w')
+
 
         frame.grid_remove()
 
@@ -743,12 +886,18 @@ class Modal:
         if not directory:
             directory = self.entry.get()
         self.entry.delete(0, tk.END)
-        self.entry.insert(0, directory )
+        self.entry.insert(0, directory)
 
+        #apply
+        parser['Path']['directory'] = directory
+
+'''
 root = tk.Tk()
-Modal(root)
+m = Modal(root, [])
+m.show()
 
-root.mainloop()
+root.bind('<Double-Button-1>', lambda _: m.show())
+root.mainloop()#'''
 
 
 
