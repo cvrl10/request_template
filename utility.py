@@ -4,6 +4,8 @@ from tkinter import ttk, filedialog
 from configparser import ConfigParser
 from pathlib import Path
 import re
+from database import query
+from datetime import date
 
 TEMP_CONFIG = None
 
@@ -424,6 +426,8 @@ class MenubuttonTooltip(Tooltip):
 
 
 class PeriodicTable:
+    __sort = True
+
     def __init__(self, root):
         self.root = root
         self.location = False
@@ -440,6 +444,7 @@ class PeriodicTable:
         x = root.winfo_x() + root.winfo_width() + 5
         y = root.winfo_y()
         self.window.geometry(f'+{x}+{y}')
+
 
     def add_textbox(self, entry):
         key = entry.winfo_name()
@@ -462,10 +467,15 @@ class PeriodicTable:
         analytes = self.selected[key].copy()
 
         analytes.extend(COMPOUNDS)
-        analytes.sort()
+        if self.__sort:
+            analytes.sort()
 
         textbox.insert(0, ', '.join(analytes))
         self.hide()
+
+    @classmethod
+    def sort(cls, sort):
+        cls.__sort = sort
 
     def hide(self):
         self.window.withdraw()
@@ -536,7 +546,8 @@ class PeriodicTable:
                     selected.remove(button.cget('text'))
                 #
                 current_entry = list(current_entry)
-                current_entry.sort()#
+                if self.__sort:
+                    current_entry.sort()#
                 textbox.delete(0, tk.END)#
                 textbox.insert(0, ', '.join(current_entry))#
                 #
@@ -646,7 +657,8 @@ class Modal:
 
         self.horizontal_frame = tk.Frame(self.dialog, bg='#FFFFFF')
         #self.horizontal_frame = tk.Frame(self.dialog, bg='red')
-        self.horizontal_frame.grid(row=1, column=0, columnspan=2, sticky='sew')
+        #self.horizontal_frame.grid(row=1, column=0, columnspan=2, sticky='sew')
+        self.horizontal_frame.grid(row=1, column=0, columnspan=2, sticky='ew')
 
         cancel = tk.Button(self.horizontal_frame, text='Cancel', relief='groove', bg='#FFFFFF', width=8, command=self.__cancel)
         cancel.pack(side='right', padx=(5, 6), pady=(0, 6))
@@ -657,10 +669,15 @@ class Modal:
         self.__handler(ok)
 
         container = self.__general_frame()
-        self.__add_button(self.button_frame, '   General         ', container=container)
+        b = self.__add_button(self.button_frame, '   General', container=container)
+        container.tkraise()
+        b.invoke()
 
         container = self.__save_frame()
-        self.__add_button(self.button_frame, '   Save           ', container=container)
+        self.__add_button(self.button_frame, '   Save', container=container)
+
+        container = self.__database_frame()
+        self.__add_button(self.button_frame, '   Database', container=container)
 
         exit = tk.Button(self.button_frame, text='   Exit', relief='flat', activebackground='#C42B1C',
                          activeforeground='white', anchor='w', command=self.__cancel)
@@ -687,16 +704,15 @@ class Modal:
     def show(self):
         parser.read('config.ini')
         destination = Path(parser.get('Path', 'directory')).resolve()
-        #print(f'inside show(), destination is: {destination}')
         self.entry.delete(0, tk.END)
 
         if destination.exists():
-            print(f'inside if, destination is:{destination}')
+            #print(f'inside if, destination is:{destination}')
             self.entry.insert(0, destination)
         else:
             inmemory_config = self.config[0]
             directory = inmemory_config.get('Save', 'directory')
-            print(f'inside else, destination is:{directory}')
+            #print(f'inside else, destination is:{directory}')
 
             parser['Path']['directory'] = directory
             file = open('config.ini', 'w')
@@ -722,6 +738,7 @@ class Modal:
         color = inmemory_config.get('General', 'calculation')
         file = inmemory_config.get('Save', 'save as')
         file = Path(file).stem
+        expired = inmemory_config.getint('Database', 'expired')
         #print('inside __cancel()')
         #print(file)
         directory = inmemory_config.get('Save', 'directory')
@@ -735,17 +752,14 @@ class Modal:
         self.file.delete(0, tk.END)
         self.file.insert(0, file)
 
+        self.expired.set(expired)
+
         self.hide()
 
     def ok(self):
         file = open('config.ini', 'w')
         parser.write(file)
         file.close()
-
-        #if self.config:
-            #inmemory_config = self.config[0]
-            #print({section: dict(inmemory_config.items(section)) for section in inmemory_config.sections()})
-        #print({section: dict(parser.items(section)) for section in parser.sections()})
 
         file = Path(self.file.get())
         ext = self.extension.get()
@@ -757,19 +771,27 @@ class Modal:
         #print(file)
 
         config = ConfigParser()
+
         config['General'] = {}
         config['General']['sort'] = str(self.sort_var.get())
         config['General']['calculation'] = str(self.calc_var.get())
+
         config['Save'] = {}
         config['Save']['save as'] = str(file)
         config['Save']['directory'] = self.entry.get()
 
+        config['Database'] = {}
+        config['Database']['expired'] = str(self.expired.get())
+
+        sort = self.sort_var.get()
+        PeriodicTable.sort(sort=sort)
+
         self.config.insert(0, config)
         self.hide()
 
-    def __add_button(self, frame, text, container):
+    def __add_button(self, button_frame, text, container):
         def func():
-            self.ACTIVE_FRAME.grid_remove()
+            #self.ACTIVE_FRAME.grid_remove()
             unclick = self.button_frame.nametowidget(self.ACTIVE_FRAME.winfo_name())
             unclick.config(bg='SystemButtonFace', relief='flat')
             self.ACTIVE_FRAME = container
@@ -781,19 +803,20 @@ class Modal:
 
             if bg == 'SystemButtonFace':
                 button.config(bg='#FFFFFF', relief='groove')
-            container.grid()
+            #container.grid()
+            container.tkraise()
 
-        #print(f'text={text}')
-        button = tk.Button(frame, text=text, name=text.lower().strip(), activebackground='white',
+        button = tk.Button(button_frame, text=text, name=text.lower().strip(), activebackground='white',
                            relief='flat', anchor='w', command=func, pady=0, width=20)
-        if text.lower().strip() == 'general':
-            button.invoke()
+
         #print(f'button: {button.winfo_name()}')
         #print(f'button: {button._w}')
         #button.grid(row=row, column=0, sticky='new')
         button.pack(expand=False, fill='x', anchor='n')
         button.bind('<Enter>', lambda _: button.config(relief='groove') if button.cget('bg') == 'SystemButtonFace' else None)
         button.bind('<Leave>', lambda _: button.config(relief='flat') if button.cget('bg') == 'SystemButtonFace' else None)
+
+        return button
 
     def __general_frame(self):
         frame = tk.Frame(self.dialog, bg='#FFFFFF', name='general')
@@ -809,11 +832,13 @@ class Modal:
         #import tkinter.font as font
         #d = font.nametofont('TkDefaultFont')
         #print(d.actual())
-        title = tk.Label(frame, text='Workbook options', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
-        title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
+        #title = tk.Label(frame, text='Workbook options', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
+        #title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
 
-        seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
-        seperator.grid(row=1, column=0, columnspan=2, sticky='new')
+        #seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
+        #seperator.grid(row=1, column=0, columnspan=2, sticky='new')
+
+        self.__createheader(frame, text='Workbook options', colspan=2)
 
         self.sort_var = tk.IntVar(value=1)
         checkbox = tk.Checkbutton(frame, variable=self.sort_var, text='sort analyte(s)', bg='#FFFFFF')
@@ -824,9 +849,16 @@ class Modal:
                                   offvalue='#FFFFFF')
         checkbox.grid(row=3, column=0, sticky='nw')
 
-        frame.grid_remove()
+        frame.tkraise()
         self.ACTIVE_FRAME = frame
         return frame
+
+    def __createheader(self, frame: tk.Frame, text: str, colspan: int, row=0):#might want to capture seperator columnspan
+        title = tk.Label(frame, text=text, font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
+        title.grid(row=row, column=0, columnspan=2, stick='nw', pady=(0, 2))
+
+        seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
+        seperator.grid(row=row+1, column=0, columnspan=colspan, sticky='new')
 
     def __save_frame(self):
         frame = tk.Frame(self.dialog, bg='#FFFFFF', name='save')
@@ -842,11 +874,7 @@ class Modal:
         frame.columnconfigure(1, weight=0)
         frame.columnconfigure(2, weight=1)
 
-        title = tk.Label(frame, text='Save Documents', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
-        title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
-
-        seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
-        seperator.grid(row=1, column=0, columnspan=3, sticky='new')
+        self.__createheader(frame, text='Save Documents', colspan=3)
 
         label = tk.Label(frame, text='Default local file location:', bg='#FFFFFF')
         label.grid(row=2, column=0, sticky='nw')
@@ -876,19 +904,163 @@ class Modal:
         self.extension.current(0)
         self.extension.grid(row=4, column=1, sticky='w')
 
-
-        frame.grid_remove()
-
+        frame.lower()
         return frame
 
+    def __placeholder(self, textbox: tk.Entry, placeholder: str):
+        textbox.insert(0, placeholder)
+        textbox.config(state='disabled')
+
+        def focusout():
+            text = textbox.get()
+            if text == '':
+                textbox.insert(0, placeholder)
+
+        def click():
+            text = textbox.get()
+            if text == placeholder:
+                textbox.delete(0, tk.END)
+
+        textbox.bind('<Button-1>', lambda _: click())
+        textbox.bind('<FocusOut>', lambda _: focusout())
+        textbox.bind('<Leave>', lambda _: self.dialog.focus_set())
+
+    def __lot_button_handler(self, button: tk.Button, entries: list):
+        def func():
+            text = button.cget('text')
+            if text == 'create lot':
+                button.config(text='add lot')
+                for entry in entries:
+                    entry.config(state='normal')
+                    entry.delete(0, tk.END)
+                    entry.insert(0, '')
+                    entry.event_generate('<FocusOut>')
+            else:
+                button.config(text='create lot')
+                for entry in entries:
+                    entry.config(state='disabled')
+                data = ','.join(map(lambda e: e.get(), entries))
+                file = open('lot.csv', mode='a')#have option if file is not there
+                file.write(f'\n{data}')
+                file.close()
+                self.checkbox.invoke()
+                self.checkbox.invoke()
+
+        return func
+
+    def __database_frame(self):
+        frame = tk.Frame(self.dialog, bg='#FFFFFF', name='database')
+        frame.grid(row=0, column=1, sticky='nsew')
+
+        frame.rowconfigure(0, weight=0)
+        frame.rowconfigure(1, weight=0)
+        frame.rowconfigure(2, weight=0)
+        frame.rowconfigure(3, weight=0)
+
+        frame.rowconfigure(4, weight=0, minsize=26)
+        frame.rowconfigure(5, weight=0)
+        frame.rowconfigure(6, weight=0)
+        frame.rowconfigure(7, weight=0)
+        frame.rowconfigure(8, weight=1)
+
+        frame.columnconfigure(0, weight=1)
+        frame.columnconfigure(1, weight=1)
+        frame.columnconfigure(2, weight=1)
+        frame.columnconfigure(3, weight=1)
+
+        self.__createheader(frame, text='Database management', colspan=4)
+
+        button = tk.Button(frame, text='create lot', relief='groove')
+        button.grid(row=2, column=0, sticky='nsew')
+
+        manufacturer = tk.Entry(frame)
+        manufacturer.grid(row=3, column=0, sticky='nsew')
+        self.__placeholder(manufacturer, 'manufacturer')
+
+        analyte = tk.Entry(frame)
+        analyte.grid(row=3, column=1, sticky='nsew')
+        self.__placeholder(analyte, 'analyte')
+
+        lot = tk.Entry(frame)
+        lot.grid(row=3, column=2, sticky='nsew')
+        self.__placeholder(lot, 'lot')
+
+        date = tk.Entry(frame)
+        date.grid(row=3, column=3, sticky='nsew')
+        self.__placeholder(date, 'date')
+
+        entries = [manufacturer, analyte, lot, date]
+        button.config(command=self.__lot_button_handler(button, entries))
+
+        self.dialog.after(0, lambda: print(button.winfo_height()))#use this get the heigh to set the empty row
+
+        self.__createheader(frame, text='Database view', colspan=4, row=5)
+
+        self.expired = tk.IntVar(value=1)
+        self.checkbox = tk.Checkbutton(frame, variable=self.expired, text='allow expired lot in search', bg='#FFFFFF')
+        self.checkbox.grid(row=7, column=0, sticky='nw')
+
+        parent = tk.Frame(frame, bg='white')
+        parent.grid(row=8, column=0, columnspan=4, sticky='nsew')
+
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_columnconfigure(0, weight=1)
+
+        canvas = tk.Canvas(parent, bg='white')
+        scrollbar = tk.Scrollbar(parent, orient='vertical', command=canvas.yview)
+
+        canvas.config(yscrollcommand=scrollbar.set)
+
+        #canvas.grid(row=8, column=0, columnspan=4, sticky='nsew')
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill='y')
+
+        lots = tk.Frame(canvas, bg='white')
+        #lots.grid(row=0, column=0, sticky='nsew')
+
+        window = canvas.create_window((0, 0), window=lots, anchor='nw')
+
+        lots.bind('<Configure>', lambda _: canvas.config(scrollregion=canvas.bbox('all')))
+
+        #def resize_frame(event):
+            #canvas.itemconfig(window, width=event.width)
+
+        #canvas.bind('<Configure>', resize_frame)
+        canvas.bind('<Configure>',
+                    lambda event: canvas.itemconfig(window, width=event.width))#required b/c when frame grow, the canvas also grow the same size but not the window
+
+        self.checkbox.config(command=self.__lot_checkbox_handler(lots))
+        self.checkbox.invoke()
+
+        frame.lower()
+        return frame
+
+    def __lot_checkbox_handler(self, frame):
+        def func():
+            expired = self.expired.get()
+            if expired:
+                print(f'printing expired {expired}')
+            lots = query(expired)
+            for children in frame.winfo_children():
+                children.destroy()
+            for analyte, lot in lots.items():
+                lot = lot.split(', ')[1]
+                d = lot.split(' exp: ')[1]
+                d = date.fromisoformat(d)
+                fg = 'red' if d < date.today() else 'black'
+                lot = f'Analyte: {analyte}, {lot}'
+                label = tk.Label(frame, text=lot, bg='white', fg=fg)
+                label.pack(anchor=tk.NW)
+
+        return func
+
     def __askdirectory(self):
-        directory = filedialog.askdirectory(parent=self.dialog, title='Modify Location', mustexist=True )
+        directory = filedialog.askdirectory(parent=self.dialog, title='Modify Location', mustexist=True)
         if not directory:
             directory = self.entry.get()
         self.entry.delete(0, tk.END)
         self.entry.insert(0, directory)
 
-        #apply
         parser['Path']['directory'] = directory
 
 '''

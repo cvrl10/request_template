@@ -163,8 +163,8 @@ class Template:
     def sort_analytes(self, boolean: bool):
         self.sort = bool(int(boolean))
 
-    def create_analysis_worksheet(self):
-        lot_info = query_database(list(self.element_set))
+    def create_analysis_worksheet(self, include_expired=False):
+        lot_info = query_database(list(self.element_set), include_expired)
         for sample in sorted(self.sample_to_elements):
             lots = []
             worksheet = self.workbook.add_worksheet(str(sample))

@@ -48,6 +48,7 @@ class App:
 
         MODAL = Modal(self.root, TEMP_CONFIG)
         MODAL.ok()  # call to initially set up the parser in TEMP_CONFIG
+        #TEMP_CONFIG.insert(PERIODIC_TABLE)
 
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
@@ -396,6 +397,7 @@ class App:
         print(f'path={url}')
         color = temp_parser.get('General', 'calculation')
         sort = bool(temp_parser.get('General', 'sort'))
+        include_expired = temp_parser.getint('Database', 'expired')
 
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, request=request, replicates=replicates, loi=loi, font_color=color)
@@ -410,7 +412,7 @@ class App:
             template.add_hotplate(elements, samples)
 
         template.sort_analytes(sort)
-        template.create_analysis_worksheet()
+        template.create_analysis_worksheet(include_expired=include_expired)
         workbook.close()
         os.startfile(url)
 
