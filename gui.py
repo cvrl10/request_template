@@ -47,7 +47,7 @@ class App:
         PERIODIC_TABLE = PeriodicTable(self.root)
 
         MODAL = Modal(self.root, TEMP_CONFIG)
-        MODAL.ok()  # call to initially set up the parser in TEMP_CONFIG
+        #MODAL.ok()  # call to initially set up the parser in TEMP_CONFIG
         #TEMP_CONFIG.insert(PERIODIC_TABLE)
 
         self.root.columnconfigure(0, weight=1)
