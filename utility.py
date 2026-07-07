@@ -17,7 +17,7 @@ ACTIVE_BACKGROUND = '#5a5a5a'
 NONMETAL_BG = '#E6CCFF'
 NONMETAL_BG = '#F9CD9D'
 NON_METAL_FG = 'black'
-#ALKALI_BG = '#FFF4F2'
+# ALKALI_BG = '#FFF4F2'
 ALKALI_BG = '#F3CDC3'
 ALKALINE_EARTH_BG = '#DCA195'
 ALKALINE_EARTH_FG = 'black'
@@ -27,7 +27,7 @@ NOBLE_FG = 'white'
 HALOGEN_BG = '#DC8A5D'
 TRANSITION_BG = '#FFFFE0'
 ACTINIDE_BG = '#A8DCAB'
-#ACTINIDE_BG = '#BEFDB7'
+# ACTINIDE_BG = '#BEFDB7'
 LANTHANIDE_BG = '#718DA5'
 POST_TRANSITION_BG = '#A3B2A6'
 POST_TRANSITION_FG = 'black'
@@ -36,7 +36,7 @@ DEFAULT = {'bg': BACKGROUND, 'fg': 'black'}
 
 PARAMETERS = {
 
-    #'*': {'bg': BACKGROUND, 'fg': BACKGROUND},
+    # '*': {'bg': BACKGROUND, 'fg': BACKGROUND},
 
     'H': {'bg': '#F9CD9D', 'fg': 'black'},
 
@@ -55,7 +55,7 @@ PARAMETERS = {
 
     'Li': {'bg': ALKALI_BG, 'fg': 'black'},
     'Na': {'bg': ALKALI_BG, 'fg': 'black'},
-    'K':  {'bg': ALKALI_BG, 'fg': 'black'},
+    'K': {'bg': ALKALI_BG, 'fg': 'black'},
     'Rb': {'bg': ALKALI_BG, 'fg': 'black'},
     'Cs': {'bg': ALKALI_BG, 'fg': 'black'},
     'Fr': {'bg': ALKALI_BG, 'fg': 'black'},
@@ -86,7 +86,7 @@ PARAMETERS = {
 
     'Sc': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Ti': {'bg': TRANSITION_BG, 'fg': 'black'},
-    'V':  {'bg': TRANSITION_BG, 'fg': 'black'},
+    'V': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Cr': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Mn': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Fe': {'bg': TRANSITION_BG, 'fg': 'black'},
@@ -95,7 +95,7 @@ PARAMETERS = {
     'Cu': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Zn': {'bg': TRANSITION_BG, 'fg': 'black'},
 
-    'Y':  {'bg': TRANSITION_BG, 'fg': 'black'},
+    'Y': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Zr': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Nb': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Mo': {'bg': TRANSITION_BG, 'fg': 'black'},
@@ -108,7 +108,7 @@ PARAMETERS = {
 
     'Hf': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Ta': {'bg': TRANSITION_BG, 'fg': 'black'},
-    'W':  {'bg': TRANSITION_BG, 'fg': 'black'},
+    'W': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Re': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Os': {'bg': TRANSITION_BG, 'fg': 'black'},
     'Ir': {'bg': TRANSITION_BG, 'fg': 'black'},
@@ -145,7 +145,7 @@ PARAMETERS = {
     'Ac': {'bg': ACTINIDE_BG, 'fg': 'black'},
     'Th': {'bg': ACTINIDE_BG, 'fg': 'black'},
     'Pa': {'bg': ACTINIDE_BG, 'fg': 'black'},
-    'U':  {'bg': ACTINIDE_BG, 'fg': 'black'},
+    'U': {'bg': ACTINIDE_BG, 'fg': 'black'},
     'Np': {'bg': ACTINIDE_BG, 'fg': 'black'},
     'Pu': {'bg': ACTINIDE_BG, 'fg': 'black'},
     'Am': {'bg': ACTINIDE_BG, 'fg': 'black'},
@@ -165,14 +165,14 @@ PARAMETERS = {
     'Tl': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
     'Pb': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
     'Bi': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
-    #'Po': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
+    # 'Po': {'bg': BACKGROUND, 'fg': POST_TRANSITION_FG},
     'Nh': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
     'Fl': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
     'Mc': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
     'Lv': {'bg': POST_TRANSITION_BG, 'fg': POST_TRANSITION_FG},
 }
 
-ELEMENT_FULL_NAME = {    # Period 1
+ELEMENT_FULL_NAME = {  # Period 1
     'H': 'H: Hydrogen',
     'He': 'He: Helium',
 
@@ -344,7 +344,7 @@ class ButtonTooltip(Tooltip):
             self.tip_window,
             text=ELEMENT_FULL_NAME.get(element, f'{element}: Placeholder'),
             bg='#FFFFE0',
-            #bg='#4a90e2',
+            # bg='#4a90e2',
             fg='black',
             relief='solid',
             borderwidth=0,
@@ -355,7 +355,7 @@ class ButtonTooltip(Tooltip):
         tip.pack()
 
         self.tip_window.update_idletasks()
-        x = self.adjacent.winfo_rootx() + self.adjacent.winfo_width()*3
+        x = self.adjacent.winfo_rootx() + self.adjacent.winfo_width() * 3
         y = self.adjacent.winfo_rooty() + self.widget.winfo_height() // 2
         y = y - self.tip_window.winfo_height() // 2
 
@@ -386,7 +386,7 @@ class MenubuttonTooltip(Tooltip):
 
     def show(self):
         self.widget.config(activebackground=ACTIVE_BACKGROUND, activeforeground='white', cursor='hand2')
-        #self.widget.config(activebackground=ACTIVE_BACKGROUND, activeforeground='white', cursor='hand2', bg=ACTIVE_BACKGROUND, fg='white')
+        # self.widget.config(activebackground=ACTIVE_BACKGROUND, activeforeground='white', cursor='hand2', bg=ACTIVE_BACKGROUND, fg='white')
         if self.tip_window:
             return
 
@@ -401,7 +401,7 @@ class MenubuttonTooltip(Tooltip):
             self.tip_window,
             text=self.message,
             bg='#FFFFE0',
-            #bg='#4a90e2',
+            # bg='#4a90e2',
             fg='black',
             relief='solid',
             borderwidth=0,
@@ -433,7 +433,7 @@ class PeriodicTable:
         self.location = False
         self.window = tk.Toplevel(root)
         self.hide()
-        #self.window.iconbitmap(r'img/periodic_table.ico')
+        # self.window.iconbitmap(r'img/periodic_table.ico')
         self.window.iconbitmap(r'img/blank.ico')
 
         self.selected = {}
@@ -444,7 +444,6 @@ class PeriodicTable:
         x = root.winfo_x() + root.winfo_width() + 5
         y = root.winfo_y()
         self.window.geometry(f'+{x}+{y}')
-
 
     def add_textbox(self, entry):
         key = entry.winfo_name()
@@ -481,7 +480,7 @@ class PeriodicTable:
         self.window.withdraw()
 
     def __show(self):
-        if not self.location:#sets the location of Toplevel next to root initially then location is tied to wherever I move it.
+        if not self.location:  # sets the location of Toplevel next to root initially then location is tied to wherever I move it.
             self.root.update_idletasks()
             x = self.root.winfo_x() + self.root.winfo_width() + 5
             y = self.root.winfo_y()
@@ -511,11 +510,11 @@ class PeriodicTable:
         fill_row(row=3, range=FULL_RANGE, elements=['K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co',
                                                     'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr'])
         fill_row(row=4, range=FULL_RANGE, elements=['Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh',
-                                                                'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe'])
+                                                    'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe'])
         fill_row(row=5, range=FULL_RANGE, elements=['Cs', 'Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir',
-                                                                'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn'])
+                                                    'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn'])
         fill_row(row=6, range=FULL_RANGE, elements=['Fr', 'Ra', 'Ac', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt',
-                                                                'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'])
+                                                    'Ds', 'Rg', 'Cn', 'Nh', 'Fl', 'Mc', 'Lv', 'Ts', 'Og'])
         fill_row(row=7, range=[0], elements=['*'])
         fill_row(row=8, range=LANTHANIDES, elements=['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy',
                                                      'Ho', 'Er', 'Tm', 'Yb', 'Lu'])
@@ -538,22 +537,24 @@ class PeriodicTable:
                 relief = button.cget('relief')
                 if relief == 'raised':
                     button.config(relief='sunken', bg=ACTIVE_BACKGROUND, fg='white')
-                    current_entry.add(button.cget('text'))#comment this out
+                    current_entry.add(button.cget('text'))  # comment this out
                     selected.append(button.cget('text'))
                 else:
                     button.config(relief='raised', **PARAMETERS.get(element, DEFAULT))
-                    current_entry.discard(button.cget('text'))#
+                    current_entry.discard(button.cget('text'))  #
                     selected.remove(button.cget('text'))
                 #
                 current_entry = list(current_entry)
                 if self.__sort:
-                    current_entry.sort()#
-                textbox.delete(0, tk.END)#
-                textbox.insert(0, ', '.join(current_entry))#
+                    current_entry.sort()  #
+                textbox.delete(0, tk.END)  #
+                textbox.insert(0, ', '.join(current_entry))  #
                 #
+
             return func
 
-        button = tk.Button(frame, text=element, relief='raised', highlightthickness=2, name=element.lower(), **PARAMETERS.get(element, DEFAULT))
+        button = tk.Button(frame, text=element, relief='raised', highlightthickness=2, name=element.lower(),
+                           **PARAMETERS.get(element, DEFAULT))
         ButtonTooltip(button, 'h')
         button.config(command=clicked(button))
         return button
@@ -570,18 +571,18 @@ class PeriodicTable:
             self.window.title(title)
             frame = self.window.nametowidget(name)
 
-            if self.active_frame == None:#currently no active frame, so set the current frame to the frame tied to the tk.Entry evoking <Double-Button-1>
+            if self.active_frame == None:  # currently no active frame, so set the current frame to the frame tied to the tk.Entry evoking <Double-Button-1>
                 frame.pack()
                 self.active_frame = (frame, entry)
-            else:#here we hide the old frame to set active_frame to display the frame tied to the tk.Entry evoking <Double-Button-1>
+            else:  # here we hide the old frame to set active_frame to display the frame tied to the tk.Entry evoking <Double-Button-1>
                 hide_this_frame, _ = self.active_frame
                 hide_this_frame.pack_forget()
                 self.active_frame = (frame, entry)
                 frame.pack()
 
             elements = list(map(lambda e: e.title(), re.split(r'[,\s]+', entry.get())))
-            #print(f'show() tk.Entry={elements}')
-            #print(elements)
+            # print(f'show() tk.Entry={elements}')
+            # print(elements)
             entry_set = set(elements)
             entry_set.discard('')
             selected_set = set(self.selected[name])
@@ -605,6 +606,7 @@ class PeriodicTable:
 
             self.__show()
             return 'break'
+
         return func
 
 
@@ -630,7 +632,7 @@ parser.read('config.ini')
 
 
 class Modal:
-    def __init__(self, root :tk.Tk, _ :list):
+    def __init__(self, root: tk.Tk, _: list):
         self.config = _
         self.ACTIVE_FRAME = None
         self.root = root
@@ -647,6 +649,7 @@ class Modal:
         self.dialog.columnconfigure(1, weight=1)
 
         border = tk.Frame(self.dialog, bg='black', padx=1, pady=1)
+        #border = tk.Frame(self.dialog, bg='white', padx=1, pady=1, highlightbackground='black', highlightthickness=1)
         border.rowconfigure(0, weight=1)
         border.columnconfigure(0, weight=1)
         border.grid(row=0, column=0, sticky='nsew')
@@ -657,8 +660,9 @@ class Modal:
         self.horizontal_frame = tk.Frame(self.dialog, bg='#FFFFFF')
         self.horizontal_frame.grid(row=1, column=0, columnspan=2, sticky='ew')
 
-        cancel = tk.Button(self.horizontal_frame, text='Cancel', relief='groove', bg='#FFFFFF', width=8, command=self.__cancel)
-        #cancel.pack(side='right', padx=(5, 6), pady=(0, 6))
+        cancel = tk.Button(self.horizontal_frame, text='Cancel', relief='groove', bg='#FFFFFF', width=8,
+                           command=self.__cancel)
+        # cancel.pack(side='right', padx=(5, 6), pady=(0, 6))
         cancel.pack(side='right', padx=(5, 15), pady=(0, 6))
         self.__handler(cancel)
 
@@ -692,7 +696,8 @@ class Modal:
     def __tkentry_handler(self, entry):
         entry.bind('<Enter>', lambda _: entry.config(bg='#F0F0F0'))
         entry.bind('<Leave>',
-                   lambda _: entry.config(bg='#F0F0F0') if entry == self.dialog.focus_get() else entry.config(bg='white'))
+                   lambda _: entry.config(bg='#F0F0F0') if entry == self.dialog.focus_get() else entry.config(
+                       bg='white'))
 
         entry.bind('<FocusIn>', lambda _: entry.config(bg='#F0F0F0'))
         entry.bind('<FocusOut>', lambda _: entry.config(bg='white'))
@@ -707,12 +712,12 @@ class Modal:
         self.entry.delete(0, tk.END)
 
         if destination.exists():
-            #print(f'inside if, destination is:{destination}')
+            # print(f'inside if, destination is:{destination}')
             self.entry.insert(0, destination)
         else:
             inmemory_config = self.config[0]
             directory = inmemory_config.get('Save', 'directory')
-            #print(f'inside else, destination is:{directory}')
+            # print(f'inside else, destination is:{directory}')
 
             parser['Path']['directory'] = directory
             file = open('config.ini', 'w')
@@ -795,6 +800,7 @@ class Modal:
         :param container: the frame that is tied to the button so that when it's clicked that frame is displayed.
         :return: the newly created button, only reason for this is so that I can invoke the button tied to the General frame.
         '''
+
         def func():
             unclick = self.button_frame.nametowidget(self.ACTIVE_FRAME.winfo_name())
             unclick.config(bg='SystemButtonFace', relief='flat')
@@ -813,8 +819,10 @@ class Modal:
                            relief='flat', anchor='w', command=func, pady=0, width=20)
 
         button.pack(expand=False, fill='x', anchor='n')
-        button.bind('<Enter>', lambda _: button.config(relief='groove') if button.cget('bg') == 'SystemButtonFace' else None)
-        button.bind('<Leave>', lambda _: button.config(relief='flat') if button.cget('bg') == 'SystemButtonFace' else None)
+        button.bind('<Enter>',
+                    lambda _: button.config(relief='groove') if button.cget('bg') == 'SystemButtonFace' else None)
+        button.bind('<Leave>',
+                    lambda _: button.config(relief='flat') if button.cget('bg') == 'SystemButtonFace' else None)
 
         return button
 
@@ -839,11 +847,11 @@ class Modal:
         frame.columnconfigure(0, weight=0)
         frame.columnconfigure(1, weight=1)
 
-        #import tkinter.font as font
-        #d = font.nametofont('TkDefaultFont')
-        #print(d.actual())
-        #title = tk.Label(frame, text='Workbook options', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
-        #title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
+        # import tkinter.font as font
+        # d = font.nametofont('TkDefaultFont')
+        # print(d.actual())
+        # title = tk.Label(frame, text='Workbook options', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
+        # title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
 
         self.__createheader(frame, text='Workbook options', colspan=2)
 
@@ -872,16 +880,24 @@ class Modal:
         self.note = tk.Text(note_frame, height=3)
         self.note.grid(row=0, column=1, padx=(0, 15), sticky='nsew')
 
+        #self.note.bind('<Enter>', lambda _: self.note.config(bg='#F0F0F0'))
+        self.note.bind('<Enter>',
+                       lambda _: self.note.config(bg='white') if self.note == self.dialog.focus_get() else self.note.config(bg='#F0F0F0'))
+        self.note.bind('<Leave>', lambda _: self.note.config(bg='white'))
+
+        self.note.bind('<FocusIn>', lambda _: self.note.config(bg='white'))
+
         frame.tkraise()
         self.ACTIVE_FRAME = frame
         return frame
 
-    def __createheader(self, frame: tk.Frame, text: str, colspan: int, row=0):#might want to capture seperator columnspan
+    def __createheader(self, frame: tk.Frame, text: str, colspan: int,
+                       row=0):  # might want to capture seperator columnspan
         title = tk.Label(frame, text=text, font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
         title.grid(row=row, column=0, columnspan=2, stick='nw', pady=(0, 2))
 
         seperator = ttk.Separator(frame, orient=tk.HORIZONTAL)
-        seperator.grid(row=row+1, column=0, columnspan=colspan, sticky='new')
+        seperator.grid(row=row + 1, column=0, columnspan=colspan, sticky='new')
 
     def __save_frame(self):
         '''
@@ -967,6 +983,7 @@ class Modal:
         :param entries: list of the tk.Entry(s) for inputting lot information. Iterate them to enable entry and grabbing data to write to lot.csv
         :return: the handler
         '''
+
         def func():
             text = button.cget('text')
             if text == 'create lot':
@@ -981,7 +998,7 @@ class Modal:
                 for entry in entries:
                     entry.config(state='disabled')
                 data = ','.join(map(lambda e: e.get(), entries))
-                file = open('lot.csv', mode='a')#have option if file is not there
+                file = open('lot.csv', mode='a')  # have option if file is not there
                 file.write(f'\n{data}')
                 file.close()
                 self.checkbox.invoke()
@@ -1018,6 +1035,9 @@ class Modal:
         button = tk.Button(frame, text='create lot', relief='groove')
         button.grid(row=2, column=0, sticky='nsew')
 
+        button.bind('<Enter>', lambda _: button.config(cursor='hand2'))
+        button.bind('<Leave>', lambda _: button.config(cursor='arrow'))
+
         manufacturer = tk.Entry(frame)
         manufacturer.grid(row=3, column=0, sticky='nsew')
         self.__placeholder(manufacturer, 'manufacturer')
@@ -1037,13 +1057,13 @@ class Modal:
         entries = [manufacturer, analyte, lot, date]
         button.config(command=self.__lot_button_handler(button, entries))
 
-        #self.dialog.after(0, lambda: print(button.winfo_height()))#use this get the heigh to set the empty row
+        # self.dialog.after(0, lambda: print(button.winfo_height()))#use this get the heigh to set the empty row
 
         self.__createheader(frame, text='Database view', colspan=4, row=5)
 
         self.expired = tk.IntVar(value=1)
         self.checkbox = tk.Checkbutton(frame, variable=self.expired, text='allow expired lot in search', bg='#FFFFFF')
-        self.checkbox.grid(row=7, column=0, sticky='nw')
+        self.checkbox.grid(row=7, column=0, columnspan=2, sticky='nw')
 
         parent = tk.Frame(frame, bg='white')
         parent.grid(row=8, column=0, columnspan=4, sticky='nsew')
@@ -1064,12 +1084,13 @@ class Modal:
 
         lots.bind('<Configure>', lambda _: canvas.config(scrollregion=canvas.bbox('all')))
 
-        #def resize_frame(event):
-            #canvas.itemconfig(window, width=event.width)
+        # def resize_frame(event):
+        # canvas.itemconfig(window, width=event.width)
 
-        #canvas.bind('<Configure>', resize_frame)
+        # canvas.bind('<Configure>', resize_frame)
         canvas.bind('<Configure>',
-                    lambda event: canvas.itemconfig(window, width=event.width))#required b/c when frame grow, the canvas also grow the same size but not the window
+                    lambda event: canvas.itemconfig(window,
+                                                    width=event.width))  # required b/c when frame grow, the canvas also grow the same size but not the window
 
         self.checkbox.config(command=self.__lot_checkbox_handler(lots))
         self.checkbox.invoke()
@@ -1103,13 +1124,11 @@ class Modal:
 
         parser['Path']['directory'] = directory
 
+
 '''
 root = tk.Tk()
 m = Modal(root, [parser])
 m.show()
 
 root.bind('<Double-Button-1>', lambda _: m.show())
-root.mainloop()#'''
-
-
-
+root.mainloop()  # '''
