@@ -604,7 +604,6 @@ class PeriodicTable:
                 button.invoke()
 
             self.__show()
-            #print()
             return 'break'
         return func
 
@@ -631,7 +630,7 @@ parser.read('config.ini')
 
 
 class Modal:
-    def __init__(self, root, _):
+    def __init__(self, root :tk.Tk, _ :list):
         self.config = _
         self.ACTIVE_FRAME = None
         self.root = root
@@ -736,6 +735,7 @@ class Modal:
         inmemory_config = self.config[0]
         sort = inmemory_config.get('General', 'sort')
         color = inmemory_config.get('General', 'calculation')
+        note = inmemory_config.get('General', 'note(s)')
         file = inmemory_config.get('Save', 'save as')
         file = Path(file).stem
         expired = inmemory_config.getint('Database', 'expired')
@@ -770,6 +770,7 @@ class Modal:
         config['General'] = {}
         config['General']['sort'] = str(self.sort_var.get())
         config['General']['calculation'] = str(self.calc_var.get())
+        config['General']['note(s)'] = self.note.get('1.0', 'end-1c')
 
         config['Save'] = {}
         config['Save']['save as'] = str(file)
@@ -778,6 +779,8 @@ class Modal:
         config['Database'] = {}
         config['Database']['expired'] = str(self.expired.get())
 
+        print(self.note.get('1.0', 'end-1c'))
+
         sort = self.sort_var.get()
         PeriodicTable.sort(sort=sort)
 
@@ -785,6 +788,13 @@ class Modal:
         self.hide()
 
     def __add_button(self, button_frame, text, container):
+        '''
+        Creates the button that controls the different panel frames
+        :param button_frame: frame object containing the buttons on the left of self.dialog Toplevel
+        :param text: the text for the button
+        :param container: the frame that is tied to the button so that when it's clicked that frame is displayed.
+        :return: the newly created button, only reason for this is so that I can invoke the button tied to the General frame.
+        '''
         def func():
             unclick = self.button_frame.nametowidget(self.ACTIVE_FRAME.winfo_name())
             unclick.config(bg='SystemButtonFace', relief='flat')
@@ -809,6 +819,10 @@ class Modal:
         return button
 
     def __general_frame(self):
+        '''
+        Creates frame tied to General button
+        :return: the  tk.Frame object, frame is moved the front with a call to frame.tkraise()
+        '''
         frame = tk.Frame(self.dialog, bg='#FFFFFF', name='general')
         frame.grid(row=0, column=1, sticky='nsew')
 
@@ -816,6 +830,12 @@ class Modal:
         frame.rowconfigure(1, weight=0)
         frame.rowconfigure(2, weight=0)
         frame.rowconfigure(3, weight=0)
+
+        frame.rowconfigure(4, weight=0, minsize=26)
+        frame.rowconfigure(5, weight=0)
+        frame.rowconfigure(6, weight=0)
+        frame.rowconfigure(7, weight=0)
+
         frame.columnconfigure(0, weight=0)
         frame.columnconfigure(1, weight=1)
 
@@ -824,7 +844,6 @@ class Modal:
         #print(d.actual())
         #title = tk.Label(frame, text='Workbook options', font=('Segoe UI', 9, 'bold'), bg='#FFFFFF')
         #title.grid(row=0, column=0, columnspan=2, stick='nw', pady=(0, 2))
-
 
         self.__createheader(frame, text='Workbook options', colspan=2)
 
@@ -836,6 +855,22 @@ class Modal:
         checkbox = tk.Checkbutton(frame, variable=self.calc_var, text='show calculations', bg='#FFFFFF', onvalue='red',
                                   offvalue='#FFFFFF')
         checkbox.grid(row=3, column=0, sticky='nw')
+
+        self.__createheader(frame, text='Personalize analysis note across all worksheet(s)', colspan=3, row=5)
+
+        note_frame = tk.Frame(frame, bg='white')
+        note_frame.grid(row=7, column=0, columnspan=2, sticky='nsew')
+
+        note_frame.rowconfigure(0, weight=0)
+
+        note_frame.columnconfigure(0, weight=0)
+        note_frame.columnconfigure(1, weight=1)
+
+        label = tk.Label(note_frame, text='Notes(s):', bg='white')
+        label.grid(row=0, column=0, sticky='new')
+
+        self.note = tk.Text(note_frame, height=3)
+        self.note.grid(row=0, column=1, padx=(0, 15), sticky='nsew')
 
         frame.tkraise()
         self.ACTIVE_FRAME = frame
@@ -849,6 +884,10 @@ class Modal:
         seperator.grid(row=row+1, column=0, columnspan=colspan, sticky='new')
 
     def __save_frame(self):
+        '''
+        Creates frame tied to Save button
+        :return: the  tk.Frame object, frame is moved the back with a call to frame.lower()
+        '''
         frame = tk.Frame(self.dialog, bg='#FFFFFF', name='save')
         frame.grid(row=0, column=1, sticky='nsew')
 
@@ -877,7 +916,6 @@ class Modal:
         self.entry.insert(0, str(destination.resolve()))
 
         browse = tk.Button(frame, text='Browse...', relief='groove', bg='#FFFFFF', command=self.__askdirectory, pady=0)
-        #browse.grid(row=2, column=2, sticky='w', padx=10, pady=(4, 0))
         browse.grid(row=2, column=2, sticky='e', padx=(0, 15), pady=(4, 0))
         self.__handler(browse)
 
@@ -897,6 +935,12 @@ class Modal:
         return frame
 
     def __placeholder(self, textbox: tk.Entry, placeholder: str):
+        '''
+        Sets the individual place holders for the create lot textboxes, also creates the <FocusOut> & <Button-1> handlers
+        :param textbox:
+        :param placeholder:
+        :return:
+        '''
         textbox.insert(0, placeholder)
         textbox.config(state='disabled', fg='#6D6D6D')
 
@@ -912,12 +956,17 @@ class Modal:
                 textbox.delete(0, tk.END)
                 textbox.config(fg='black')
 
-
         textbox.bind('<Button-1>', lambda _: click())
         textbox.bind('<FocusOut>', lambda _: focusout())
         textbox.bind('<Leave>', lambda _: self.dialog.focus_set())
 
     def __lot_button_handler(self, button: tk.Button, entries: list):
+        '''
+        Creates the handler for button that control lot creating
+        :param button:
+        :param entries: list of the tk.Entry(s) for inputting lot information. Iterate them to enable entry and grabbing data to write to lot.csv
+        :return: the handler
+        '''
         def func():
             text = button.cget('text')
             if text == 'create lot':
@@ -941,6 +990,10 @@ class Modal:
         return func
 
     def __database_frame(self):
+        '''
+        Creates frame tied to Database button
+        :return: the  tk.Frame object, frame is moved the back with a call to frame.lower()
+        '''
         frame = tk.Frame(self.dialog, bg='#FFFFFF', name='database')
         frame.grid(row=0, column=1, sticky='nsew')
 

@@ -97,8 +97,8 @@ class App:
         # self.__radio_handler(radio_button)
         parser.read('config.ini')
         i = parser.getint('Parameters', 'max_sample_copies')
-        radio_button = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
-        radio_button.grid(row=0, column=1)
+        self.radio_button = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
+        self.radio_button.grid(row=0, column=1)
         # self.__radio_handler(radio_button)
         self.replicates.set(2)
 
@@ -380,6 +380,10 @@ class App:
         temp_parser = TEMP_CONFIG[0]
 
         parser.read('config.ini')
+        #i = parser.getint('Parameters', 'max_sample_copies')
+        #self.radio_button.config(text=SAMPLE_COPY.get(i, f'{i}x'), value=i)
+
+
         request = self.request_id_entry.get()
         replicates = self.replicates.get()
         loi = self.loi.get()
@@ -392,12 +396,17 @@ class App:
         except Exception as e:
             print(e)
 
-        print({section: dict(TEMP_CONFIG[0].items(section)) for section in TEMP_CONFIG[0].sections()})
+        #print({section: dict(TEMP_CONFIG[0].items(section)) for section in TEMP_CONFIG[0].sections()})
 
         print(f'path={url}')
         color = temp_parser.get('General', 'calculation')
         sort = bool(temp_parser.get('General', 'sort'))
         include_expired = temp_parser.getint('Database', 'expired')
+        #include_expired = temp_parser.get('Database', 'expired')
+        print('include expired')
+        #print(include_expired)
+
+        note = temp_parser.get('General', 'note(s)')
 
         workbook = xlsxwriter.Workbook(url)
         template = Template(workbook, request=request, replicates=replicates, loi=loi, font_color=color)
@@ -412,6 +421,8 @@ class App:
             template.add_hotplate(elements, samples)
 
         template.sort_analytes(sort)
+        template.note(note=note)
+        #Template.note(note=note)
         template.create_analysis_worksheet(include_expired=include_expired)
         workbook.close()
         os.startfile(url)

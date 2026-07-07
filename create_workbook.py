@@ -18,6 +18,7 @@ parser = ConfigParser()
 
 
 class Template:
+    _note = ''
     def __init__(self, wb, request, replicates, loi, font_color):
         self.__config()
         self.loi = loi
@@ -60,6 +61,10 @@ class Template:
         self.append = ' [dried]' if loi else ''
 
         self.element_set = set()
+
+    @classmethod
+    def note(cls, note: str):
+        cls._note = note
 
     @staticmethod
     def __rounding_places(rounding_places):
@@ -148,6 +153,8 @@ class Template:
 
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} lot:', self.result_string_format)
+        #worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
+        print(f'inside template note is: {self._note}')
         worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
         merge_start = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         merge_finish = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5)
@@ -217,7 +224,7 @@ class Template:
                 worksheet.write(cell, data, self.workbook.add_format({'italic': True}))
 
             worksheet.write(self.row, 1, 'Note(s):', self.result_string_format)
-            worksheet.merge_range(self.row, 2, self.row+2, 5, '', self.text_format)
+            worksheet.merge_range(self.row, 2, self.row+2, 5, f'{self._note}', self.text_format)
             #worksheet.autofit()
             print()
         self.__create_formula_sheet()
