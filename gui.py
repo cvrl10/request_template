@@ -309,9 +309,8 @@ class App:
         def func():
             count = int(spinbox.get())
             child_count = len(element_frame.winfo_children())
-            # print(f'child_count {child_count}')
+
             if count > child_count:
-                # self.root.withdraw()
                 for i in range(child_count, count):
                     entry = Entry(element_frame, name=f'{name}entry_{i}', highlightthickness=1)
                     entry.pack(side='top')
@@ -325,14 +324,13 @@ class App:
                     button.pack(side='top')
 
                     self.__menubutton_handler(button)
-                    # ToolTip(button, 'selected sample(s) for digestion', position='e', offset=5)
                     MenubuttonTooltip(button, 'selected sample(s) for digestion')
 
                     menu = Menu(button, tearoff=0)
                     # menu.bind('<Unmap>', lambda _: button.config(relief='raised'))
                     self.menu_list.append(menu)
                     button.config(menu=menu)
-                # self.root.deiconify()
+
                 # evoke entry <Return> to force sample updates on new menu_buttons
                 self.sample_entry.focus_set()
                 self.sample_entry.event_generate('<Return>')
@@ -361,14 +359,15 @@ class App:
         sample_frame_children = sample_frame.winfo_children()
         samples = self.__extract_sample_id()
         digestion = []
+
         for entry, menubutton in zip(element_frame_children, sample_frame_children):
             if entry.get() == '':
                 continue
             selected_sample = [sample for sample, var in zip(samples, self.check_vars[str(menubutton)]) if
                                var.get() == 1]
             elements = re.split(r'[,\s]+', entry.get())
-            # print(f'elements: {elements}')
             digestion.append((elements, selected_sample))
+
         return digestion
 
     def __submit(self):
@@ -396,15 +395,10 @@ class App:
         except Exception as e:
             print(e)
 
-        #print({section: dict(TEMP_CONFIG[0].items(section)) for section in TEMP_CONFIG[0].sections()})
-
         print(f'path={url}')
         color = temp_parser.get('General', 'calculation')
-        sort = bool(temp_parser.get('General', 'sort'))
+        sort = bool(temp_parser.getint('General', 'sort'))
         include_expired = temp_parser.getint('Database', 'expired')
-        #include_expired = temp_parser.get('Database', 'expired')
-        print('include expired')
-        #print(include_expired)
 
         note = temp_parser.get('General', 'note(s)')
 
@@ -420,9 +414,10 @@ class App:
         for elements, samples in hotplate:
             template.add_hotplate(elements, samples)
 
-        template.sort_analytes(sort)
-        template.note(note=note)
-        #Template.note(note=note)
+        if sort:
+            template.sort_analytes()
+
+        template.add_note(note=note)
         template.create_analysis_worksheet(include_expired=include_expired)
         workbook.close()
         os.startfile(url)

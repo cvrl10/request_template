@@ -1,6 +1,7 @@
 
+
+
 path=master_workbook.xlsx
-include expired
 time data 'July 30 2026' does not match format '%b %d %Y'
 time data 'Nov 30 2027' does not match format '%B %d %Y'
 time data 'Jan 30 2026' does not match format '%B %d %Y'
@@ -85,14 +86,13 @@ time data 'date' does not match format '%b %d %Y'
 time data 'date' does not match format '%B %d %Y'
 time data 'date' does not match format '%b %d %Y'
 time data 'date' does not match format '%B %d %Y'
-inside template note is: 
+time data 'date' does not match format '%b %d %Y'
+time data 'date' does not match format '%B %d %Y'
 
-inside template note is: 
 
 
-Hello World!
+
 path=master_workbook.xlsx
-include expired
 time data 'July 30 2026' does not match format '%b %d %Y'
 time data 'Nov 30 2027' does not match format '%B %d %Y'
 time data 'Jan 30 2026' does not match format '%B %d %Y'
@@ -177,9 +177,18 @@ time data 'date' does not match format '%b %d %Y'
 time data 'date' does not match format '%B %d %Y'
 time data 'date' does not match format '%b %d %Y'
 time data 'date' does not match format '%B %d %Y'
-inside template note is: Hello World!
+time data 'date' does not match format '%b %d %Y'
+time data 'date' does not match format '%B %d %Y'
 
-inside template note is: Hello World!
 
-Hello World!
-Hello World!
+Traceback (most recent call last):
+  File "C:\Users\carcheme\PycharmProjects\request_template\WORKBOOK_TEMPLATE.py", line 4, in <module>
+    app.run()
+    ~~~~~~~^^
+  File "C:\Users\carcheme\PycharmProjects\request_template\gui.py", line 433, in run
+    self.root.mainloop()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\carcheme\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 1599, in mainloop
+    self.tk.mainloop(n)
+    ~~~~~~~~~~~~~~~~^^^
+KeyboardInterrupt

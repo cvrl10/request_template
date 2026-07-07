@@ -1018,9 +1018,6 @@ class Modal:
         button = tk.Button(frame, text='create lot', relief='groove')
         button.grid(row=2, column=0, sticky='nsew')
 
-        button = tk.Button(frame, text='create lot', relief='groove')
-        button.grid(row=2, column=0, columnspan=1, sticky='nsew')
-
         manufacturer = tk.Entry(frame)
         manufacturer.grid(row=3, column=0, sticky='nsew')
         self.__placeholder(manufacturer, 'manufacturer')

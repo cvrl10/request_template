@@ -18,11 +18,10 @@ parser = ConfigParser()
 
 
 class Template:
-    _note = ''
     def __init__(self, wb, request, replicates, loi, font_color):
         self.__config()
         self.loi = loi
-        self.sort = True
+        self.sort = False
         self.workbook = wb
         self.request_id = request
         self.COPY = replicates
@@ -59,12 +58,12 @@ class Template:
         self.format = {'white_font': self.white_font_format, 'result': self.lims_format}
 
         self.append = ' [dried]' if loi else ''
+        self._note = ''
 
         self.element_set = set()
 
-    @classmethod
-    def note(cls, note: str):
-        cls._note = note
+    def add_note(self, note: str):
+        self._note = note
 
     @staticmethod
     def __rounding_places(rounding_places):
@@ -153,8 +152,6 @@ class Template:
 
         self.__move_cursor()
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} lot:', self.result_string_format)
-        #worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
-        print(f'inside template note is: {self._note}')
         worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
         merge_start = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         merge_finish = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5)
@@ -167,8 +164,10 @@ class Template:
 
         return {'element': element.lower(), 'destination_address': lot_address}
 
-    def sort_analytes(self, boolean: bool):
-        self.sort = bool(int(boolean))
+    def sort_analytes(self):
+    #def sort_analytes(self, boolean: bool):
+        #self.sort = bool(int(boolean))
+        self.sort = True
 
     def create_analysis_worksheet(self, include_expired=False):
         lot_info = query_database(list(self.element_set), include_expired)
