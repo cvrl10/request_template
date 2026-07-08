@@ -720,7 +720,8 @@ class Modal:
             self.max.config(to=self.to)
             self.max.config(width=len(f'{self.to}'))
             self.spinbox_value.set(value=self.to)
-        elif file_input <= self.to:
+        #elif file_input <= self.to:
+        else:
             self.spinbox_value.set(value=file_input)
 
         if destination.exists():
@@ -775,9 +776,9 @@ class Modal:
         self.hide()
 
     def __ok(self):
-        file = open('config.ini', 'w')
-        parser.write(file)
-        file.close()
+        #file = open('config.ini', 'w')
+        #parser.write(file)
+        #file.close()
 
         file = Path(self.file.get())
         ext = self.extension.get()
@@ -793,6 +794,7 @@ class Modal:
         use_max = self.use_max.get()
         config['General']['set'] = str(use_max)
         i = self.spinbox_value.get()
+        parser['Parameters']['max_sample_copies'] = str(i)
         config['General']['value'] = str(i)
         config['General']['note(s)'] = self.note.get('1.0', 'end-1c')
 
@@ -813,6 +815,10 @@ class Modal:
             replicate.set(value=i)
         else:
             replicate.set(value=2)
+
+        file = open('config.ini', 'w')
+        parser.write(file)
+        file.close()
 
         self.config[0] = config
         self.hide()

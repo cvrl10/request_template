@@ -58,8 +58,13 @@ class App:
         self.root.rowconfigure(1, weight=4)
         self.root.rowconfigure(2, weight=2)
 
+        self.root.rowconfigure(0, weight=2)
+        self.root.rowconfigure(1, weight=4)
+        self.root.rowconfigure(2, weight=2)
+
         self.top_frame = Frame(self.root)
         self.top_frame.grid(row=0, column=0, columnspan=3, sticky='ew')
+        #self.top_frame.grid(row=0, column=0, columnspan=3, sticky='ew', pady=(34, 14))
         self.top_frame.rowconfigure(0, weight=1)
         self.top_frame.rowconfigure(1, weight=1)
         self.top_frame.rowconfigure(2, weight=1)
@@ -109,7 +114,7 @@ class App:
         loi_checkbox.grid(row=2, column=1, sticky='w')
 
         self.middle_frame = Frame(self.root, name='dynamic', bg='SystemButtonFace')
-        # self.middle_frame = Frame(self.root, name='dynamic')
+        #self.middle_frame = Frame(self.root, name='dynamic', bg='red')
         self.middle_frame.grid(row=1, column=0, columnspan=3, sticky='nsew')
         self.middle_frame.configure(height=120)
         self.middle_frame.grid_propagate(False)
@@ -119,6 +124,7 @@ class App:
         self.middle_frame.columnconfigure(3, weight=4)
 
         self.middle_frame.rowconfigure(0, weight=1)
+        #self.middle_frame.rowconfigure(0, weight=0)
         self.middle_frame.rowconfigure(1, weight=1)
         self.middle_frame.rowconfigure(2, weight=1)
         self.middle_frame.rowconfigure(3, weight=1)
@@ -130,7 +136,8 @@ class App:
         self.check_vars = {}
 
         self.element_label = Label(self.middle_frame, text='analyte(s)')
-        self.element_label.grid(row=0, column=1, sticky='w')
+        self.element_label.grid(row=0, column=1, sticky='sw', padx=(3, 0))
+        #self.element_label.grid(row=0, column=1, sticky='w', pady=(42, 0), padx=(3, 0))
 
         self.microwave_label = Label(self.middle_frame, text='Microwave')
         self.microwave_label.grid(row=1, column=0, sticky='ne')
@@ -170,8 +177,10 @@ class App:
         bg = 'red'
         self.bottom_frame = Frame(self.root)
         self.bottom_frame.grid(row=2, column=0, columnspan=3, sticky='ew')
+        #self.bottom_frame.grid(row=2, column=0, columnspan=3, sticky='ew', pady=(5, 35))
 
         self.bottom_frame.columnconfigure(0, weight=1)
+        self.bottom_frame.rowconfigure(0, weight=1)
         self.bottom_frame.rowconfigure(0, weight=1)
 
         self.submit = Button(self.bottom_frame, text='SUBMIT', command=lambda: self.__submit(), bg=BACKGROUND)
