@@ -10,6 +10,7 @@ from datetime import date
 TEMP_CONFIG = None
 
 AUTO_CLOSE = 3000
+SAMPLE_COPY = {2: 'duplicate', 3: 'triplicate'}
 
 BACKGROUND = '#e6e6e6'
 ACTIVE_BACKGROUND = '#5a5a5a'
@@ -633,6 +634,7 @@ parser.read('config.ini')
 
 class Modal:
     def __init__(self, root: tk.Tk, _: list):
+        #self.to = 100
         self.config = _
         self.ACTIVE_FRAME = None
         self.root = root
@@ -711,13 +713,21 @@ class Modal:
         destination = Path(parser.get('Path', 'directory')).resolve()
         self.entry.delete(0, tk.END)
 
+        file_input = parser.getint('Parameters', 'max_sample_copies')
+
+        if file_input > self.to:
+            self.to = file_input
+            self.max.config(to=self.to)
+            self.max.config(width=len(f'{self.to}'))
+            self.spinbox_value.set(value=self.to)
+        elif file_input <= self.to:
+            self.spinbox_value.set(value=file_input)
+
         if destination.exists():
-            # print(f'inside if, destination is:{destination}')
             self.entry.insert(0, destination)
         else:
             inmemory_config = self.config[0]
             directory = inmemory_config.get('Save', 'directory')
-            # print(f'inside else, destination is:{directory}')
 
             parser['Path']['directory'] = directory
             file = open('config.ini', 'w')
@@ -740,6 +750,9 @@ class Modal:
         inmemory_config = self.config[0]
         sort = inmemory_config.get('General', 'sort')
         color = inmemory_config.get('General', 'calculation')
+        use_max = inmemory_config.getint('General', 'set')
+        value = inmemory_config.getint('General', 'value')
+
         note = inmemory_config.get('General', 'note(s)')
         file = inmemory_config.get('Save', 'save as')
         file = Path(file).stem
@@ -748,6 +761,8 @@ class Modal:
 
         self.sort_var.set(int(sort))
         self.calc_var.set(color)
+        self.use_max.set(use_max)
+        self.spinbox_value.set(value)
 
         self.entry.delete(0, tk.END)
         self.entry.insert(0, directory)
@@ -775,6 +790,10 @@ class Modal:
         config['General'] = {}
         config['General']['sort'] = str(self.sort_var.get())
         config['General']['calculation'] = str(self.calc_var.get())
+        use_max = self.use_max.get()
+        config['General']['set'] = str(use_max)
+        i = self.spinbox_value.get()
+        config['General']['value'] = str(i)
         config['General']['note(s)'] = self.note.get('1.0', 'end-1c')
 
         config['Save'] = {}
@@ -784,12 +803,18 @@ class Modal:
         config['Database'] = {}
         config['Database']['expired'] = str(self.expired.get())
 
-        print(self.note.get('1.0', 'end-1c'))
-
         sort = self.sort_var.get()
         PeriodicTable.sort(sort=sort)
 
-        self.config.insert(0, config)
+        radio, replicate = self.config[1]
+        radio.config(text=SAMPLE_COPY.get(i, f'{i}x'), value=i)
+
+        if use_max:
+            replicate.set(value=i)
+        else:
+            replicate.set(value=2)
+
+        self.config[0] = config
         self.hide()
 
     def __add_button(self, button_frame, text, container):
@@ -838,11 +863,12 @@ class Modal:
         frame.rowconfigure(1, weight=0)
         frame.rowconfigure(2, weight=0)
         frame.rowconfigure(3, weight=0)
+        frame.rowconfigure(4, weight=0)
 
-        frame.rowconfigure(4, weight=0, minsize=26)
-        frame.rowconfigure(5, weight=0)
+        frame.rowconfigure(5, weight=0, minsize=26)#
         frame.rowconfigure(6, weight=0)
         frame.rowconfigure(7, weight=0)
+        frame.rowconfigure(8, weight=0)
 
         frame.columnconfigure(0, weight=0)
         frame.columnconfigure(1, weight=1)
@@ -864,10 +890,22 @@ class Modal:
                                   offvalue='#FFFFFF')
         checkbox.grid(row=3, column=0, sticky='nw')
 
-        self.__createheader(frame, text='Personalize analysis note across all worksheet(s)', colspan=3, row=5)
+        self.use_max = tk.IntVar(value=0)
+        self.replicate = tk.Checkbutton(frame, variable=self.use_max, text='maximum sample replicates', bg='#FFFFFF')
+        self.replicate.grid(row=4, column=0, sticky='nsew')
+
+        i = parser.getint('Parameters', 'max_sample_copies')
+        self.to = 100
+        if i > self.to:
+            self.to = i
+        self.spinbox_value = tk.IntVar(value=i)
+        self.max = tk.Spinbox(frame, from_=1, to=self.to, width=len(str(self.to)), textvariable=self.spinbox_value, command=lambda: print(f'value of replicate={self.use_max.get()}'))
+        self.max.grid(row=4, column=1, sticky='w')
+
+        self.__createheader(frame, text='Personalize analysis note across all worksheet(s)', colspan=3, row=6)
 
         note_frame = tk.Frame(frame, bg='white')
-        note_frame.grid(row=7, column=0, columnspan=2, sticky='nsew')
+        note_frame.grid(row=8, column=0, columnspan=2, sticky='nsew')
 
         note_frame.rowconfigure(0, weight=0)
 
@@ -1127,7 +1165,9 @@ class Modal:
 
 '''
 root = tk.Tk()
-m = Modal(root, [parser])
+l = [None, (tk.Radiobutton(root), tk.IntVar())]
+print(*l[1], sep=' & ')
+m = Modal(root, l)
 m.show()
 
 root.bind('<Double-Button-1>', lambda _: m.show())

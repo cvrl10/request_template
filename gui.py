@@ -26,7 +26,7 @@ parser.read('config.ini')
 
 UPPER_LIMIT = parser.getint('Parameters', 'upper_limit')
 # PERIODIC_TABLE = None
-TEMP_CONFIG = []
+TEMP_CONFIG = [None]
 
 SAMPLE_COPY = {2: 'duplicate', 3: 'triplicate'}
 
@@ -46,7 +46,7 @@ class App:
 
         PERIODIC_TABLE = PeriodicTable(self.root)
 
-        MODAL = Modal(self.root, TEMP_CONFIG)
+
         #MODAL.ok()  # call to initially set up the parser in TEMP_CONFIG
         #TEMP_CONFIG.insert(PERIODIC_TABLE)
 
@@ -193,6 +193,8 @@ class App:
         except Exception as e:
             print(e)
 
+        TEMP_CONFIG.insert(1, (self.radio_button, self.replicates))
+        MODAL = Modal(self.root, TEMP_CONFIG)
         self.root.bind('<Double-Button-1>', lambda _: PERIODIC_TABLE.hide())
         self.root.bind('<Control-,>', lambda _: MODAL.show())
         self.root.bind('<Escape>', lambda _: self.root.destroy())
