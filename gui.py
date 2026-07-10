@@ -203,6 +203,7 @@ class App:
             print(e)
 
         TEMP_CONFIG.insert(1, (self.radio_button, self.replicates))
+        TEMP_CONFIG.insert(2, self.request_id_entry)
         MODAL = Modal(self.root, TEMP_CONFIG)
         self.root.bind('<Double-Button-1>', lambda _: PERIODIC_TABLE.hide())
         self.root.bind('<Control-,>', lambda _: MODAL.show())

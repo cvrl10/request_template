@@ -7,7 +7,7 @@ import re
 from database import query
 from datetime import date
 
-TEMP_CONFIG = None
+#TEMP_CONFIG = None
 
 AUTO_CLOSE = 3000
 SAMPLE_COPY = {2: 'duplicate', 3: 'triplicate'}
@@ -668,14 +668,13 @@ class Modal:
         cancel.pack(side='right', padx=(5, 15), pady=(0, 6))
         self.__handler(cancel)
 
-        ok = tk.Button(self.horizontal_frame, text='Ok', relief='groove', bg='#FFFFFF', width=8, command=self.__ok)
+        ok = tk.Button(self.horizontal_frame, text='OK', relief='groove', bg='#FFFFFF', width=8, command=self.__ok)
         ok.pack(side='right', padx=5, pady=(0, 6))
         self.__handler(ok)
 
         container = self.__general_frame()
-        b = self.__add_button(self.button_frame, '   General', container=container)
-        container.tkraise()
-        b.invoke()
+        general_button = self.__add_button(self.button_frame, '   General', container=container)
+        general_button.invoke()
 
         container = self.__save_frame()
         self.__add_button(self.button_frame, '   Save', container=container)
@@ -720,7 +719,6 @@ class Modal:
             self.max.config(to=self.to)
             self.max.config(width=len(f'{self.to}'))
             self.spinbox_value.set(value=self.to)
-        #elif file_input <= self.to:
         else:
             self.spinbox_value.set(value=file_input)
 
@@ -746,6 +744,16 @@ class Modal:
         self.dialog.transient(self.root)
         self.dialog.grab_set()
         self.dialog.deiconify()
+
+    def geometry(self):
+        self.dialog.geometry(f'700x400')
+        self.dialog.update_idletasks()
+        self.root.update_idletasks()
+
+        x = self.root.winfo_rootx() + (self.root.winfo_width() - self.dialog.winfo_width()) // 2
+        y = self.root.winfo_rooty() + (self.root.winfo_height() - self.dialog.winfo_height()) // 2
+        self.dialog.geometry(f'+{x}+{y}')
+
 
     def __cancel(self):
         inmemory_config = self.config[0]
@@ -986,6 +994,15 @@ class Modal:
         self.__tkentry_handler(self.file)
         self.file.grid(row=3, column=1, sticky='w')
         self.file.insert(0, 'master_workbook')
+
+        def func(_):
+            request = self.config[2].get()
+            file_name = request if self.file.get() == 'master_workbook' else 'master_workbook'
+            self.file.delete(0, tk.END)
+            self.file.insert(0, file_name)
+            return 'break'
+
+        self.file.bind('<Double-Button-1>', func)
 
         self.extension = ttk.Combobox(frame, values=['Excel Workbook (*.xlsx)'], state='readonly')
         self.extension.current(0)
