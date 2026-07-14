@@ -754,7 +754,6 @@ class Modal:
         y = self.root.winfo_rooty() + (self.root.winfo_height() - self.dialog.winfo_height()) // 2
         self.dialog.geometry(f'+{x}+{y}')
 
-
     def __cancel(self):
         inmemory_config = self.config[0]
         sort = inmemory_config.get('General', 'sort')
@@ -821,8 +820,8 @@ class Modal:
 
         if use_max:
             replicate.set(value=i)
-        else:
-            replicate.set(value=2)
+        #else:
+            #eplicate.set(value=2)
 
         file = open('config.ini', 'w')
         parser.write(file)
