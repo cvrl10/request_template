@@ -629,6 +629,7 @@ other.bind('<Double-Button-1>', pt.show(other))
 root.mainloop()#'''
 
 parser = ConfigParser()
+parser.optionxform = str
 parser.read('config.ini')
 
 
@@ -1066,6 +1067,9 @@ class Modal:
 
         return func
 
+    def __compound_frame(self):
+        pass
+
     def __database_frame(self):
         '''
         Creates frame tied to Database button
@@ -1187,7 +1191,7 @@ class Modal:
 
 '''
 root = tk.Tk()
-l = [None, (tk.Radiobutton(root), tk.IntVar())]
+l = [None, (tk.Radiobutton(root), tk.IntVar()), tk.Entry(root)]
 print(*l[1], sep=' & ')
 m = Modal(root, l)
 m.show()

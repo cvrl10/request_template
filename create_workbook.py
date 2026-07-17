@@ -211,8 +211,6 @@ class Template:
                 lots.append(lot)
 
                 #remeber keys/elements should be unique if not throw exception
-                #print(f'this is sample: {sample}')
-                #print(digestion_object.name)
                 for sample_id in [f'{sample}_{i}'for i in range(1, self.COPY + 1)]:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
                     move_to += 1

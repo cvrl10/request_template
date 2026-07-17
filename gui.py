@@ -22,6 +22,7 @@ ACTIVE_BACKGROUND = '#5a5a5a'
 HIGHLIGHT = '#4a90e2'
 
 parser = ConfigParser()
+parser.optionxform = str
 parser.read('config.ini')
 
 UPPER_LIMIT = parser.getint('Parameters', 'upper_limit')
