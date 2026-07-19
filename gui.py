@@ -1,3 +1,4 @@
+import tkinter
 from tkinter.ttk import Style
 
 from create_workbook import Template
@@ -34,7 +35,7 @@ SAMPLE_COPY = {2: 'duplicate', 3: 'triplicate'}
 
 class App:
     def __init__(self):
-        self.RETURN = False
+        #self.RETURN = False
         self.root = Tk()
         self.root.withdraw()
         self.root.iconbitmap('img/logo.ico')
@@ -209,6 +210,10 @@ class App:
         self.root.bind('<Double-Button-1>', lambda _: PERIODIC_TABLE.hide())
         self.root.bind('<Control-,>', lambda _: MODAL.show())
         self.root.bind('<Escape>', lambda _: self.root.destroy())
+
+        self.setting_icon = PhotoImage(file=r'img/wrench1.png')
+        setting = Button(self.root, image=self.setting_icon, relief='flat', command=MODAL.show)
+        setting.grid(row=0, column=2, sticky='ne', padx=(0, 14))
 
     def __radio_handler(self, radio):
         radio.bind('<Enter>', lambda _: radio.config(fg=HIGHLIGHT))

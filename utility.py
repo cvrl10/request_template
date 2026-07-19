@@ -680,6 +680,9 @@ class Modal:
         container = self.__save_frame()
         self.__add_button(self.button_frame, '   Save', container=container)
 
+        container = self.__compound_frame()
+        self.__add_button(self.button_frame, '   Compound', container=container)
+
         container = self.__database_frame()
         self.__add_button(self.button_frame, '   Database', container=container)
 
@@ -710,6 +713,7 @@ class Modal:
 
     def show(self):
         parser.read('config.ini')
+        self.__read_compounds(self.compounds)
         destination = Path(parser.get('Path', 'directory')).resolve()
         self.entry.delete(0, tk.END)
 
@@ -780,14 +784,11 @@ class Modal:
         self.file.insert(0, file)
 
         self.expired.set(expired)
+        self.__read_compounds(self.compounds)#reset the compounds that are not save
 
         self.hide()
 
     def __ok(self):
-        #file = open('config.ini', 'w')
-        #parser.write(file)
-        #file.close()
-
         file = Path(self.file.get())
         ext = self.extension.get()
         ext = re.search(r'(\.\w+)', ext).group()
@@ -809,6 +810,12 @@ class Modal:
         config['Save'] = {}
         config['Save']['save as'] = str(file)
         config['Save']['directory'] = self.entry.get()
+
+        frame = self.compounds.winfo_children()[0].winfo_children()#writing the compounds to config.ini
+        while frame:
+            label = frame.pop(0).cget('text').replace(' = ', '')
+            entry = frame.pop(0).get()
+            parser['Compound'][label] = entry
 
         config['Database'] = {}
         config['Database']['expired'] = str(self.expired.get())
@@ -969,7 +976,7 @@ class Modal:
         frame.columnconfigure(1, weight=0)
         frame.columnconfigure(2, weight=1)
 
-        self.__createheader(frame, text='Save Documents', colspan=3)
+        self.__createheader(frame, text='Save Workbooks', colspan=3)
 
         label = tk.Label(frame, text='Default local file location:', bg='#FFFFFF')
         label.grid(row=2, column=0, sticky='nw')
@@ -1067,8 +1074,62 @@ class Modal:
 
         return func
 
+    def __read_compounds(self, frame: tk.Frame):
+        for child in frame.winfo_children():
+            child.destroy()
+
+        frame = tk.Frame(frame, bg='white')
+        frame.grid(row=0, column=0, sticky='nsew')
+        frame.columnconfigure(0, weight=0)
+        frame.columnconfigure(1, weight=1)
+
+        for i, (compound, analytes) in enumerate(parser.items('Compound')):
+            compound = tk.Label(frame, text=f'{compound} = ', bg='white')
+            compound.grid(row=i, column=0, sticky='nse')
+            entry = tk.Entry(frame)
+            entry.grid(row=i, column=1, sticky='nsew')
+            entry.insert(0, analytes)
+
     def __compound_frame(self):
-        pass
+        frame = tk.Frame(self.dialog, bg='#FFFFFF', name='compound')
+        frame.grid(row=0, column=1, sticky='nsew')
+
+        frame.rowconfigure(0, weight=0)
+        frame.rowconfigure(1, weight=0)
+        frame.rowconfigure(2, weight=1)
+
+        frame.columnconfigure(0, weight=1)
+
+        self.__createheader(frame, text='Compound list', colspan=1)
+
+        parent = tk.Frame(frame, bg='white')
+        parent.grid(row=2, column=0, sticky='nsew')
+
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_columnconfigure(0, weight=1)
+
+        canvas = tk.Canvas(parent, bg='white', highlightthickness=0)
+        scrollbar = tk.Scrollbar(parent, orient='vertical', command=canvas.yview)
+
+        canvas.config(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill='y')
+
+        self.compounds = tk.Frame(canvas, bg='white', name='compound')
+        self.compounds.rowconfigure(0, weight=0)#
+        self.compounds.columnconfigure(0, weight=1)#
+        self.__read_compounds(self.compounds)
+        window = canvas.create_window((0, 0), window=self.compounds, anchor='nw')
+
+        self.compounds.bind('<Configure>', lambda _: canvas.config(scrollregion=canvas.bbox('all')))
+
+        canvas.bind('<Configure>',
+                    lambda event: canvas.itemconfig(window,
+                                                    width=event.width))
+
+        frame.lower()
+        return frame
 
     def __database_frame(self):
         '''
@@ -1104,19 +1165,19 @@ class Modal:
 
         manufacturer = tk.Entry(frame)
         manufacturer.grid(row=3, column=0, sticky='nsew')
-        self.__placeholder(manufacturer, 'manufacturer')
+        self.__placeholder(manufacturer, 'Manufacturer')
 
         analyte = tk.Entry(frame)
         analyte.grid(row=3, column=1, sticky='nsew')
-        self.__placeholder(analyte, 'analyte')
+        self.__placeholder(analyte, 'Analyte')
 
         lot = tk.Entry(frame)
         lot.grid(row=3, column=2, sticky='nsew')
-        self.__placeholder(lot, 'lot')
+        self.__placeholder(lot, 'Lot')
 
         date = tk.Entry(frame)
         date.grid(row=3, column=3, sticky='nsew')
-        self.__placeholder(date, 'date')
+        self.__placeholder(date, 'Month DD YYYY')
 
         entries = [manufacturer, analyte, lot, date]
         button.config(command=self.__lot_button_handler(button, entries))
@@ -1135,7 +1196,7 @@ class Modal:
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
-        canvas = tk.Canvas(parent, bg='white')
+        canvas = tk.Canvas(parent, bg='white', highlightthickness=0)
         scrollbar = tk.Scrollbar(parent, orient='vertical', command=canvas.yview)
 
         canvas.config(yscrollcommand=scrollbar.set)
@@ -1197,4 +1258,4 @@ m = Modal(root, l)
 m.show()
 
 root.bind('<Double-Button-1>', lambda _: m.show())
-root.mainloop()  # '''
+root.mainloop() #'''
