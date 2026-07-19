@@ -213,7 +213,10 @@ class App:
 
         self.setting_icon = PhotoImage(file=r'img/wrench1.png')
         setting = Button(self.root, image=self.setting_icon, relief='flat', command=MODAL.show)
-        setting.grid(row=0, column=2, sticky='ne', padx=(0, 14))
+        setting.grid(row=0, column=2, sticky='ne', padx=(0, 16), pady=(2, 0))
+
+        setting.bind('<ButtonPress-1>', lambda _: setting.config(relief='flat'))
+        setting.bind('<ButtonRelease-1>', lambda _: setting.config(relief='flat'))
 
     def __radio_handler(self, radio):
         radio.bind('<Enter>', lambda _: radio.config(fg=HIGHLIGHT))
