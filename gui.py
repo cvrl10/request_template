@@ -213,7 +213,7 @@ class App:
 
         self.setting_icon = PhotoImage(file=r'img/wrench1.png')
         setting = Button(self.root, image=self.setting_icon, relief='flat', command=MODAL.show)
-        setting.grid(row=0, column=2, sticky='ne', padx=(0, 16), pady=(2, 0))
+        setting.grid(row=0, column=2, sticky='ne', padx=(0, 15), pady=(4, 0))
 
         setting.bind('<ButtonPress-1>', lambda _: setting.config(relief='flat'))
         setting.bind('<ButtonRelease-1>', lambda _: setting.config(relief='flat'))
@@ -445,4 +445,5 @@ class App:
 
     def run(self):
         self.root.deiconify()
+        MODAL.geometry()
         self.root.mainloop()

@@ -494,7 +494,7 @@ class PeriodicTable:
         for i in range(10):
             frame.grid_rowconfigure(i, weight=1)
         for i in range(18):
-            frame.grid_columnconfigure(i, weight=1)
+            frame.grid_columnconfigure(i, weight=1)#, uniform='width')
 
     def __fill_grid(self, frame):
         def fill_row(row, range, elements):
@@ -635,7 +635,6 @@ parser.read('config.ini')
 
 class Modal:
     def __init__(self, root: tk.Tk, _: list):
-        #self.to = 100
         self.config = _
         self.ACTIVE_FRAME = None
         self.root = root
@@ -665,7 +664,7 @@ class Modal:
 
         cancel = tk.Button(self.horizontal_frame, text='Cancel', relief='groove', bg='#FFFFFF', width=8,
                            command=self.__cancel)
-        # cancel.pack(side='right', padx=(5, 6), pady=(0, 6))
+
         cancel.pack(side='right', padx=(5, 15), pady=(0, 6))
         self.__handler(cancel)
 
@@ -688,6 +687,7 @@ class Modal:
 
         exit = tk.Button(self.button_frame, text='   Exit', relief='flat', activebackground='#C42B1C',
                          activeforeground='white', anchor='w', command=self.__cancel)
+
         exit.pack(expand=False, fill='x', side=tk.BOTTOM)
         exit.bind('<Enter>', lambda _: exit.config(relief='groove', bg='#C42B1C', fg='white'))
         exit.bind('<Leave>', lambda _: exit.config(relief='flat', bg='SystemButtonFace', fg='black'))
@@ -828,8 +828,6 @@ class Modal:
 
         if use_max:
             replicate.set(value=i)
-        #else:
-            #eplicate.set(value=2)
 
         file = open('config.ini', 'w')
         parser.write(file)
@@ -1065,12 +1063,18 @@ class Modal:
                 button.config(text='create lot')
                 for entry in entries:
                     entry.config(state='disabled')
-                data = ','.join(map(lambda e: e.get(), entries))
-                file = open('lot.csv', mode='a')  # have option if file is not there
-                file.write(f'\n{data}')
-                file.close()
-                self.checkbox.invoke()
-                self.checkbox.invoke()
+                #print(list(map(lambda e: e.get(), entries)))
+                data = list(map(lambda e: e.get(), entries))
+                skip = any(column in {'Manufacturer', 'Analyte', 'Lot', 'Month DD YYYY'} for column in data)
+                if skip:
+                    pass
+                else:
+                    data = ','.join(data)
+                    file = open('lot.csv', mode='a')  # have option if file is not there
+                    file.write(f'\n{data}')
+                    file.close()
+                    self.checkbox.invoke()
+                    self.checkbox.invoke()
 
         return func
 
@@ -1231,9 +1235,9 @@ class Modal:
                 children.destroy()
             for analyte, lot in lots.items():
                 lot = lot.split(', ')[1]
-                d = lot.split(' exp: ')[1]
-                d = date.fromisoformat(d)
-                fg = 'red' if d < date.today() else 'black'
+                exp = lot.split(' exp: ')[1]
+                exp = date.fromisoformat(exp)
+                fg = 'red' if exp < date.today() else 'black'
                 lot = f'Analyte: {analyte}, {lot}'
                 label = tk.Label(frame, text=lot, bg='white', fg=fg)
                 label.pack(anchor=tk.NW)
