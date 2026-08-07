@@ -1302,7 +1302,7 @@ class Search:
 
     def __show(self):
         self.result = tk.Toplevel(self.window.master)#
-        self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.widthdraw))
+        self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.withdraw()))
         self.root_search = tk.Entry(self.result)#
         self.root_search.pack()#
 
