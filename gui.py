@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import sys
 from configparser import ConfigParser
-from utility import MenubuttonTooltip, PeriodicTable, Modal
+from utility import MenubuttonTooltip, PeriodicTable, Modal, Search
 
 file = open('stdout_err.log', mode='w')
 sys.stdout = file
@@ -211,9 +211,14 @@ class App:
         self.root.bind('<Control-,>', lambda _: MODAL.show())
         self.root.bind('<Escape>', lambda _: self.root.destroy())
 
-        self.setting_icon = PhotoImage(file=r'img/wrench1.png')
+
+        self.setting_icon = PhotoImage(file=r'img/wrench.png')
+        self.search_icon = PhotoImage(file=r'img/folder-search.png')
         setting = Button(self.root, image=self.setting_icon, relief='flat', command=MODAL.show)
         setting.grid(row=0, column=2, sticky='ne', padx=(0, 15), pady=(4, 0))
+
+        search = Button(self.root, image=self.search_icon, relief='flat', command=Search(self.root).show)
+        search.grid(row=0, column=2, sticky='ne', padx=(0, 45), pady=(4, 0))
 
         setting.bind('<ButtonPress-1>', lambda _: setting.config(relief='flat'))
         setting.bind('<ButtonRelease-1>', lambda _: setting.config(relief='flat'))

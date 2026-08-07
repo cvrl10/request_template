@@ -1263,3 +1263,91 @@ m.show()
 
 root.bind('<Double-Button-1>', lambda _: m.show())
 root.mainloop() #'''
+
+
+class Search:
+    def __init__(self, root: tk.Tk):
+        self.window = tk.Toplevel(root)
+        self.window.overrideredirect(True)
+        self.window.withdraw()
+        self.search = tk.Entry(self.window)
+        self.search.pack()
+
+        self.search.insert(0, 'Search for a digestion')
+        self.search.bind('<Return>', lambda _: self.__show())
+        #self.search.bind('<Return>', lambda _: self.__search(_))
+        self.search.bind('<Key>', self.__search)
+
+        self.result = tk.Toplevel(self.window.master)#root
+        self.result.iconbitmap(r'img/blank.ico')
+        self.result.title('search result')
+        self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.widthdraw()))
+        self.result.withdraw()
+        self.root_search = tk.Entry(self.result)#
+        self.root_search.pack()#
+
+        path = parser.get('Path', 'search')
+        self.root_search.insert(0, path)
+
+        self.searching = None
+
+    def show(self):
+        root = self.window.master
+        width = self.search.winfo_width()
+        height = self.search.winfo_height()
+        x = root.winfo_x() + (root.winfo_width() - width) //2
+        y = root.winfo_y() + (root.winfo_height() - height) // 2
+        self.window.geometry(f'+{x}+{y}')
+        self.window.deiconify()
+
+    def __show(self):
+        self.result = tk.Toplevel(self.window.master)#
+        self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.widthdraw))
+        self.root_search = tk.Entry(self.result)#
+        self.root_search.pack()#
+
+
+        path = parser.get('Path', 'search')
+        self.root_search.insert(0, path)
+
+        path = Path(path)
+
+    def __search(self, event=None):
+        def _():
+            for button in self.result.winfo_children()[1:len(self.result.winfo_children())]:
+                print(button)
+                print('button')
+                button.destroy()
+
+            path = parser.get('Path', 'search')
+            path = Path(path)
+            pattern = self.search.get()
+            print(pattern)
+            for file in path.rglob(f'*{pattern}*'):
+                if file.name.startswith('~$'):
+                    continue
+                button = tk.Button(self.result, text=str(file), command=lambda _file=file: os.startfile(_file))
+                #button.pack(side='top', anchor='w', fill='x')
+                button.pack(anchor='w', fill='x')
+            self.search.focus_set()
+
+        print(self.result)
+        #self.result.deiconify()
+        if self.result.state() == 'withdrawn':
+            self.result.deiconify()
+
+        if self.searching:
+            self.result.after_cancel(self.searching)
+
+        self.searching = self.result.after(0, _)
+
+
+
+
+
+
+'''root = tk.Tk()
+s = Search(root)
+root.bind('<Double-Button-1>', lambda _: s.show())
+
+root.mainloop()#'''
