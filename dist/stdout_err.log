@@ -1,79 +1,76 @@
-.!toplevel4
-Search for a digestion
-.!toplevel4
-N
-.!toplevel4
-.!toplevel4.!button
-button
-.!toplevel4.!button2
-button
-.!toplevel4.!button3
-button
-Ni
-.!toplevel4
-.!toplevel4.!button4
-button
-N
-.!toplevel4
-.!toplevel4.!button5
-button
-.!toplevel4.!button6
-button
-.!toplevel4.!button7
-button
-Na
-.!toplevel4
-.!toplevel4.!button8
-button
-.!toplevel4.!button9
-button
-.!toplevel4.!button10
-button
-N
-.!toplevel4
-.!toplevel4.!button11
-button
-.!toplevel4.!button12
-button
-.!toplevel4.!button13
-button
-Ni
-.!toplevel4
-.!toplevel4.!button14
-button
-Ni
-.!toplevel4
-.!toplevel4.!button15
-button
-A
-.!toplevel4
-.!toplevel4.!button16
-button
-.!toplevel4.!button17
-button
-.!toplevel4.!button18
-button
-.!toplevel4.!button19
-button
-Ag
-.!toplevel4
-.!toplevel4.!button20
-button
-p
-.!toplevel4
-.!toplevel4.!button21
-button
-.!toplevel4.!button22
-button
-.!toplevel4.!button23
-button
-.!toplevel4.!button24
-button
-pd
-.!toplevel4
-p
-Exception in Tkinter callback
-Traceback (most recent call last):
-  File "tkinter\__init__.py", line 2068, in __call__
-  File "utility.py", line 1284, in <lambda>
-AttributeError: 'Toplevel' object has no attribute 'widthdraw'. Did you mean: 'withdraw'?
+path=C:\Users\carcheme\PycharmProjects\request_template\dist\master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'June 30 2027' does not match format '%b %d %Y'
+time data 'Jan 30 2027' does not match format '%B %d %Y'
+time data 'July 30 2027' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct  31 2026' does not match format '%B %d %Y'
+time data 'March 31 2027' does not match format '%b %d %Y'
+time data 'Jan 30 2027' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Nov 30 2026' does not match format '%B %d %Y'
+
+
+
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\08 August\master_workbook.xlsx
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Jan 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2026' does not match format '%B %d %Y'
+time data 'Apr 30 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'April 30 2026' does not match format '%b %d %Y'
+time data 'July 30 2026' does not match format '%b %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Aug 30 2026' does not match format '%B %d %Y'
+time data 'Sep 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Jan 31 2027' does not match format '%B %d %Y'
+time data 'Nov 30 2027' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'June 30 2027' does not match format '%b %d %Y'
+time data 'Jan 30 2027' does not match format '%B %d %Y'
+time data 'July 30 2027' does not match format '%b %d %Y'
+time data 'Oct 30 2026' does not match format '%B %d %Y'
+time data 'Oct  31 2026' does not match format '%B %d %Y'
+time data 'March 31 2027' does not match format '%b %d %Y'
+time data 'Jan 30 2027' does not match format '%B %d %Y'
+time data 'Feb 28 2027' does not match format '%B %d %Y'
+time data 'Nov 30 2026' does not match format '%B %d %Y'
+

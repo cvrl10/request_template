@@ -1281,11 +1281,13 @@ class Search:
         self.result = tk.Toplevel(self.window.master)#root
         self.result.iconbitmap(r'img/blank.ico')
         self.result.title('search result')
+        self.result.geometry(f'700x400')
         #self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.widthdraw()))
         self.result.protocol('WM_DELETE_WINDOW', lambda: self.result.withdraw())
         self.result.withdraw()
         self.result.rowconfigure(0, weight=0)
         self.result.rowconfigure(1, weight=1)
+        self.result.columnconfigure(0, weight=1)
 
         self.root_search = tk.Entry(self.result)#
         self.root_search.grid(row=0, column=0, sticky='nsew')#
@@ -1319,6 +1321,7 @@ class Search:
     def __search(self, event=None):
         parent = tk.Frame(self.result)
         parent.grid(row=1, column=0, sticky='nsew')
+        #parent.grid(row=1, sticky='nsew')
 
         canvas = tk.Canvas(parent, highlightthickness=0)
         scrollbar = tk.Scrollbar(parent, orient='vertical', command=canvas.yview)
@@ -1329,6 +1332,7 @@ class Search:
         scrollbar.pack(side=tk.RIGHT, fill='y')
 
         results_frame = tk.Frame(canvas)
+        #results_frame.pack(fill='both', expand=True)
 
         window = canvas.create_window((0,0), window=results_frame, anchor='nw')
 
@@ -1349,9 +1353,9 @@ class Search:
             for file in path.rglob(f'*{pattern}*'):
                 if file.name.startswith('~$'):
                     continue
-                button = tk.Button(results_frame, text=str(file), command=lambda _file=file: os.startfile(_file))
-                button.bind('<Enter>', lambda event: event.widget.config(fg='#4a90e2'))
-                button.bind('<Leave>', lambda event: event.widget.config(fg='black'))
+                button = tk.Button(results_frame, text=str(file), command=lambda _file=file: os.startfile(_file), relief='flat')
+                button.bind('<Enter>', lambda event: event.widget.config(fg='#4a90e2', relief='groove'))
+                button.bind('<Leave>', lambda event: event.widget.config(fg='black', relief='flat'))
                 #button.pack(side='top', anchor='w', fill='x')
                 button.pack(anchor='w', fill='x')
             self.search.focus_set()
