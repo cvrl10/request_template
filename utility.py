@@ -1281,10 +1281,14 @@ class Search:
         self.result = tk.Toplevel(self.window.master)#root
         self.result.iconbitmap(r'img/blank.ico')
         self.result.title('search result')
-        self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.widthdraw()))
+        #self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.widthdraw()))
+        self.result.protocol('WM_DELETE_WINDOW', lambda: self.result.withdraw())
         self.result.withdraw()
+        self.result.rowconfigure(0, weight=0)
+        self.result.rowconfigure(1, weight=1)
+
         self.root_search = tk.Entry(self.result)#
-        self.root_search.pack()#
+        self.root_search.grid(row=0, column=0, sticky='nsew')#
 
         path = parser.get('Path', 'search')
         self.root_search.insert(0, path)
@@ -1313,8 +1317,27 @@ class Search:
         path = Path(path)
 
     def __search(self, event=None):
+        parent = tk.Frame(self.result)
+        parent.grid(row=1, column=0, sticky='nsew')
+
+        canvas = tk.Canvas(parent, highlightthickness=0)
+        scrollbar = tk.Scrollbar(parent, orient='vertical', command=canvas.yview)
+
+        canvas.config(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill='y')
+
+        results_frame = tk.Frame(canvas)
+
+        window = canvas.create_window((0,0), window=results_frame, anchor='nw')
+
+        results_frame.bind('<Configure>', lambda _: canvas.config(scrollregion=canvas.bbox('all')))
+        canvas.bind('<Configure>', lambda event: canvas.itemconfig(window, width=event.width))
+
         def _():
-            for button in self.result.winfo_children()[1:len(self.result.winfo_children())]:
+            #for button in self.result.winfo_children()[1:len(self.result.winfo_children())]:
+            for button in results_frame.winfo_children():
                 print(button)
                 print('button')
                 button.destroy()
@@ -1326,7 +1349,9 @@ class Search:
             for file in path.rglob(f'*{pattern}*'):
                 if file.name.startswith('~$'):
                     continue
-                button = tk.Button(self.result, text=str(file), command=lambda _file=file: os.startfile(_file))
+                button = tk.Button(results_frame, text=str(file), command=lambda _file=file: os.startfile(_file))
+                button.bind('<Enter>', lambda event: event.widget.config(fg='#4a90e2'))
+                button.bind('<Leave>', lambda event: event.widget.config(fg='black'))
                 #button.pack(side='top', anchor='w', fill='x')
                 button.pack(anchor='w', fill='x')
             self.search.focus_set()
@@ -1346,7 +1371,7 @@ class Search:
 
 
 
-'''root = tk.Tk()
+root = tk.Tk()
 s = Search(root)
 root.bind('<Double-Button-1>', lambda _: s.show())
 
