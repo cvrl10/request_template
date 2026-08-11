@@ -1339,6 +1339,10 @@ class Search:
         parser.write(file)
         file.close()
 
+        event = tk.Event()#creating a event to past to the method so that exception is not thrown
+        event.keysym = 'c'
+        self.__search(event)#updating result_frame to show accurate search of new directory
+
     def show(self):
         #self.__place_searchbar()
         if self.window.state() == 'withdrawn':
@@ -1356,7 +1360,7 @@ class Search:
         y = (root.winfo_y() - height) - 10
         self.window.geometry(f'+{x}+{y}')
 
-    def __search(self, event):
+    def __search(self, event=None):
         if event.keysym in ['space', 'Return', 'BackSpace', 'Caps_Lock', 'Shift_L', 'Shift_R']:
             print('skipped')
             return
