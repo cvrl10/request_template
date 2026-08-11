@@ -7,6 +7,7 @@ import re
 from database import query
 from datetime import date
 
+
 #TEMP_CONFIG = None
 
 AUTO_CLOSE = 3000
@@ -692,6 +693,8 @@ class Modal:
         exit.bind('<Enter>', lambda _: exit.config(relief='groove', bg='#C42B1C', fg='white'))
         exit.bind('<Leave>', lambda _: exit.config(relief='flat', bg='SystemButtonFace', fg='black'))
 
+        self.dialog.sized = False
+
         self.__ok()
 
     def __handler(self, button):
@@ -741,6 +744,10 @@ class Modal:
             self.entry.insert(0, directory)
 
         self.__ok()
+        if not self.dialog.sized:
+            self.dialog.deiconify()
+            #self.dialog.withdraw()
+            self.dialog.sized = True
         self.dialog.update_idletasks()
         self.root.update_idletasks()
         x = self.root.winfo_rootx() + (self.root.winfo_width() - self.dialog.winfo_width()) // 2
@@ -1253,6 +1260,10 @@ class Modal:
 
         parser['Path']['directory'] = directory
 
+        file = open('config.ini', 'w')
+        parser.write(file)
+        file.close()
+
 
 '''
 root = tk.Tk()
@@ -1270,58 +1281,88 @@ class Search:
         self.window = tk.Toplevel(root)
         self.window.overrideredirect(True)
         self.window.withdraw()
-        self.search = tk.Entry(self.window)
+
+        #self.window.transient(root)
+        frame = tk.Frame(self.window, bg='black', padx=2, pady=2, width=45)
+        frame.pack()
+        self.search = tk.Entry(frame, bd=0, width=45)
+        #self.search = tk.Entry(self.window, bd=0)
         self.search.pack()
 
-        self.search.insert(0, 'Search for a digestion')
-        self.search.bind('<Return>', lambda _: self.__show())
+        self.search.insert(0, 'Search for digestion(s)')
+        #self.search.bind('<Return>', lambda _: self.__show())
+        self.search.bind('<Button-1>',
+                         lambda _: self.search.delete(0, tk.END) if self.search.get() == 'Search for digestion(s)' else None)
+        self.search.bind('<FocusOut>',
+                         lambda _: self.search.insert(0, 'Search for digestion(s)') if self.search.get() == '' else None)
+        self.search.bind('<Leave>', lambda _: self.window.focus_set())
         #self.search.bind('<Return>', lambda _: self.__search(_))
         self.search.bind('<Key>', self.__search)
 
-        self.result = tk.Toplevel(self.window.master)#root
+        self.result = tk.Toplevel(root)#root
         self.result.iconbitmap(r'img/blank.ico')
         self.result.title('search result')
         self.result.geometry(f'700x400')
-        #self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.widthdraw()))
-        self.result.protocol('WM_DELETE_WINDOW', lambda: self.result.withdraw())
+
+        self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.withdraw()))
         self.result.withdraw()
         self.result.rowconfigure(0, weight=0)
         self.result.rowconfigure(1, weight=1)
         self.result.columnconfigure(0, weight=1)
 
         self.root_search = tk.Entry(self.result)#
-        self.root_search.grid(row=0, column=0, sticky='nsew')#
+        self.root_search.grid(row=0, column=0, sticky='nsew', padx=(75, 75))#
+
+        self.icon = tk.PhotoImage(file=r'img/search.png')
+        search_button = tk.Button(self.result, image=self.icon, relief='flat', command=self.__askdirectory)
+        search_button.grid(row=0, column=0, sticky='e', padx=(0, 50))
+        print('button_width=')#=22 after printing
+        #print(search_button.winfo_width())
+        #root.after(6000, lambda: print('size=', search_button.winfo_width()))
 
         path = parser.get('Path', 'search')
         self.root_search.insert(0, path)
 
         self.searching = None
 
+        root.bind('<Configure>', lambda _: self.__place_searchbar())
+
+    def __askdirectory(self):
+        directory = filedialog.askdirectory(parent=self.result, title='Search Root Directory')
+        if not directory:
+            directory = self.root_search.get()
+
+        self.root_search.delete(0, tk.END)
+        self.root_search.insert(0, directory)
+        parser['Path']['search'] = directory
+
+        file = open('config.ini', 'w')
+        parser.write(file)
+        file.close()
+
     def show(self):
+        #self.__place_searchbar()
+        if self.window.state() == 'withdrawn':
+            self.window.deiconify()
+        else:
+            self.result.withdraw()
+            self.window.withdraw()
+
+    def __place_searchbar(self):
         root = self.window.master
-        width = self.search.winfo_width()
-        height = self.search.winfo_height()
-        x = root.winfo_x() + (root.winfo_width() - width) //2
-        y = root.winfo_y() + (root.winfo_height() - height) // 2
+        root.update_idletasks()
+        width = self.window.winfo_width()
+        height = self.window.winfo_height()
+        x = root.winfo_rootx() + (root.winfo_width() - width) // 2
+        y = (root.winfo_y() - height) - 10
         self.window.geometry(f'+{x}+{y}')
-        self.window.deiconify()
 
-    def __show(self):
-        self.result = tk.Toplevel(self.window.master)#
-        self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.withdraw()))
-        self.root_search = tk.Entry(self.result)#
-        self.root_search.pack()#
-
-
-        path = parser.get('Path', 'search')
-        self.root_search.insert(0, path)
-
-        path = Path(path)
-
-    def __search(self, event=None):
+    def __search(self, event):
+        if event.keysym in ['space', 'Return', 'BackSpace', 'Caps_Lock', 'Shift_L', 'Shift_R']:
+            print('skipped')
+            return
         parent = tk.Frame(self.result)
         parent.grid(row=1, column=0, sticky='nsew')
-        #parent.grid(row=1, sticky='nsew')
 
         canvas = tk.Canvas(parent, highlightthickness=0)
         scrollbar = tk.Scrollbar(parent, orient='vertical', command=canvas.yview)
@@ -1332,36 +1373,38 @@ class Search:
         scrollbar.pack(side=tk.RIGHT, fill='y')
 
         results_frame = tk.Frame(canvas)
-        #results_frame.pack(fill='both', expand=True)
 
         window = canvas.create_window((0,0), window=results_frame, anchor='nw')
 
         results_frame.bind('<Configure>', lambda _: canvas.config(scrollregion=canvas.bbox('all')))
         canvas.bind('<Configure>', lambda event: canvas.itemconfig(window, width=event.width))
 
+        canvas.bind_all('<MouseWheel>', lambda event: canvas.yview_scroll(int(-event.delta/120), 'units'))
+
+        #results_frame.bind('<Enter>',
+                           #lambda event: canvas.bind_all('<MouseWheel>', lambda event: canvas.yview_scroll(int(-event.delta / 120), 'units')))
+        #results_frame.bind('<Leave>', lambda event: canvas.unbind_all('<MouseWheel>'))
+
         def _():
-            #for button in self.result.winfo_children()[1:len(self.result.winfo_children())]:
             for button in results_frame.winfo_children():
-                print(button)
-                print('button')
                 button.destroy()
 
             path = parser.get('Path', 'search')
             path = Path(path)
             pattern = self.search.get()
-            print(pattern)
+            #print(pattern)
             for file in path.rglob(f'*{pattern}*'):
                 if file.name.startswith('~$'):
                     continue
-                button = tk.Button(results_frame, text=str(file), command=lambda _file=file: os.startfile(_file), relief='flat')
-                button.bind('<Enter>', lambda event: event.widget.config(fg='#4a90e2', relief='groove'))
-                button.bind('<Leave>', lambda event: event.widget.config(fg='black', relief='flat'))
+                button = tk.Button(results_frame, text=str(file),
+                                   command=lambda _file=file: os.startfile(_file), relief='flat')
+                #button.bind('<Enter>', lambda event: event.widget.config(fg='#4a90e2', relief='groove'))
+                button.bind('<Enter>', lambda event: event.widget.config(relief='groove', bg='#FFFFE0'))
+                button.bind('<Leave>', lambda event: event.widget.config(bg='SystemButtonFace', relief='flat'))
                 #button.pack(side='top', anchor='w', fill='x')
                 button.pack(anchor='w', fill='x')
             self.search.focus_set()
 
-        print(self.result)
-        #self.result.deiconify()
         if self.result.state() == 'withdrawn':
             self.result.deiconify()
 
@@ -1375,7 +1418,7 @@ class Search:
 
 
 
-root = tk.Tk()
+'''root = tk.Tk()
 s = Search(root)
 root.bind('<Double-Button-1>', lambda _: s.show())
 

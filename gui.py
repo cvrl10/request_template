@@ -211,14 +211,29 @@ class App:
         self.root.bind('<Control-,>', lambda _: MODAL.show())
         self.root.bind('<Escape>', lambda _: self.root.destroy())
 
+        setting_leave = PhotoImage(file=r'img/wrench.png')
+        setting_enter = PhotoImage(file=r'img/wrench-Enter.png')
 
-        self.setting_icon = PhotoImage(file=r'img/wrench.png')
-        self.search_icon = PhotoImage(file=r'img/folder-search.png')
-        setting = Button(self.root, image=self.setting_icon, relief='flat', command=MODAL.show)
+        search_leave = PhotoImage(file=r'img/folder-search.png')
+        search_enter = PhotoImage(file=r'img/folder-search-Enter.png')
+
+        setting = Button(self.root, image=setting_leave, relief='flat', command=MODAL.show)
         setting.grid(row=0, column=2, sticky='ne', padx=(0, 15), pady=(4, 0))
 
-        search = Button(self.root, image=self.search_icon, relief='flat', command=Search(self.root).show)
+        setting.bind('<Enter>', lambda _: setting.config(image=setting_enter))
+        setting.bind('<Leave>', lambda _: setting.config(image=setting_leave))
+
+        setting.enter = setting_enter
+        setting.enter = setting_leave
+
+        search = Button(self.root, image=search_leave, relief='flat', command=Search(self.root).show)
         search.grid(row=0, column=2, sticky='ne', padx=(0, 45), pady=(4, 0))
+
+        search.bind('<Enter>', lambda _: search.config(image=search_enter))
+        search.bind('<Leave>', lambda _: search.config(image=search_leave))
+
+        search.enter = search_enter
+        search.enter = search_leave
 
         setting.bind('<ButtonPress-1>', lambda _: setting.config(relief='flat'))
         setting.bind('<ButtonRelease-1>', lambda _: setting.config(relief='flat'))
