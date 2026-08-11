@@ -103,7 +103,7 @@ class App:
         radio_button.grid(row=0, column=0)
         # self.__radio_handler(radio_button)
         parser.read('config.ini')
-        i = parser.getint('Parameters', 'max_sample_copies')
+        i = parser.getint('Parameters', 'max_sample_replicates')
         self.radio_button = Radiobutton(radio_frame, text=SAMPLE_COPY.get(i, f'{i}x'), variable=self.replicates, value=i)
         self.radio_button.grid(row=0, column=1)
         # self.__radio_handler(radio_button)
@@ -420,7 +420,7 @@ class App:
         temp_parser = TEMP_CONFIG[0]
 
         parser.read('config.ini')
-        #i = parser.getint('Parameters', 'max_sample_copies')
+        #i = parser.getint('Parameters', 'max_sample_replicates')
         #self.radio_button.config(text=SAMPLE_COPY.get(i, f'{i}x'), value=i)
 
 

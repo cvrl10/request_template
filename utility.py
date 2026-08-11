@@ -720,7 +720,7 @@ class Modal:
         destination = Path(parser.get('Path', 'directory')).resolve()
         self.entry.delete(0, tk.END)
 
-        file_input = parser.getint('Parameters', 'max_sample_copies')
+        file_input = parser.getint('Parameters', 'max_sample_replicates')
 
         if file_input > self.to:
             self.to = file_input
@@ -810,7 +810,7 @@ class Modal:
         use_max = self.use_max.get()
         config['General']['set'] = str(use_max)
         i = self.spinbox_value.get()
-        parser['Parameters']['max_sample_copies'] = str(i)
+        parser['Parameters']['max_sample_replicates'] = str(i)
         config['General']['value'] = str(i)
         config['General']['note(s)'] = self.note.get('1.0', 'end-1c')
 
@@ -920,7 +920,7 @@ class Modal:
         self.replicate = tk.Checkbutton(frame, variable=self.use_max, text='maximum sample replicates', bg='#FFFFFF')
         self.replicate.grid(row=4, column=0, sticky='nsew')
 
-        i = parser.getint('Parameters', 'max_sample_copies')
+        i = parser.getint('Parameters', 'max_sample_replicates')
         self.to = 100
         if i > self.to:
             self.to = i
@@ -1279,10 +1279,9 @@ root.mainloop() #'''
 class Search:
     def __init__(self, root: tk.Tk):
         self.window = tk.Toplevel(root)
-        self.window.overrideredirect(True)
         self.window.withdraw()
+        self.window.overrideredirect(True)
 
-        #self.window.transient(root)
         frame = tk.Frame(self.window, bg='black', padx=2, pady=2, width=45)
         frame.pack()
         self.search = tk.Entry(frame, bd=0, width=45)
@@ -1300,12 +1299,12 @@ class Search:
         self.search.bind('<Key>', self.__search)
 
         self.result = tk.Toplevel(root)#root
+        self.result.withdraw()
         self.result.iconbitmap(r'img/blank.ico')
         self.result.title('search result')
         self.result.geometry(f'700x400')
 
         self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.withdraw()))
-        self.result.withdraw()
         self.result.rowconfigure(0, weight=0)
         self.result.rowconfigure(1, weight=1)
         self.result.columnconfigure(0, weight=1)
