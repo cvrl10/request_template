@@ -1354,13 +1354,6 @@ class Search:
         if query != 'Search for digestion(s)':
             self.search.delete(0, tk.END)
             self.search.insert(0, 'Search for digestion(s)')
-        if not self.set_location:
-            root = self.window.master
-            root.update_idletasks()
-            x = root.winfo_x() + root.winfo_width() + 5
-            y = root.winfo_y()
-            self.result.geometry(f'+{x}+{y}')
-            self.set_location = True
 
         if self.window.state() == 'withdrawn':
             self.window.deiconify()
@@ -1378,7 +1371,15 @@ class Search:
         self.window.geometry(f'+{x}+{y}')
 
     def __search(self, event=None):
-        if event.keysym in ['space', 'BackSpace', 'Caps_Lock', 'Shift_L', 'Shift_R']:
+        if not self.set_location:
+            root = self.window.master
+            root.update_idletasks()
+            x = root.winfo_x() + root.winfo_width() + 5
+            y = root.winfo_y()
+            self.result.geometry(f'+{x}+{y}')
+            self.set_location = True
+
+        if event.keysym in ['space', 'Caps_Lock', 'Shift_L', 'Shift_R']:
             return
 
         parent = tk.Frame(self.result)
