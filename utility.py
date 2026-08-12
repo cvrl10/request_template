@@ -1228,6 +1228,7 @@ class Modal:
                     lambda event: canvas.itemconfig(window,
                                                     width=event.width))  # required b/c when frame grow, the canvas also grow the same size but not the window
 
+
         canvas.bind_all('<MouseWheel>', lambda event: canvas.yview_scroll(int(-event.delta / 120), 'units'))
 
         self.checkbox.config(command=self.__lot_checkbox_handler(lots))
@@ -1419,10 +1420,12 @@ class Search:
             files = sorted(files, key=lambda file: file.stat().st_mtime, reverse=True)
             #width = self.result.winfo_width()
             is_maximized = self.result.state() == 'zoomed'
-            for file in files:
-                text = Path(*file.parts) if is_maximized else Path(*file.parts[-3:])
+            for path in files:
+                if path.is_dir():
+                    continue
+                text = path if is_maximized else Path(*path.parts[-3:])
                 button = tk.Button(results_frame, text=text,
-                                   command=lambda _file=file: os.startfile(_file), relief='flat')
+                                   command=lambda _file=path: os.startfile(_file), relief='flat')
 
                 button.bind('<Enter>', lambda event: event.widget.config(relief='groove', bg='#FFFFE0'))
                 button.bind('<Leave>', lambda event: event.widget.config(bg='SystemButtonFace', relief='flat'))
