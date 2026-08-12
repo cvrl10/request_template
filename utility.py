@@ -1228,6 +1228,8 @@ class Modal:
                     lambda event: canvas.itemconfig(window,
                                                     width=event.width))  # required b/c when frame grow, the canvas also grow the same size but not the window
 
+        canvas.bind_all('<MouseWheel>', lambda event: canvas.yview_scroll(int(-event.delta / 120), 'units'))
+
         self.checkbox.config(command=self.__lot_checkbox_handler(lots))
         self.checkbox.invoke()
 
@@ -1278,6 +1280,7 @@ root.mainloop() #'''
 
 class Search:
     def __init__(self, root: tk.Tk):
+        self.set_location = False
         self.window = tk.Toplevel(root)
         self.window.withdraw()
         self.window.overrideredirect(True)
@@ -1289,13 +1292,11 @@ class Search:
         self.search.pack()
 
         self.search.insert(0, 'Search for digestion(s)')
-        #self.search.bind('<Return>', lambda _: self.__show())
         self.search.bind('<Button-1>',
                          lambda _: self.search.delete(0, tk.END) if self.search.get() == 'Search for digestion(s)' else None)
         self.search.bind('<FocusOut>',
                          lambda _: self.search.insert(0, 'Search for digestion(s)') if self.search.get() == '' else None)
         self.search.bind('<Leave>', lambda _: self.window.focus_set())
-        #self.search.bind('<Return>', lambda _: self.__search(_))
         self.search.bind('<Key>', self.__search)
 
         self.result = tk.Toplevel(root)#root
@@ -1303,6 +1304,7 @@ class Search:
         self.result.iconbitmap(r'img/blank.ico')
         self.result.title('search result')
         self.result.geometry(f'700x400')
+        self.result.minsize(700, 1)
 
         self.result.protocol('WM_DELETE_WINDOW', lambda: (self.result.withdraw(), self.window.withdraw()))
         self.result.rowconfigure(0, weight=0)
@@ -1315,7 +1317,7 @@ class Search:
         self.icon = tk.PhotoImage(file=r'img/search.png')
         search_button = tk.Button(self.result, image=self.icon, relief='flat', command=self.__askdirectory)
         search_button.grid(row=0, column=0, sticky='e', padx=(0, 50))
-        print('button_width=')#=22 after printing
+        #print('button_width=')#=22 after printing
         #print(search_button.winfo_width())
         #root.after(6000, lambda: print('size=', search_button.winfo_width()))
 
@@ -1325,6 +1327,10 @@ class Search:
         self.searching = None
 
         root.bind('<Configure>', lambda _: self.__place_searchbar())
+
+        event = tk.Event()
+        event.keysym = 'c'
+        #self.result.bind('<Configure>', lambda _: (self.__search(event) if self.result.state() == 'zoomed' else None))
 
     def __askdirectory(self):
         directory = filedialog.askdirectory(parent=self.result, title='Search Root Directory')
@@ -1344,7 +1350,18 @@ class Search:
         self.__search(event)#updating result_frame to show accurate search of new directory
 
     def show(self):
-        #self.__place_searchbar()
+        query = self.search.get()
+        if query != 'Search for digestion(s)':
+            self.search.delete(0, tk.END)
+            self.search.insert(0, 'Search for digestion(s)')
+        if not self.set_location:
+            root = self.window.master
+            root.update_idletasks()
+            x = root.winfo_x() + root.winfo_width() + 5
+            y = root.winfo_y()
+            self.result.geometry(f'+{x}+{y}')
+            self.set_location = True
+
         if self.window.state() == 'withdrawn':
             self.window.deiconify()
         else:
@@ -1361,9 +1378,9 @@ class Search:
         self.window.geometry(f'+{x}+{y}')
 
     def __search(self, event=None):
-        if event.keysym in ['space', 'Return', 'BackSpace', 'Caps_Lock', 'Shift_L', 'Shift_R']:
-            print('skipped')
+        if event.keysym in ['space', 'BackSpace', 'Caps_Lock', 'Shift_L', 'Shift_R']:
             return
+
         parent = tk.Frame(self.result)
         parent.grid(row=1, column=0, sticky='nsew')
 
@@ -1394,14 +1411,18 @@ class Search:
 
             path = parser.get('Path', 'search')
             path = Path(path)
-            pattern = self.search.get()
-            #print(pattern)
-            for file in path.rglob(f'*{pattern}*'):
-                if file.name.startswith('~$'):
-                    continue
-                button = tk.Button(results_frame, text=str(file),
+
+            patterns = re.split(r'\s+', self.search.get())
+            files = [file for file in path.rglob(f'*')
+                     if all(pattern.lower() in file.name.lower() and not file.name.startswith('~$') for pattern in patterns)]
+            files = sorted(files, key=lambda file: file.stat().st_mtime, reverse=True)
+            #width = self.result.winfo_width()
+            is_maximized = self.result.state() == 'zoomed'
+            for file in files:
+                text = Path(*file.parts) if is_maximized else Path(*file.parts[-3:])
+                button = tk.Button(results_frame, text=text,
                                    command=lambda _file=file: os.startfile(_file), relief='flat')
-                #button.bind('<Enter>', lambda event: event.widget.config(fg='#4a90e2', relief='groove'))
+
                 button.bind('<Enter>', lambda event: event.widget.config(relief='groove', bg='#FFFFE0'))
                 button.bind('<Leave>', lambda event: event.widget.config(bg='SystemButtonFace', relief='flat'))
                 #button.pack(side='top', anchor='w', fill='x')
@@ -1415,9 +1436,6 @@ class Search:
             self.result.after_cancel(self.searching)
 
         self.searching = self.result.after(0, _)
-
-
-
 
 
 
