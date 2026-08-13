@@ -418,16 +418,26 @@ class Template:
         self.__move_cursor(2)
         formula_page.write(self.row, 0, '%M+  [dried] = %M+/([1-(%LOI)/100])', self.italic_bold_format)
         self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%MO [dried] = %MO/([1-(%LOI)/100])', self.italic_bold_format)
-        self.__move_cursor(2)
+        for analyte in self.element_set:
+            compounds = self.COMPOUND.get(analyte.lower(), False)
+            if compounds:
+                for compound in compounds:
+                    formula_page.write(self.row, 0, f'%M{compound[0:1].upper()} [dried] = %M{compound[0:1].upper()}/([1-(%LOI)/100])', self.italic_bold_format)
+                    self.__move_cursor(2)
+        #formula_page.write(self.row, 0, '%MO [dried] = %MO/([1-(%LOI)/100])', self.italic_bold_format)
+        #self.__move_cursor(2)
 
     def __write_calculation(self, formula_page):
         formula_page.write(self.row, 0, 'ppm M+ = [conc.][volume][dilution]/[weight]', self.italic_bold_format)
         self.__move_cursor(2)
         formula_page.write(self.row, 0, '%M+ = [conc.][volume][dilution]/([weight]*10,000)', self.italic_bold_format)
         self.__move_cursor(2)
-        formula_page.write(self.row, 0, '%MO = [oxide factor]*%M+', self.italic_bold_format)
-        self.__move_cursor(2)
+        for analyte in self.element_set:
+            compounds = self.COMPOUND.get(analyte.lower(), False)
+            if compounds:
+                for compound in compounds:
+                    formula_page.write(self.row, 0, f'%M{compound[0:1].upper()} = [{compound} factor]*%M+', self.italic_bold_format)
+                    self.__move_cursor(2)
 
     def __write_titration(self, formula_page):
         formula_page.write(self.row, 0, '%Cr(VI) = (1.733[mL FAS][N FAS])/([weight])', self.italic_bold_format)

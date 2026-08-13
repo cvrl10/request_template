@@ -1416,13 +1416,14 @@ class Search:
 
             patterns = re.split(r'\s+', self.search.get())
             files = [file for file in path.rglob(f'*')
-                     if all(pattern.lower() in file.name.lower() and not file.name.startswith('~$') for pattern in patterns)]
+                     if all(pattern.lower() in file.stem.lower() and not file.name.startswith('~$') for pattern in patterns)]
             files = sorted(files, key=lambda file: file.stat().st_mtime, reverse=True)
             #width = self.result.winfo_width()
             is_maximized = self.result.state() == 'zoomed'
             for path in files:
                 if path.is_dir():
                     continue
+                print(path.stem)
                 text = path if is_maximized else Path(*path.parts[-3:])
                 button = tk.Button(results_frame, text=text,
                                    command=lambda _file=path: os.startfile(_file), relief='flat')
