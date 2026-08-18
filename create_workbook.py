@@ -420,7 +420,7 @@ class Template:
         self.__move_cursor(2)
         compounds = set()
         for analyte in self.element_set:
-            compounds.update(self.COMPOUND.get(analyte.lower(), False))
+            compounds.update(self.COMPOUND.get(analyte.lower(), []))
         compounds = list(compounds)
         compounds.sort()
         if compounds:
@@ -437,7 +437,7 @@ class Template:
         self.__move_cursor(2)
         compounds = set()
         for analyte in self.element_set:
-            compounds.update(self.COMPOUND.get(analyte.lower(), False))
+            compounds.update(self.COMPOUND.get(analyte.lower(), []))
         compounds = list(compounds)
         compounds.sort()
         if compounds:
