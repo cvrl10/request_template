@@ -82,6 +82,7 @@ class Template:
         TITRATION_ANALYSIS = parser.get('Analysis', 'titration')
         TITRATION_ANALYSIS = map(lambda s: s.lower(), re.split(r'[,\s]+', TITRATION_ANALYSIS))
         self.TITRATION_ANALYSIS = list(TITRATION_ANALYSIS)
+        self.BASE_LOAD = parser.get('Microwave Program', 'base_load')
 
         self.DEFAULT_ANALYSIS = parser.get('Analysis', 'default')
 
@@ -487,6 +488,11 @@ class Template:
         self.digestion_sheet.write(self.row, 0, 'Acid Cocktail', self.label_cell_format)
         self.digestion_sheet.merge_range(self.row, 1, self.row, 4, '', self.empty_cell_format)
         self.__move_cursor()
+
+        if self.BASE_LOAD:
+            self.digestion_sheet.write(self.row, 0, 'Base Load', self.label_cell_format)
+            self.digestion_sheet.merge_range(self.row, 1, self.row, 4, f'{self.BASE_LOAD}', self.empty_cell_format)
+            self.__move_cursor()
 
         self.digestion_sheet.write(self.row, 0, 'Rack', self.label_cell_format)
         self.digestion_sheet.merge_range(self.row, 1, self.row, 4, '', self.empty_cell_format_left)
