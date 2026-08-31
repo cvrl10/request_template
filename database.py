@@ -33,7 +33,8 @@ def query_database(elements, include_expired=False):
                     VALUES (?, ?, ?, ?);''', (record['manufacturer'], record['element'], record['lot'],
                                                         datetime.strptime(record['expiration'], date_format).strftime('%Y-%m-%d')))
                 except (ValueError, sqlite3.IntegrityError) as e:
-                    print(e)
+                    pass
+                    #print(e)
 
         conn.commit()
         placeholders = ', '.join('?' for _ in elements)

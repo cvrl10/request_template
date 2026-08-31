@@ -6,8 +6,8 @@ from database import query_database
 import sys
 
 file = open('stdout_err.log', mode='w')
-sys.stdout = file
-sys.stderr = file
+#sys.stdout = file
+#sys.stderr = file
 
 EMPTY_CELL = '#FFFFCC'
 WEIGHT_COLUMN = 6
@@ -18,10 +18,10 @@ parser = ConfigParser()
 
 
 class Template:
-    def __init__(self, wb, request, replicates, loi, font_color):
+    def __init__(self, wb, request, replicates, tag, loi, font_color):
         self.__config()
         self.loi = loi
-        self.sort = False
+        self.tag = tag
         self.workbook = wb
         self.request_id = request
         self.COPY = replicates
@@ -61,6 +61,7 @@ class Template:
         self._note = ''
 
         self.element_set = set()
+        self.samples = []
 
     def add_note(self, note: str):
         self._note = note
@@ -99,26 +100,30 @@ class Template:
         self.CONC_DECIMAL = parser.getint('Decimal', 'concentration')
         self.TITRANT_VOL = parser.getint('Decimal', 'titrant_volume')
         self.TITRANT_RESULT = parser.getint('Decimal', 'titrant_result')
-        self.LIMS = parser.getint('Decimal', 'lims')
+        self.LIMS = parser.getint('Decimal', 'LIMS')
         self.SPACING = 2
 
-    def __create_analysis_table(self, worksheet, element, sample):
-        analysis = self.ANALYSIS.get(element.lower(), f'{self.DEFAULT_ANALYSIS} analysis')
-        analysis = f'{element} {analysis}'
+    def __create_analysis_table(self, worksheet, analyte, sample, index):
+        untagged = sample.get_analyte(analyte)
+        analysis = self.ANALYSIS.get(untagged.lower(), f'{self.DEFAULT_ANALYSIS} analysis')
+        analyte =  analyte if self.tag else untagged
+        analysis = f'{analyte} {analysis}'
         worksheet.merge_range(self.row, 0, self.row, 1, analysis, self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
         worksheet.write(self.row, 1, 'Dilution', self.label_cell_format)
         worksheet.write(self.row, 2, 'conc. [mg/L]', self.label_cell_format)
         worksheet.set_column(2, 2, len('conc. [mg/L]'))
-        worksheet.write(self.row, 3, f'{element}_ppm{self.append}', self.label_cell_format)
+        worksheet.write(self.row, 3, f'{analyte}_ppm{self.append}', self.label_cell_format)
         worksheet.set_column(self.row, 3, len('#DIV/0!'))
-        worksheet.write(self.row, 4, f'%{element}{self.append}', self.label_cell_format)
+        worksheet.write(self.row, 4, f'%{analyte}{self.append}', self.label_cell_format)
         self.__move_cursor()
 
         start_row = self.row
-        for i in range(1, self.COPY+1):
-            worksheet.write(self.row, 0, f'{sample}_{i}', self.label_cell_format)
+        start = 1 + index * self.COPY
+        end = 1 + (index + 1) * self.COPY
+        for i in range(start, end):
+            worksheet.write(self.row, 0, f'{sample.id}_{i}', self.label_cell_format)
             worksheet.write(self.row, 1, '''="1/1"''', self.empty_cell_format)
             worksheet.write(self.row, 2, '', self.conc_cell)
             worksheet.write(self.row, 3, '', self.empty_cell_format)
@@ -126,33 +131,33 @@ class Template:
             self.__move_cursor()
         end_row = self.row-1
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{analyte.lower()} result:', self.result_string_format)
         ppm_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 3)
         ppm_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 3)
         ppm_average = f'=AVERAGE({ppm_start}:{ppm_end})'
         worksheet.write_formula(self.row, 2, ppm_average, self.reported_ppm_format)
 
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} result:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{analyte.lower()} result:', self.result_string_format)
         percent_start = xlsxwriter.utility.xl_rowcol_to_cell(start_row, 4)
         percent_end = xlsxwriter.utility.xl_rowcol_to_cell(end_row, 4)
         percent_average = f'=AVERAGE({percent_start}:{percent_end})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
 
-        compounds = self.COMPOUND.get(element.lower(), False)
+        compounds = self.COMPOUND.get(analyte.lower(), False)
         if compounds:
             for compound in sorted(compounds):
                 self.__move_cursor()
-                worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} {compound} factor:', self.result_string_format)
+                worksheet.merge_range(self.row, 0, self.row, 1, f'{analyte.lower()} {compound} factor:', self.result_string_format)
                 worksheet.write(self.row, 2, '', self.workbook.add_format({'align': 'left'}))
                 compound_factor = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
                 compound_average = f'=AVERAGE({percent_start}:{percent_end})*({compound_factor})'
                 self.__move_cursor()
-                worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} {compound} result:', self.result_string_format)
+                worksheet.merge_range(self.row, 0, self.row, 1, f'{analyte.lower()} {compound} result:', self.result_string_format)
                 worksheet.write_formula(self.row, 2, compound_average, self.reported_percent_format)
 
         self.__move_cursor()
-        worksheet.merge_range(self.row, 0, self.row, 1, f'{element.lower()} lot:', self.result_string_format)
+        worksheet.merge_range(self.row, 0, self.row, 1, f'{analyte.lower()} lot:', self.result_string_format)
         worksheet.merge_range(self.row, 2, self.row, 5, '', self.workbook.add_format({'italic': True}))
         merge_start = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         merge_finish = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 5)
@@ -163,37 +168,64 @@ class Template:
         lot_address = xlsxwriter.utility.xl_rowcol_to_cell(self.row, 2)
         self.__move_cursor(self.SPACING)
 
-        return {'element': element.lower(), 'destination_address': lot_address}
+        #sample = self.Sample.get(sample)
+        #analyte = sample.get_analyte(analyte)
+        return {'element': untagged.lower(), 'destination_address': lot_address}
 
-    def sort_analytes(self):
-    #def sort_analytes(self, boolean: bool):
-        #self.sort = bool(int(boolean))
-        self.sort = True
 
     def create_analysis_worksheet(self, include_expired=False):
-        lot_info = query_database(list(self.element_set), include_expired)
-        for sample in sorted(self.sample_to_elements):
+        print('Here before calling the class method\n\n\n\n')
+        analytes = self.Sample.analyte_set()
+        print()
+        print('Here                                                     getting lot information haha')
+        lot_info = query_database(list(analytes), include_expired)
+        print(f'sample_to_elements: {self.sample_to_elements}')
+        print(self.sample_to_elements)
+
+        #for sample in sorted(self.sample_to_elements):
+        for sample in sorted(self.Sample.samples):
+            print(type(sample))
+            print('Here')
+            #sample = next(s for s in self.samples if s.id == sample)
+            sample = self.Sample.get(sample)
             lots = []
-            worksheet = self.workbook.add_worksheet(str(sample))
+            worksheet = self.workbook.add_worksheet(str(sample.id))
             self.__create_header(worksheet)
             correction_factor = 1
             if self.loi:
-                correction_factor = self.__create_loi_table(sample, worksheet)
+                correction_factor = self.__create_loi_table(sample.id, worksheet)
 
-            if self.__contains_chrome_3(self.sample_to_elements[sample]):
-                cr2o3, cr6 = self.__edit_list(self.sample_to_elements[sample])
-
+            #sample_obj = self.sample_to_elements[sample]
+            #analytes = sample_obj.analytes
+            analytes = sample.analytes
+            print(f'analytes: {sample.analytes}')
+            if self.__contains_chrome_3(analytes):
+                #s = self.sample_to_elements[sample]
+                cr2o3, cr6 = self.__edit_list(analytes)
+            print(type(sample))
+            print(f'is this correct: {sample}')
+            print(f'{sample} contains: {sample.analytes}')
+            '''
             if self.sort:
-                analytes = sorted(self.sample_to_elements[sample])
+                #sample_obj = self.sample_to_elements[sample]
+                #analytes = sorted(sample_obj.analytes)
+                print(type(sample))
+                analytes = sample.analytes
             else:
-                analytes = self.sample_to_elements[sample]
+                #analytes = sample_obj.analytes
+                analytes = sample.analytes'''
 
             for element in analytes:
+                index = sample.get_index(element)
+                print(f'analytes: {element}')
                 if element.upper() == 'LOI':
                     worksheet.autofit()
                     continue
                 #print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
-                digestion_object = self.element_to_digestion[element]
+                print(f'analytes in {sample}: {sample.analytes}')
+                print(f'{sample} looking for {element}')
+                #digestion_object = self.element_to_digestion[element]
+                digestion_object = sample[element]
                 if self.__is_chrome_3(element.lower()):
                     self.__create_titration_table_cr3(worksheet, element, sample, cr2o3, cr6, correction_factor)
                     worksheet.autofit()
@@ -207,12 +239,12 @@ class Template:
                     worksheet.autofit()
                     continue
                 move_to = self.row + 2
-                lot = self.__create_analysis_table(worksheet, element, sample)
+                lot = self.__create_analysis_table(worksheet, element, sample, index)
                 worksheet.autofit()
                 lots.append(lot)
 
                 #remeber keys/elements should be unique if not throw exception
-                for sample_id in [f'{sample}_{i}'for i in range(1, self.COPY + 1)]:
+                for sample_id in [f'{sample.id}_{i}'for i in range(1+index*self.COPY, 1 + (index+1)*self.COPY)]:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
                     move_to += 1
 
@@ -516,8 +548,29 @@ class Template:
         self.__move_cursor()
 
         create_microwave_program()
-        microwave = self.Digestion(name='microwave', elements=elements, format=self.format)
-        self.__create_sample_row(samples, microwave, volume='')
+        analyte_set = set()
+        i = []
+        for sample in samples:
+            if not self.Sample.get(sample):
+                s = self.Sample(_id=sample)
+                s.add_analytes(analytes=elements)
+                i.append(s.get_replicate_index(elements))
+                analyte_set |= s.index_analytes(elements)#not necessary because of the sample in this set have same element
+            else:
+                s = self.Sample.get(sample)
+                s.add_analytes(analytes=elements)
+                i.append(s.get_replicate_index(elements))
+                analyte_set |= s.index_analytes(elements)
+
+        i = max(i)
+        analytes = list(analyte_set)
+        analytes.sort()
+
+        microwave = self.Digestion(name='microwave', elements=analytes, format=self.format)
+        self.Sample.update(samples=samples, analytes=analytes)#updates all the samples of this set of analytes
+        self.Sample.digest(samples=samples, digestion=microwave)#add this digestion object to this set of samples
+
+        self.__create_sample_row(samples, i, microwave, volume='')
         self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
 
@@ -561,8 +614,42 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        katanax = self.Digestion(name='katanax', elements=elements, format=self.format)
-        self.__create_sample_row(samples, katanax, volume=250)
+        analyte_set = set()
+        i = []
+        for sample in samples:
+            if not self.Sample.get(sample):
+                s = self.Sample(_id=sample)
+                s.add_analytes(analytes=elements)
+                i.append(s.get_replicate_index(elements))
+                analyte_set |= s.index_analytes(elements)#not necessary because of the sample in this set have same element
+                print(f'inside if: {s} address: {id(s)}')
+                print(f'inside if analyte_set: {analyte_set}')
+                print()
+            else:
+                s = self.Sample.get(sample)
+                s.add_analytes(analytes=elements)
+                i.append(s.get_replicate_index(elements))
+                analyte_set |= s.index_analytes(elements)
+                #print(f'{analyte_set} in else:')
+                print(f'inside else: {s} address: {id(s)}')
+                print(f'inside else analyte_set: {analyte_set}')
+                print()
+
+
+        i = max(i)
+        print(f'\nadding analytes {elements}, with start replicate index = {i}\n')
+        for sample in samples:#delete this
+            s = self.Sample.get(sample)
+            print(f'                                    CURRENT VIEW OF {s}')
+            print(s.digestion_count)
+        analytes = list(analyte_set)
+        analytes.sort()
+        print(f'Analytes passed to digestion object                                  : {analytes}')
+        katanax = self.Digestion(name='katanax', elements=analytes, format=self.format)
+        self.Sample.update(samples=samples, analytes=analytes)#updates all the samples of this set of analytes
+        self.Sample.digest(samples=samples, digestion=katanax)#add this digestion object to this set of samples
+
+        self.__create_sample_row(samples, i, katanax, volume=250)
         self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
 
@@ -570,25 +657,17 @@ class Template:
     def __move_cursor(self, spacing=1):
         self.row += spacing
 
-    def __create_sample_row(self, samples, digestion, volume=250):
+    def __create_sample_row(self, samples, index, digestion, volume=250):
         self.digestion_sheet.write(self.row, 0, 'sample(s)', self.label_cell_format)
         self.digestion_sheet.write(self.row, 1, 'weight (g)', self.label_cell_format)
         self.digestion_sheet.write(self.row, 2, 'volume (mL)', self.label_cell_format)
         self.__move_cursor()
-        #print(f'{digestion.name}')
-        for sample in samples:
-            if sample not in self.sample_to_elements:
-                self.sample_to_elements[sample] = digestion.elements.copy()  # this is fine because I've taken the consideration that there won't be any empty list
-                #print(self.sample_to_elements)
-                for element in digestion.elements:
-                    '''mapping each element to its Digestion object, haven't tested what happen if same element from different digestion will map'''
-                    self.element_to_digestion[element] = digestion
-            else:
-                self.sample_to_elements[sample].extend(digestion.elements.copy())
-                for element in digestion.elements:
-                    self.element_to_digestion[element] = digestion
 
-            for i in range(1, self.COPY+1):
+        for sample in samples:
+
+            start = 1+index*self.COPY
+            end = 1 + (index+1)*self.COPY
+            for i in range(start, end):
                 sample_id = f'{sample}_{i}'
                 self.digestion_sheet.write(self.row, 0, sample_id, self.label_cell_format)
                 self.digestion_sheet.write(self.row, 1, '', self.weight_cell)
@@ -596,6 +675,145 @@ class Template:
 
                 digestion.store_data(sample_id, self.row)
                 self.__move_cursor()
+
+    def close(self):
+        self.Sample.close()
+
+    class Sample:
+        samples = {}
+
+        @classmethod
+        def close(cls):
+            cls.samples.clear()
+
+        @classmethod
+        def get(cls, _id):
+            #print(id(cls.samples[_id]))
+            return cls.samples.get(_id, None)
+
+        @classmethod
+        def update(cls, samples:list, analytes:list):
+            for sample in samples:
+                cls.samples.get(sample).analytes = analytes
+
+        @classmethod
+        def digest(cls, samples: list, digestion):
+            '''
+            Class method that add a digestion object to a set samples.
+            :param samples:
+            :param digestion:
+            :return:
+            '''
+            for sample in samples:
+                cls.samples.get(sample).add_digestion(digestion=digestion)
+
+        @classmethod
+        def analyte_set(cls):
+            analytes = set()
+            print(cls.samples)
+            for sample in cls.samples.values():
+                print(type(sample))
+                print(f'adding to lot tracking: {[sample.get_analyte(analyte) for analyte in sample.analytes]}')
+                analytes.update([sample.get_analyte(analyte) for analyte in sample.analytes])
+            print('\n\n')
+            print(f'analyte list: {analytes}')
+            print('class varaiable:')
+            return analytes
+
+        def get_index(self, analyte: str):
+            i = analyte.split('_')[1]
+            return int(i)
+
+        def get_analyte(self, analyte: str):
+            return analyte.split('_')[0]
+
+        def __init__(self, _id):
+            self.id = _id
+            self.digestion_count = {}
+            self._analytes = []
+            self.samples[_id] = self
+            self.digestions = {}
+
+        def add_analyte(self, analyte):
+            if analyte in self:
+                self.digestion_count[analyte] = f'{int(self.digestion_count[analyte]) + 1}'
+            else:
+                self.digestion_count[analyte] = '0'
+
+            print(f'{analyte}: {self.digestion_count[analyte]}')
+            print(f'inside add_analyte: {analyte}')
+            print(f'list: {self._analytes}')
+
+        def add_analytes(self, analytes):
+            for analyte in analytes:
+                self.add_analyte(analyte=analyte)
+
+        def index_analytes(self, analytes: list):
+            self.__set_replicate_index(analytes=analytes)
+            print(f'all the sanples: {self.samples}')
+            print(f'address of {self}:{id(self)}')
+            #print(f'inside index_set: {analytes}')
+            print(f'inside index_set for {self}: {self.digestion_count}')
+            count = map(lambda analyte: int(self.digestion_count[analyte]), analytes)
+            print(f'analytes: {analytes}')
+            print(f'count: {count}')
+            i = max(count)
+            indexed = {f'{analyte}_{i}' for analyte in analytes}
+            #self._analytes.update(indexed)
+            print(f'inside index_set: {self._analytes}')
+            return indexed
+
+        def __set_replicate_index(self, analytes):
+            '''
+
+            :param analytes:
+            :return: None, sets the index for this set of analytes. Corresponds to the analyte in the set with the highest count.
+            '''
+            i = self.get_replicate_index(analytes=analytes)
+            for analyte in analytes:
+                self.digestion_count[analyte] = i
+
+        def get_replicate_index(self, analytes: list):
+            '''
+
+            :param analytes:
+            :return: the start index for this set of analyte replicates. Corresponds to the analyte in the set with the highest count.
+            '''
+            print('inside get_replicate_index')
+            print(f'paraemter: {analytes}')
+            count = map(lambda analyte: int(self.digestion_count[analyte]), analytes)
+            i = map(lambda analyte: int(self.digestion_count[analyte]), analytes)
+            return max(count)
+
+        @property
+        def analytes(self):
+            return sorted(self._analytes)
+
+        @analytes.setter
+        def analytes(self, analytes):
+            self._analytes.extend(analytes)
+
+        def __contains__(self, analyte):
+            return analyte in self.digestion_count
+
+        def __lt__(self, sample):
+            return self.id < sample.id
+
+        def __eq__(self, sample_id: str):
+            return self.id == sample_id
+
+        def __repr__(self):
+            return f'Sample({self.id})'
+
+        def add_digestion(self, digestion):
+            for analyte in digestion.elements.copy():
+                self[analyte] = digestion
+
+        def __getitem__(self, key):
+            return self.digestions[key]
+
+        def __setitem__(self, key, value):
+            self.digestions[key] = value
 
     class Digestion:
         '''
@@ -678,4 +896,28 @@ class Template:
         def __repr__(self):
             return str(self)
 
+#'''
+replicates = 2
+loi = True
+color = 'red'
+workbook = xlsxwriter.Workbook('TEST.xlsx')
+template = Template(workbook, request='TEST', replicates=replicates, tag=False, loi=loi, font_color=color)
+
+analytes = ['Ca', 'Cu']
+samples = ['200120001', '200120002']
+
+#template.add_microwave(analytes, samples)
+
+template.add_katanax(analytes, samples)
+template.add_katanax(['Cu', 'Al'], ['200120002'])
+template.add_katanax(['Al'], ['200120002'])
+template.add_katanax(['NH3'], ['200120003'])
+
+#template.add_microwave(['Cu'], ['200120002'])
+template.add_katanax(['Cu'], ['200120002'])
+
+template.create_analysis_worksheet(include_expired=False)
+workbook.close()
+import os
+os.startfile('TEST.xlsx')#'''
 

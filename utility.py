@@ -428,8 +428,6 @@ class MenubuttonTooltip(Tooltip):
 
 
 class PeriodicTable:
-    __sort = True
-
     def __init__(self, root):
         self.root = root
         self.location = False
@@ -468,15 +466,10 @@ class PeriodicTable:
         analytes = self.selected[key].copy()
 
         analytes.extend(COMPOUNDS)
-        if self.__sort:
-            analytes.sort()
+        analytes.sort()
 
         textbox.insert(0, ', '.join(analytes))
         self.hide()
-
-    @classmethod
-    def sort(cls, sort):
-        cls.__sort = sort
 
     def hide(self):
         self.window.withdraw()
@@ -547,8 +540,7 @@ class PeriodicTable:
                     selected.remove(button.cget('text'))
                 #
                 current_entry = list(current_entry)
-                if self.__sort:
-                    current_entry.sort()  #
+                current_entry.sort()  #
                 textbox.delete(0, tk.END)  #
                 textbox.insert(0, ', '.join(current_entry))  #
                 #
@@ -768,7 +760,7 @@ class Modal:
 
     def __cancel(self):
         inmemory_config = self.config[0]
-        sort = inmemory_config.get('General', 'sort')
+        tag = inmemory_config.get('General', 'tag')
         color = inmemory_config.get('General', 'calculation')
         use_max = inmemory_config.getint('General', 'set')
         value = inmemory_config.getint('General', 'value')
@@ -779,7 +771,7 @@ class Modal:
         expired = inmemory_config.getint('Database', 'expired')
         directory = inmemory_config.get('Save', 'directory')
 
-        self.sort_var.set(int(sort))
+        self.tag_var.set(int(tag))
         self.calc_var.set(color)
         self.use_max.set(use_max)
         self.spinbox_value.set(value)
@@ -805,7 +797,7 @@ class Modal:
         config = ConfigParser()
 
         config['General'] = {}
-        config['General']['sort'] = str(self.sort_var.get())
+        config['General']['tag'] = str(self.tag_var.get())
         config['General']['calculation'] = str(self.calc_var.get())
         use_max = self.use_max.get()
         config['General']['set'] = str(use_max)
@@ -827,8 +819,6 @@ class Modal:
         config['Database'] = {}
         config['Database']['expired'] = str(self.expired.get())
 
-        sort = self.sort_var.get()
-        PeriodicTable.sort(sort=sort)
 
         radio, replicate = self.config[1]
         radio.config(text=SAMPLE_COPY.get(i, f'{i}x'), value=i)
@@ -907,8 +897,8 @@ class Modal:
 
         self.__createheader(frame, text='Workbook options', colspan=2)
 
-        self.sort_var = tk.IntVar(value=1)
-        checkbox = tk.Checkbutton(frame, variable=self.sort_var, text='sort analyte(s)', bg='#FFFFFF')
+        self.tag_var = tk.IntVar(value=0)
+        checkbox = tk.Checkbutton(frame, variable=self.tag_var, text='tag analyte(s)', bg='#FFFFFF')
         checkbox.grid(row=2, column=0, sticky='nw')
 
         self.calc_var = tk.StringVar(value='#FFFFFF')

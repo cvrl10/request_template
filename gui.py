@@ -435,13 +435,13 @@ class App:
 
         print(f'path={url}')
         color = temp_parser.get('General', 'calculation')
-        sort = bool(temp_parser.getint('General', 'sort'))
+        tag = bool(temp_parser.getint('General', 'tag'))
         include_expired = temp_parser.getint('Database', 'expired')
 
         note = temp_parser.get('General', 'note(s)')
 
         workbook = xlsxwriter.Workbook(url)
-        template = Template(workbook, request=request, replicates=replicates, loi=loi, font_color=color)
+        template = Template(workbook, request=request, replicates=replicates, tag=tag, loi=loi, font_color=color)
 
         for elements, samples in microwave:
             template.add_microwave(elements, samples)
@@ -452,11 +452,10 @@ class App:
         for elements, samples in hotplate:
             template.add_hotplate(elements, samples)
 
-        if sort:
-            template.sort_analytes()
 
         template.add_note(note=note)
         template.create_analysis_worksheet(include_expired=include_expired)
+        template.close()
         workbook.close()
         os.startfile(url)
 
