@@ -18,13 +18,13 @@ parser = ConfigParser()
 
 
 class Template:
-    def __init__(self, wb, request, replicates, tag, loi, font_color):
+    def __init__(self, wb, request, replicate, tag, loi, font_color):
         self.__config()
         self.loi = loi
         self.tag = tag
         self.workbook = wb
         self.request_id = request
-        self.COPY = replicates
+        self.replicate = replicate
         self.row = 0
         self.digestion_sheet = wb.add_worksheet('digestion_page')
 
@@ -120,8 +120,8 @@ class Template:
         self.__move_cursor()
 
         start_row = self.row
-        start = 1 + index * self.COPY
-        end = 1 + (index + 1) * self.COPY
+        start = 1 + index * self.replicate
+        end = 1 + (index + 1) * self.replicate
         for i in range(start, end):
             worksheet.write(self.row, 0, f'{sample.id}_{i}', self.label_cell_format)
             worksheet.write(self.row, 1, '''="1/1"''', self.empty_cell_format)
@@ -196,8 +196,6 @@ class Template:
                 correction_factor = self.__create_loi_table(sample.id, worksheet)
 
             #sample_obj = self.sample_to_elements[sample]
-            #analytes = sample_obj.analytes
-            analytes = sample.analytes
             print(f'analytes: {sample.analytes}')
             if self.__contains_chrome_3(analytes):
                 #s = self.sample_to_elements[sample]
@@ -205,17 +203,8 @@ class Template:
             print(type(sample))
             print(f'is this correct: {sample}')
             print(f'{sample} contains: {sample.analytes}')
-            '''
-            if self.sort:
-                #sample_obj = self.sample_to_elements[sample]
-                #analytes = sorted(sample_obj.analytes)
-                print(type(sample))
-                analytes = sample.analytes
-            else:
-                #analytes = sample_obj.analytes
-                analytes = sample.analytes'''
 
-            for element in analytes:
+            for element in sample:
                 index = sample.get_index(element)
                 print(f'analytes: {element}')
                 if element.upper() == 'LOI':
@@ -233,7 +222,7 @@ class Template:
                 if element.lower() in self.TITRATION_ANALYSIS:
                     move_to = self.row + 2
                     self.__create_titration_table(worksheet, element, sample, correction_factor)
-                    for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+                    for sample_id in [f'{sample}_{i}' for i in range(1, self.replicate + 1)]:
                         digestion_object.write_titration(move_to, sample_id, worksheet)
                         move_to += 1
                     worksheet.autofit()
@@ -244,7 +233,7 @@ class Template:
                 lots.append(lot)
 
                 #remeber keys/elements should be unique if not throw exception
-                for sample_id in [f'{sample.id}_{i}'for i in range(1+index*self.COPY, 1 + (index+1)*self.COPY)]:
+                for sample_id in [f'{sample.id}_{i}'for i in range(1+index*self.replicate, 1 + (index+1)*self.replicate)]:
                     digestion_object.write(move_to, sample_id, worksheet, correction_factor)
                     move_to += 1
 
@@ -275,7 +264,7 @@ class Template:
         return list(filter(self.__is_chrome_3, element_list))
 
     def __is_chrome_3(self, element):
-        return element.lower() in ['criii', 'cr3', 'cr3+', 'cr_3+', 'cr_three', 'crthree']
+        return element.lower() in ['criii', 'cr3', 'cr3+', 'crthree']
 
     def __edit_list(self, sample_to_elements_list):
         skip_list = []
@@ -293,14 +282,14 @@ class Template:
         digestion_object = self.element_to_digestion[cr2O3]
         move_to = self.row + 2
         total_cell = self.__create_titration_table(worksheet, cr2O3, sample, correction_factor)
-        for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+        for sample_id in [f'{sample}_{i}' for i in range(1, self.replicate + 1)]:
             digestion_object.write_titration(move_to, sample_id, worksheet)
             move_to += 1
 
         digestion_object = self.element_to_digestion[cr6]
         move_to = self.row + 2
         cr6_cell = self.__create_titration_table(worksheet, cr6, sample, correction_factor)
-        for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+        for sample_id in [f'{sample}_{i}' for i in range(1, self.replicate + 1)]:
             digestion_object.write_titration(move_to, sample_id, worksheet)
             move_to += 1
 
@@ -343,7 +332,7 @@ class Template:
         worksheet.write(self.row, 3, f'%{element}{self.append}', self.label_cell_format)
         self.__move_cursor()
         start_row = self.row
-        for sample_id in [f'{sample}_{i}' for i in range(1, self.COPY + 1)]:
+        for sample_id in [f'{sample}_{i}' for i in range(1, self.replicate + 1)]:
             weight_cell = xlsxwriter.utility.xl_rowcol_to_cell(self.row, WEIGHT_COLUMN)
             worksheet.write(self.row, 0, f'{sample_id}', self.label_cell_format)
             worksheet.write_formula(self.row, 1, weight_cell, self.weight_cell)
@@ -460,8 +449,6 @@ class Template:
             for compound in compounds:
                 formula_page.write(self.row, 0, f'%M{compound[0:1].upper()} [dried] = %M{compound[0:1].upper()}/([1-(%LOI)/100])', self.italic_bold_format)
                 self.__move_cursor(2)
-        #formula_page.write(self.row, 0, '%MO [dried] = %MO/([1-(%LOI)/100])', self.italic_bold_format)
-        #self.__move_cursor(2)
 
     def __write_calculation(self, formula_page):
         formula_page.write(self.row, 0, 'ppm M+ = [conc.][volume][dilution]/[weight]', self.italic_bold_format)
@@ -555,7 +542,7 @@ class Template:
                 s = self.Sample(_id=sample)
                 s.add_analytes(analytes=elements)
                 i.append(s.get_replicate_index(elements))
-                analyte_set |= s.index_analytes(elements)#not necessary because of the sample in this set have same element
+                analyte_set |= s.index_analytes(elements)
             else:
                 s = self.Sample.get(sample)
                 s.add_analytes(analytes=elements)
@@ -567,8 +554,8 @@ class Template:
         analytes.sort()
 
         microwave = self.Digestion(name='microwave', elements=analytes, format=self.format)
-        self.Sample.update(samples=samples, analytes=analytes)#updates all the samples of this set of analytes
-        self.Sample.digest(samples=samples, digestion=microwave)#add this digestion object to this set of samples
+        self.Sample.update(samples=samples, analytes=analytes)
+        self.Sample.digest(samples=samples, digestion=microwave)
 
         self.__create_sample_row(samples, i, microwave, volume='')
         self.__move_cursor(self.SPACING)
@@ -591,8 +578,29 @@ class Template:
         self.digestion_sheet.merge_range(self.row, 1, self.row, 2, '', self.empty_cell_format)
         self.__move_cursor()
 
-        hotplate = self.Digestion(name='hotplate', elements=elements, format=self.format)
-        self.__create_sample_row(samples, hotplate, volume='')
+        analyte_set = set()
+        i = []
+        for sample in samples:
+            if not self.Sample.get(sample):
+                s = self.Sample(_id=sample)
+                s.add_analytes(analytes=elements)
+                i.append(s.get_replicate_index(elements))
+                analyte_set |= s.index_analytes(elements)
+            else:
+                s = self.Sample.get(sample)
+                s.add_analytes(analytes=elements)
+                i.append(s.get_replicate_index(elements))
+                analyte_set |= s.index_analytes(elements)
+
+        i = max(i)
+        analytes = list(analyte_set)
+        analytes.sort()
+
+        hotplate = self.Digestion(name='hotplate', elements=analytes, format=self.format)
+        self.Sample.update(samples=samples, analytes=analytes)
+        self.Sample.digest(samples=samples, digestion=hotplate)
+
+        self.__create_sample_row(samples, i, hotplate, volume='')
         self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
 
@@ -635,7 +643,6 @@ class Template:
                 print(f'inside else analyte_set: {analyte_set}')
                 print()
 
-
         i = max(i)
         print(f'\nadding analytes {elements}, with start replicate index = {i}\n')
         for sample in samples:#delete this
@@ -653,7 +660,6 @@ class Template:
         self.__move_cursor(self.SPACING)
         self.digestion_sheet.autofit()
 
-
     def __move_cursor(self, spacing=1):
         self.row += spacing
 
@@ -665,8 +671,8 @@ class Template:
 
         for sample in samples:
 
-            start = 1+index*self.COPY
-            end = 1 + (index+1)*self.COPY
+            start = 1+index*self.replicate
+            end = 1 + (index+1)*self.replicate
             for i in range(start, end):
                 sample_id = f'{sample}_{i}'
                 self.digestion_sheet.write(self.row, 0, sample_id, self.label_cell_format)
@@ -688,7 +694,6 @@ class Template:
 
         @classmethod
         def get(cls, _id):
-            #print(id(cls.samples[_id]))
             return cls.samples.get(_id, None)
 
         @classmethod
@@ -736,9 +741,9 @@ class Template:
 
         def add_analyte(self, analyte):
             if analyte in self:
-                self.digestion_count[analyte] = f'{int(self.digestion_count[analyte]) + 1}'
+                self.digestion_count[analyte] += 1
             else:
-                self.digestion_count[analyte] = '0'
+                self.digestion_count[analyte] = 0
 
             print(f'{analyte}: {self.digestion_count[analyte]}')
             print(f'inside add_analyte: {analyte}')
@@ -752,14 +757,12 @@ class Template:
             self.__set_replicate_index(analytes=analytes)
             print(f'all the sanples: {self.samples}')
             print(f'address of {self}:{id(self)}')
-            #print(f'inside index_set: {analytes}')
             print(f'inside index_set for {self}: {self.digestion_count}')
-            count = map(lambda analyte: int(self.digestion_count[analyte]), analytes)
+            count = map(lambda analyte: self.digestion_count[analyte], analytes)
             print(f'analytes: {analytes}')
             print(f'count: {count}')
             i = max(count)
             indexed = {f'{analyte}_{i}' for analyte in analytes}
-            #self._analytes.update(indexed)
             print(f'inside index_set: {self._analytes}')
             return indexed
 
@@ -779,10 +782,7 @@ class Template:
             :param analytes:
             :return: the start index for this set of analyte replicates. Corresponds to the analyte in the set with the highest count.
             '''
-            print('inside get_replicate_index')
-            print(f'paraemter: {analytes}')
-            count = map(lambda analyte: int(self.digestion_count[analyte]), analytes)
-            i = map(lambda analyte: int(self.digestion_count[analyte]), analytes)
+            count = map(lambda analyte: self.digestion_count[analyte], analytes)
             return max(count)
 
         @property
@@ -792,6 +792,9 @@ class Template:
         @analytes.setter
         def analytes(self, analytes):
             self._analytes.extend(analytes)
+
+        def __iter__(self):
+            return iter(self.analytes)
 
         def __contains__(self, analyte):
             return analyte in self.digestion_count
@@ -809,11 +812,11 @@ class Template:
             for analyte in digestion.elements.copy():
                 self[analyte] = digestion
 
-        def __getitem__(self, key):
-            return self.digestions[key]
+        def __getitem__(self, analyte):
+            return self.digestions[analyte]
 
-        def __setitem__(self, key, value):
-            self.digestions[key] = value
+        def __setitem__(self, analyte, digestion):
+            self.digestions[analyte] = digestion
 
     class Digestion:
         '''
@@ -896,12 +899,12 @@ class Template:
         def __repr__(self):
             return str(self)
 
-#'''
-replicates = 2
+'''
+replicate = 2
 loi = True
 color = 'red'
 workbook = xlsxwriter.Workbook('TEST.xlsx')
-template = Template(workbook, request='TEST', replicates=replicates, tag=False, loi=loi, font_color=color)
+template = Template(workbook, request='TEST', replicate=replicate, tag=False, loi=loi, font_color=color)
 
 analytes = ['Ca', 'Cu']
 samples = ['200120001', '200120002']
@@ -913,10 +916,11 @@ template.add_katanax(['Cu', 'Al'], ['200120002'])
 template.add_katanax(['Al'], ['200120002'])
 template.add_katanax(['NH3'], ['200120003'])
 
-#template.add_microwave(['Cu'], ['200120002'])
-template.add_katanax(['Cu'], ['200120002'])
+template.add_microwave(['Cu'], ['200120002'])
+#template.add_katanax(['Cu'], ['200120002'])
 
 template.create_analysis_worksheet(include_expired=False)
+template.close()
 workbook.close()
 import os
 os.startfile('TEST.xlsx')#'''

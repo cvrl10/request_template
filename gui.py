@@ -48,10 +48,6 @@ class App:
 
         PERIODIC_TABLE = PeriodicTable(self.root)
 
-
-        #MODAL.ok()  # call to initially set up the parser in TEMP_CONFIG
-        #TEMP_CONFIG.insert(PERIODIC_TABLE)
-
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
         self.root.columnconfigure(2, weight=1)
@@ -274,13 +270,6 @@ class App:
         menubutton.bind('<Leave>',
                         lambda _: (menubutton.config(bg=BACKGROUND, fg='black', cursor='arrow'), print('leaving')))
 
-    def __unclick(self, menu_list):
-        # delete this method
-        print('inside unclick')
-        for menu in menu_list:
-            print(menu.master)
-            menu.master.event_generate('<FocusOut>')
-
     def create_element_and_sample_frame(self, row: int, name, color=''):
         element_frame = Frame(self.middle_frame, bg='SystemButtonFace', name=f'{name}_element')
         element_frame.grid(row=row, column=1, sticky='nsew')
@@ -422,7 +411,7 @@ class App:
         parser.read('config.ini')
 
         request = self.request_id_entry.get()
-        replicates = self.replicates.get()
+        replicate = self.replicates.get()
         loi = self.loi.get()
         url = temp_parser.get('Save', 'save as')
 
@@ -441,7 +430,7 @@ class App:
         note = temp_parser.get('General', 'note(s)')
 
         workbook = xlsxwriter.Workbook(url)
-        template = Template(workbook, request=request, replicates=replicates, tag=tag, loi=loi, font_color=color)
+        template = Template(workbook, request=request, replicate=replicate, tag=tag, loi=loi, font_color=color)
 
         for elements, samples in microwave:
             template.add_microwave(elements, samples)
@@ -452,11 +441,11 @@ class App:
         for elements, samples in hotplate:
             template.add_hotplate(elements, samples)
 
-
         template.add_note(note=note)
         template.create_analysis_worksheet(include_expired=include_expired)
         template.close()
         workbook.close()
+
         os.startfile(url)
 
     def run(self):
