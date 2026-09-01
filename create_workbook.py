@@ -175,18 +175,15 @@ class Template:
 
     def create_analysis_worksheet(self, include_expired=False):
         print('Here before calling the class method\n\n\n\n')
-        analytes = self.Sample.analyte_set()
+        all_analytes = self.Sample.analyte_set()
         print()
         print('Here                                                     getting lot information haha')
-        lot_info = query_database(list(analytes), include_expired)
+        lot_info = query_database(list(all_analytes), include_expired)
         print(f'sample_to_elements: {self.sample_to_elements}')
         print(self.sample_to_elements)
 
-        #for sample in sorted(self.sample_to_elements):
         for sample in sorted(self.Sample.samples):
             print(type(sample))
-            print('Here')
-            #sample = next(s for s in self.samples if s.id == sample)
             sample = self.Sample.get(sample)
             lots = []
             worksheet = self.workbook.add_worksheet(str(sample.id))
@@ -197,9 +194,9 @@ class Template:
 
             #sample_obj = self.sample_to_elements[sample]
             print(f'analytes: {sample.analytes}')
-            if self.__contains_chrome_3(analytes):
+            if self.__contains_chrome_3(sample.analytes):
                 #s = self.sample_to_elements[sample]
-                cr2o3, cr6 = self.__edit_list(analytes)
+                cr2o3, cr6 = self.__edit_list(sample.analytes)
             print(type(sample))
             print(f'is this correct: {sample}')
             print(f'{sample} contains: {sample.analytes}')
@@ -215,11 +212,12 @@ class Template:
                 print(f'{sample} looking for {element}')
                 #digestion_object = self.element_to_digestion[element]
                 digestion_object = sample[element]
-                if self.__is_chrome_3(element.lower()):
+                if self.__is_chrome_3(sample.get_analyte(element).lower()):
                     self.__create_titration_table_cr3(worksheet, element, sample, cr2o3, cr6, correction_factor)
                     worksheet.autofit()
                     continue
-                if element.lower() in self.TITRATION_ANALYSIS:
+                #if element.lower() in self.TITRATION_ANALYSIS:
+                if sample.get_analyte(element).lower() in self.TITRATION_ANALYSIS:
                     move_to = self.row + 2
                     self.__create_titration_table(worksheet, element, sample, correction_factor)
                     for sample_id in [f'{sample}_{i}' for i in range(1, self.replicate + 1)]:
@@ -279,14 +277,16 @@ class Template:
         return skip_list
 
     def __create_titration_table_cr3(self, worksheet, element, sample, cr2O3, cr6, correction_factor):
-        digestion_object = self.element_to_digestion[cr2O3]
+        #digestion_object = self.element_to_digestion[cr2O3]
+        digestion_object = sample[cr2O3]
         move_to = self.row + 2
         total_cell = self.__create_titration_table(worksheet, cr2O3, sample, correction_factor)
         for sample_id in [f'{sample}_{i}' for i in range(1, self.replicate + 1)]:
             digestion_object.write_titration(move_to, sample_id, worksheet)
             move_to += 1
 
-        digestion_object = self.element_to_digestion[cr6]
+        #digestion_object = self.element_to_digestion[cr6]
+        digestion_object = sample[cr6]
         move_to = self.row + 2
         cr6_cell = self.__create_titration_table(worksheet, cr6, sample, correction_factor)
         for sample_id in [f'{sample}_{i}' for i in range(1, self.replicate + 1)]:
@@ -324,6 +324,8 @@ class Template:
         self.__move_cursor(self.SPACING)
 
     def __create_titration_table(self, worksheet, element, sample, correction_factor):
+        untagged = sample.get_analyte(element)
+        element =  element if self.tag else untagged
         worksheet.merge_range(self.row, 0, self.row, 1, f'{element} titration analysis', self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
@@ -807,6 +809,9 @@ class Template:
 
         def __repr__(self):
             return f'Sample({self.id})'
+
+        def __str__(self):
+            return self.id
 
         def add_digestion(self, digestion):
             for analyte in digestion.elements.copy():

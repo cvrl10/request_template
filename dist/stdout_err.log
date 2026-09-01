@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "WORKBOOK_CREATOR.py", line 1, in <module>
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "pyimod02_importers.py", line 457, in exec_module
+  File "gui.py", line 25, in <module>
+  File "configparser.py", line 698, in read
+  File "configparser.py", line 1097, in _read
+configparser.DuplicateOptionError: While reading from 'config.ini' [line 39]: option 'lims' in section 'Decimal' already exists
