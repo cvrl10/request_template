@@ -1,10 +1,205 @@
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {'200120001': Sample(200120001)}
+address of 200120001:2312336331104
+inside index_set for 200120001: {'Ca': 0}
+analytes: ['Ca']
+count: <map object at 0x0000021A61FCD150>
+inside index_set: []
+Here before calling the class method
+
+
+
+
+{'200120001': Sample(200120001)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca']
+
+
+
+analyte list: {'Ca'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'str'>
+analytes: ['Ca_0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Ca_0']
+analytes: Ca_0
+analytes in 200120001: ['Ca_0']
+200120001 looking for Ca_0
+
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
 Traceback (most recent call last):
-  File "WORKBOOK_CREATOR.py", line 1, in <module>
-  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
-  File "pyimod02_importers.py", line 457, in exec_module
-  File "gui.py", line 25, in <module>
-  File "configparser.py", line 698, in read
-  File "configparser.py", line 1097, in _read
-configparser.DuplicateOptionError: While reading from 'config.ini' [line 39]: option 'lims' in section 'Decimal' already exists
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 590, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 1
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 2
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 3
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 4
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 5
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 6
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 7
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 8
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 9
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 10
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 11
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 12
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "tkinter\__init__.py", line 2068, in __call__
+  File "gui.py", line 184, in <lambda>
+  File "gui.py", line 442, in __submit
+  File "create_workbook.py", line 595, in add_hotplate
+  File "create_workbook.py", line 761, in index_analytes
+TypeError: __str__ returned non-string (type int)

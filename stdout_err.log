@@ -1,0 +1,104 @@
+path=master_workbook.xlsx
+Al: 0
+inside add_analyte: Al
+list: []
+all the sanples: {'200120001': Sample(200120001)}
+analytes: ['Al']
+count: <map object at 0x0000028A2A83DD80>
+inside index_set: []
+Al: 1
+inside add_analyte: Al
+list: ['Al_0']
+all the sanples: {'200120001': Sample(200120001)}
+analytes: ['Al']
+count: <map object at 0x0000028A2A83E710>
+inside index_set: ['Al_0']
+Here before calling the class method
+
+
+
+
+{'200120001': Sample(200120001)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Al', 'Al']
+
+
+
+analyte list: {'Al'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'str'>
+analytes: ['Al_0', 'Al_1']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Al_0', 'Al_1']
+analytes: Al_0
+analytes in 200120001: ['Al_0', 'Al_1']
+200120001 looking for Al_0
+analytes: Al_1
+analytes in 200120001: ['Al_0', 'Al_1']
+200120001 looking for Al_1
+
+path=master_workbook.xlsx
+Al: 0
+inside add_analyte: Al
+list: []
+all the sanples: {'200120001': Sample(200120001)}
+analytes: ['Al']
+count: <map object at 0x0000028A2A8ACAC0>
+inside index_set: []
+Al: 1
+inside add_analyte: Al
+list: ['Al_0']
+Ca: 0
+inside add_analyte: Ca
+list: ['Al_0']
+all the sanples: {'200120001': Sample(200120001)}
+analytes: ['Al', 'Ca']
+count: <map object at 0x0000028A2A8ACEE0>
+inside index_set: ['Al_0']
+Ca: 2
+inside add_analyte: Ca
+list: ['Al_0', 'Al_1', 'Ca_1']
+all the sanples: {'200120001': Sample(200120001)}
+analytes: ['Ca']
+count: <map object at 0x0000028A2A8AD180>
+inside index_set: ['Al_0', 'Al_1', 'Ca_1']
+Here before calling the class method
+
+
+
+
+{'200120001': Sample(200120001)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Al', 'Al', 'Ca', 'Ca']
+
+
+
+analyte list: {'Ca', 'Al'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'str'>
+analytes: ['Al_0', 'Al_1', 'Ca_1', 'Ca_2']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Al_0', 'Al_1', 'Ca_1', 'Ca_2']
+analytes: Al_0
+analytes in 200120001: ['Al_0', 'Al_1', 'Ca_1', 'Ca_2']
+200120001 looking for Al_0
+analytes: Al_1
+analytes in 200120001: ['Al_0', 'Al_1', 'Ca_1', 'Ca_2']
+200120001 looking for Al_1
+analytes: Ca_1
+analytes in 200120001: ['Al_0', 'Al_1', 'Ca_1', 'Ca_2']
+200120001 looking for Ca_1
+analytes: Ca_2
+analytes in 200120001: ['Al_0', 'Al_1', 'Ca_1', 'Ca_2']
+200120001 looking for Ca_2
+

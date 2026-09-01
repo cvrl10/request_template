@@ -632,7 +632,7 @@ class Template:
                 s.add_analytes(analytes=elements)
                 i.append(s.get_replicate_index(elements))
                 analyte_set |= s.index_analytes(elements)#not necessary because of the sample in this set have same element
-                print(f'inside if: {s} address: {id(s)}')
+                #print(f'inside if: {s} address: {id(s)}')
                 print(f'inside if analyte_set: {analyte_set}')
                 print()
             else:
@@ -641,7 +641,7 @@ class Template:
                 i.append(s.get_replicate_index(elements))
                 analyte_set |= s.index_analytes(elements)
                 #print(f'{analyte_set} in else:')
-                print(f'inside else: {s} address: {id(s)}')
+                #print(f'inside else: {s} address: {id(s)}')
                 print(f'inside else analyte_set: {analyte_set}')
                 print()
 
@@ -758,8 +758,8 @@ class Template:
         def index_analytes(self, analytes: list):
             self.__set_replicate_index(analytes=analytes)
             print(f'all the sanples: {self.samples}')
-            print(f'address of {self}:{id(self)}')
-            print(f'inside index_set for {self}: {self.digestion_count}')
+            #print(f'address of {self}:{id(self)}')
+            #print(f'inside index_set for {self}: {self.digestion_count}')
             count = map(lambda analyte: self.digestion_count[analyte], analytes)
             print(f'analytes: {analytes}')
             print(f'count: {count}')
@@ -811,7 +811,7 @@ class Template:
             return f'Sample({self.id})'
 
         def __str__(self):
-            return self.id
+            return str(self.id)
 
         def add_digestion(self, digestion):
             for analyte in digestion.elements.copy():
