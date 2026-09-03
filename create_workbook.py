@@ -19,6 +19,7 @@ parser = ConfigParser()
 
 class Template:
     def __init__(self, wb, request, replicate, tag, loi, font_color):
+        self.close()#need to clear the dictionary in case some exception was thrown leading miscount of analyte tags
         self.__config()
         self.loi = loi
         self.tag = tag

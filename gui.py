@@ -443,7 +443,6 @@ class App:
 
         template.add_note(note=note)
         template.create_analysis_worksheet(include_expired=include_expired)
-        template.close()
         workbook.close()
 
         os.startfile(url)
