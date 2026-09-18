@@ -1,0 +1,352 @@
+path=master_workbook.xlsx
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+analytes: ['Ca']
+count: <map object at 0x000001F897CDC970>
+inside index_set: []
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897CDCAC0>
+inside index_set: []
+Here before calling the class method
+
+
+
+
+{200120001: Sample(200120001), 200120002: Sample(200120002)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca']
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca']
+
+
+
+analyte list: {'Ca'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'int'>
+analytes: ['Ca$0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Ca$0']
+analytes: Ca$0
+analytes in 200120001: ['Ca$0']
+200120001 looking for Ca$0
+
+<class 'int'>
+analytes: ['Ca$0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120002
+200120002 contains: ['Ca$0']
+analytes: Ca$0
+analytes in 200120002: ['Ca$0']
+200120002 looking for Ca$0
+
+path=C:\Users\carcheme\PycharmProjects\request_template\master_workbook.xlsx
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D403D0>
+inside index_set: []
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D40670>
+inside index_set: []
+Ca: 1
+inside add_analyte: Ca
+list: ['Ca$0']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D40940>
+inside index_set: ['Ca$0']
+Ca: 1
+inside add_analyte: Ca
+list: ['Ca$0']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D40BE0>
+inside index_set: ['Ca$0']
+Here before calling the class method
+
+
+
+
+{200120001: Sample(200120001), 200120002: Sample(200120002)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca', 'Ca']
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca', 'Ca']
+
+
+
+analyte list: {'Ca'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'int'>
+analytes: ['Ca$0', 'Ca$1']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Ca$0', 'Ca$1']
+analytes: Ca$0
+analytes in 200120001: ['Ca$0', 'Ca$1']
+200120001 looking for Ca$0
+analytes: Ca$1
+analytes in 200120001: ['Ca$0', 'Ca$1']
+200120001 looking for Ca$1
+
+<class 'int'>
+analytes: ['Ca$0', 'Ca$1']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120002
+200120002 contains: ['Ca$0', 'Ca$1']
+analytes: Ca$0
+analytes in 200120002: ['Ca$0', 'Ca$1']
+200120002 looking for Ca$0
+analytes: Ca$1
+analytes in 200120002: ['Ca$0', 'Ca$1']
+200120002 looking for Ca$1
+
+path=C:\Users\carcheme\PycharmProjects\request_template\master_workbook.xlsx
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D43B50>
+inside index_set: []
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D43DF0>
+inside index_set: []
+Ca: 1
+inside add_analyte: Ca
+list: ['Ca$0']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D4C0D0>
+inside index_set: ['Ca$0']
+Ca: 1
+inside add_analyte: Ca
+list: ['Ca$0']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D4C370>
+inside index_set: ['Ca$0']
+Ag: 0
+inside add_analyte: Ag
+list: ['Ca$0', 'Ca$1']
+Ca: 2
+inside add_analyte: Ca
+list: ['Ca$0', 'Ca$1']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ag', 'Ca']
+count: <map object at 0x000001F897D4C640>
+inside index_set: ['Ca$0', 'Ca$1']
+Ag: 0
+inside add_analyte: Ag
+list: ['Ca$0', 'Ca$1']
+Ca: 2
+inside add_analyte: Ca
+list: ['Ca$0', 'Ca$1']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ag', 'Ca']
+count: <map object at 0x000001F897D4C8E0>
+inside index_set: ['Ca$0', 'Ca$1']
+Here before calling the class method
+
+
+
+
+{200120001: Sample(200120001), 200120002: Sample(200120002)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ag', 'Ca', 'Ca', 'Ca']
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ag', 'Ca', 'Ca', 'Ca']
+
+
+
+analyte list: {'Ca', 'Ag'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'int'>
+analytes: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+analytes: Ag$2
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120001 looking for Ag$2
+analytes: Ca$0
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120001 looking for Ca$0
+analytes: Ca$1
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120001 looking for Ca$1
+analytes: Ca$2
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120001 looking for Ca$2
+
+<class 'int'>
+analytes: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120002
+200120002 contains: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+analytes: Ag$2
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120002 looking for Ag$2
+analytes: Ca$0
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120002 looking for Ca$0
+analytes: Ca$1
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120002 looking for Ca$1
+analytes: Ca$2
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2']
+200120002 looking for Ca$2
+
+path=C:\Users\carcheme\PycharmProjects\request_template\master_workbook.xlsx
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D89E40>
+inside index_set: []
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D8A0E0>
+inside index_set: []
+Ca: 1
+inside add_analyte: Ca
+list: ['Ca$0']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D8A3B0>
+inside index_set: ['Ca$0']
+Ca: 1
+inside add_analyte: Ca
+list: ['Ca$0']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x000001F897D8A650>
+inside index_set: ['Ca$0']
+Ag: 0
+inside add_analyte: Ag
+list: ['Ca$0', 'Ca$1']
+Ca: 2
+inside add_analyte: Ca
+list: ['Ca$0', 'Ca$1']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ag', 'Ca']
+count: <map object at 0x000001F897CDE980>
+inside index_set: ['Ca$0', 'Ca$1']
+Ag: 0
+inside add_analyte: Ag
+list: ['Ca$0', 'Ca$1']
+Ca: 2
+inside add_analyte: Ca
+list: ['Ca$0', 'Ca$1']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ag', 'Ca']
+count: <map object at 0x000001F897CDDBD0>
+inside index_set: ['Ca$0', 'Ca$1']
+cr6_epa: 0
+inside add_analyte: cr6_epa
+list: ['Ca$0', 'Ca$1', 'Ag$2', 'Ca$2']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['cr6_epa']
+count: <map object at 0x000001F897CDE8C0>
+inside index_set: ['Ca$0', 'Ca$1', 'Ag$2', 'Ca$2']
+cr6_epa: 0
+inside add_analyte: cr6_epa
+list: ['Ca$0', 'Ca$1', 'Ag$2', 'Ca$2']
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['cr6_epa']
+count: <map object at 0x000001F897D27BB0>
+inside index_set: ['Ca$0', 'Ca$1', 'Ag$2', 'Ca$2']
+Here before calling the class method
+
+
+
+
+{200120001: Sample(200120001), 200120002: Sample(200120002)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ag', 'Ca', 'Ca', 'Ca', 'cr6_epa']
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ag', 'Ca', 'Ca', 'Ca', 'cr6_epa']
+
+
+
+analyte list: {'Ca', 'Ag', 'cr6_epa'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'int'>
+analytes: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+analytes: Ag$2
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120001 looking for Ag$2
+analytes: Ca$0
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120001 looking for Ca$0
+analytes: Ca$1
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120001 looking for Ca$1
+analytes: Ca$2
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120001 looking for Ca$2
+analytes: cr6_epa$0
+analytes in 200120001: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120001 looking for cr6_epa$0
+
+<class 'int'>
+analytes: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120002
+200120002 contains: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+analytes: Ag$2
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120002 looking for Ag$2
+analytes: Ca$0
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120002 looking for Ca$0
+analytes: Ca$1
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120002 looking for Ca$1
+analytes: Ca$2
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120002 looking for Ca$2
+analytes: cr6_epa$0
+analytes in 200120002: ['Ag$2', 'Ca$0', 'Ca$1', 'Ca$2', 'cr6_epa$0']
+200120002 looking for cr6_epa$0
+

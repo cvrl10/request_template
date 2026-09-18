@@ -1,0 +1,70 @@
+path=C:\Users\carcheme\OneDrive - Clariant International Ltd\Sumissions [excel]\2026\09 September\master_workbook.xlsx
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001)}
+analytes: ['Ca']
+count: <map object at 0x00000250DE63EBF0>
+inside index_set: []
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002)}
+analytes: ['Ca']
+count: <map object at 0x00000250DE63EEC0>
+inside index_set: []
+Ca: 0
+inside add_analyte: Ca
+list: []
+all the sanples: {200120001: Sample(200120001), 200120002: Sample(200120002), 200120003: Sample(200120003)}
+analytes: ['Ca']
+count: <map object at 0x00000250DE63F070>
+inside index_set: []
+Here before calling the class method
+
+
+
+
+{200120001: Sample(200120001), 200120002: Sample(200120002), 200120003: Sample(200120003)}
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca']
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca']
+<class 'create_workbook.Template.Sample'>
+adding to lot tracking: ['Ca']
+
+
+
+analyte list: {'Ca'}
+class varaiable:
+
+Here                                                     getting lot information haha
+sample_to_elements: {}
+{}
+<class 'int'>
+analytes: ['Ca_0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120001
+200120001 contains: ['Ca_0']
+analytes: Ca_0
+analytes in 200120001: ['Ca_0']
+200120001 looking for Ca_0
+
+<class 'int'>
+analytes: ['Ca_0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120002
+200120002 contains: ['Ca_0']
+analytes: Ca_0
+analytes in 200120002: ['Ca_0']
+200120002 looking for Ca_0
+
+<class 'int'>
+analytes: ['Ca_0']
+<class 'create_workbook.Template.Sample'>
+is this correct: 200120003
+200120003 contains: ['Ca_0']
+analytes: Ca_0
+analytes in 200120003: ['Ca_0']
+200120003 looking for Ca_0
+

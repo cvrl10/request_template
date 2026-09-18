@@ -112,7 +112,7 @@ class Template:
         worksheet.merge_range(self.row, 0, self.row, 1, analysis, self.workbook.add_format({'align': 'left'}))
         self.__move_cursor()
         worksheet.write(self.row, 0, 'sample', self.label_cell_format)
-        worksheet.write(self.row, 1, 'Dilution', self.label_cell_format)
+        worksheet.write(self.row, 1, 'dilution', self.label_cell_format)
         worksheet.write(self.row, 2, 'conc. [mg/L]', self.label_cell_format)
         worksheet.set_column(2, 2, len('conc. [mg/L]'))
         worksheet.write(self.row, 3, f'{analyte}_ppm{self.append}', self.label_cell_format)
@@ -729,11 +729,13 @@ class Template:
             return analytes
 
         def get_index(self, analyte: str):
-            i = analyte.split('_')[1]
+            #i = analyte.split('_')[1]
+            i = analyte.split('$')[1]
             return int(i)
 
         def get_analyte(self, analyte: str):
-            return analyte.split('_')[0]
+            #return analyte.split('_')[0]
+            return analyte.split('$')[0]
 
         def __init__(self, _id):
             self.id = _id
@@ -765,7 +767,8 @@ class Template:
             print(f'analytes: {analytes}')
             print(f'count: {count}')
             i = max(count)
-            indexed = {f'{analyte}_{i}' for analyte in analytes}
+            #indexed = {f'{analyte}_{i}' for analyte in analytes}
+            indexed = {f'{analyte}${i}' for analyte in analytes}
             print(f'inside index_set: {self._analytes}')
             return indexed
 
