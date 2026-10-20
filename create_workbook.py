@@ -175,14 +175,8 @@ class Template:
 
 
     def create_analysis_worksheet(self, include_expired=False):
-        print('Here before calling the class method\n\n\n\n')
         all_analytes = self.Sample.analyte_set()
-        print()
-        print('Here                                                     getting lot information haha')
-        #print(f'analytes lise\n\n\n\n{all_analytes}')
         lot_info = query_database(list(all_analytes), include_expired)
-        print(f'sample_to_elements: {self.sample_to_elements}')
-        print(self.sample_to_elements)
 
         for sample in sorted(self.Sample.samples):
             print(type(sample))
@@ -194,14 +188,8 @@ class Template:
             if self.loi:
                 correction_factor = self.__create_loi_table(sample.id, worksheet)
 
-            #sample_obj = self.sample_to_elements[sample]
-            print(f'analytes: {sample.analytes}')
             if self.__contains_chrome_3(sample.analytes):
-                #s = self.sample_to_elements[sample]
                 cr2o3, cr6 = self.__edit_list(sample.analytes)
-            print(type(sample))
-            print(f'is this correct: {sample}')
-            print(f'{sample} contains: {sample.analytes}')
 
             for element in sample:
                 index = sample.get_index(element)
@@ -209,10 +197,7 @@ class Template:
                 if element.upper() == 'LOI':
                     worksheet.autofit()
                     continue
-                #print(f'and iterating through element: in self.element_to_digestion {self.element_to_digestion}')
-                print(f'analytes in {sample}: {sample.analytes}')
-                print(f'{sample} looking for {element}')
-                #digestion_object = self.element_to_digestion[element]
+
                 digestion_object = sample[element]
                 if self.__is_chrome_3(sample.get_analyte(element).lower()):
                     self.__create_titration_table_cr3(worksheet, element, sample, cr2o3, cr6, correction_factor)
