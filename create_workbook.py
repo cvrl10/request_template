@@ -145,7 +145,7 @@ class Template:
         percent_average = f'=AVERAGE({percent_start}:{percent_end})'
         worksheet.write_formula(self.row, 2, percent_average, self.reported_percent_format)
 
-        compounds = self.COMPOUND.get(analyte.lower(), False)
+        compounds = self.COMPOUND.get(analyte.lower().split('$')[0], False)
         if compounds:
             for compound in sorted(compounds):
                 self.__move_cursor()
@@ -179,6 +179,7 @@ class Template:
         all_analytes = self.Sample.analyte_set()
         print()
         print('Here                                                     getting lot information haha')
+        #print(f'analytes lise\n\n\n\n{all_analytes}')
         lot_info = query_database(list(all_analytes), include_expired)
         print(f'sample_to_elements: {self.sample_to_elements}')
         print(self.sample_to_elements)
